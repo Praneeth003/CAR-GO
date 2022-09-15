@@ -1,1 +1,11 @@
-1234
+The basic ideology behind the project is to enable customer to
+register and reserve car online and for company to manage car
+renting effectively. This in return helps in customer retention and
+booking car with ease with minimal work force.
+
+Technologies used:
+
+  Front End : Angular, Typescript, HTML, CSS, Bootstrap, Materialize
+  Backend : Spring Boot, Java, JDBC
+  Database : MySQL
+  Cloud : AWS
