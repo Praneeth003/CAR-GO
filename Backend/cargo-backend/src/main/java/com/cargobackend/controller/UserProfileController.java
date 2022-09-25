@@ -1,6 +1,7 @@
 package com.cargobackend.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import com.cargobackend.pojo.response.UserDetailsResponse;
 import com.cargobackend.service.IUserService;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping({"/user"})
 public class UserProfileController {
 
