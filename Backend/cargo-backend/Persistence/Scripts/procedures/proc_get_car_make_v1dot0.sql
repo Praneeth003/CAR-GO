@@ -24,9 +24,9 @@ BEGIN
 
         BEGIN
         -- START TRANSACTION;
-            select c_make_id,c_make_name,c_make_description,c_status
+            select c_make_id,c_make_name,c_make_description,c_make_status
             from tbl_make
-            where c_status = IF(in_status is not null,in_status,c_status);
+            where c_make_status = IF(in_status is not null,in_status,c_make_status);
         -- COMMIT;
              SET out_status = 1;
         END;
