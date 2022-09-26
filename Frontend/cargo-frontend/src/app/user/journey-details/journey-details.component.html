@@ -1,0 +1,195 @@
+<div class="page-bg">
+  <div class="content">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-5 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="form-block">
+                <div class="mb-4">
+                  <h3>Journey Details</h3>
+                  <!-- <p class="mb-4">Book Free Test Drive Today. Serving Over 50000+ Happy Customers.</p> -->
+                </div>
+                <!-- <form> -->
+                  <!-- <div class="form-group mb-4">
+                    <label>Start Date</label>
+                    <div class="input-group">
+                      <input class="form-control" control="dp1" placeholder="yyyy-mm-dd" name="dp1" [(ngModel)]="fromModel" ngbDatepicker
+                        #d="ngbDatepicker">
+                      <button class="btn btn-outline-danger calendar" (click)="d.toggle()" type="button">
+                        <i class="fas fa-calendar"></i>
+
+                      </button>
+                    </div>
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>End Date</label>
+                    <div class="input-group">
+                      <input class="form-control" control="dp2" placeholder="yyyy-mm-dd" name="dp2" [(ngModel)]="toModel" ngbDatepicker
+                        #d="ngbDatepicker">
+                      <button class="btn btn-outline-danger calendar" (click)="d.toggle()" type="button">
+                        <i class="fas fa-calendar"></i>
+                      </button>
+                    </div>
+                  </div> -->
+                  <spinner id="rainfallSpinner" [show]="mapLoaderActive"></spinner>
+                  <div class="form-group mb-4">
+                    <label>Start</label>
+                    <datepicker name="from" placeHolder="Select from date"
+                      [(ngModel)]="selectedFilterParams.sDate['value']" [(from)]="selectedFilterParams.sDate['value']"
+                      [(to)]="selectedFilterParams.eDate['value']" 
+                      [(calendarFormat)]="selectedFilterParams.format" [(validation)]="validation" [(minDate)]="minDate"
+                      [(maxDate)]="maxDate"></datepicker>
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>Stop</label>
+                    <datepicker name="to" placeHolder="Select to date" [(ngModel)]="selectedFilterParams.eDate['value']"
+                      [(disabled)]="!selectedFilterParams.sDate['value']" [(validation)]="validation"
+                      [(from)]="selectedFilterParams.sDate['value']" [(to)]="selectedFilterParams.eDate['value']"
+                      [(calendarFormat)]="selectedFilterParams.format" [(minDate)]="selectedFilterParams.sDate['value']"
+                      [(maxDate)]="maxDate"></datepicker>
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label> Pick up Location</label>
+                    <select name="toLocation" class="form-control form-select" [(ngModel)]="selectedFilterParams['fromLocation']"
+                      (ngModelChange)="onFromLocationChange()" [ngStyle]="{'border-color': !validation[0] ? '#e40e0e' :''}">
+                      <option value=""  default="true" disabled>Select Pick up
+                      </option>
+                      <option *ngFor="let loc of locationList" [ngValue]="loc" [disabled]="!loc['locationStatus']">
+                        {{loc['locationName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[3]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Pick up  Location is not selected</small>
+                  </div>
+
+                 <div class="form-group mb-4">
+                  <label> Drop Location</label>
+                  <select name="toLocation" class="form-control form-select" [(ngModel)]="selectedFilterParams['toLocation']"
+                    (ngModelChange)="onToLocationChange()" [ngStyle]="{'border-color': !validation[0] ? '#e40e0e' :''}">
+                    <option value="" default="true" disabled>Select Drop
+                    </option>
+                    <option *ngFor="let loc of locationList" [ngValue]="loc" [disabled]="!loc['locationStatus']">
+                      {{loc['locationName']}}
+                    </option>
+                  </select>
+                  <small *ngIf="!validation[4]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                    Drop Location is not selected</small>
+                </div>
+
+                  <!-- <div class="form-group mb-4">
+                    <label>Pick Up Location</label>
+                    <select class="form-control form-select">
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                    </select>
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>Drop Location</label>
+                    <select class="form-control form-select">
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                      <option>Hyderabad</option>
+                    </select>
+                  </div> -->
+                <!-- </form> -->
+
+                <div class="text-center mb-3">
+                  <button (click)="requestHeatMap()" class="btn btn-primary btn-block">SUBMIT</button>
+                </div>
+                <!-- <button class="btn btn-success btn-lg me-3">Find Cars</button> -->
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- 
+<div class="page page-home">
+  <div class="page-container">
+   
+    <div class="top top-webp"
+      style="background-image: url(&quot;https://zoomcar-assets.zoomcar.com/images/original/a121667db0d5e435e48884b015120bc180a4ad2f.jpg?1661426287&quot;);">
+      <section class="search">
+        <form>
+         
+          
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                 
+                 
+                  <div class="placeholder">
+                    Start Date
+
+                    <form class="row row-cols-sm-auto">
+                      <div class="col-12">
+                        <div class="input-group">
+                          <input class="form-control" placeholder="yyyy-mm-dd"
+                                 name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+                          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+                        </div>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+               
+                  <div class="placeholder">
+                    End Date
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+               
+                  <div class="placeholder">
+                    Pick Up Location
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+               
+                  <div class="placeholder">
+                    Drop Location
+                  </div>
+                </div>
+              </div>
+          </div>
+      
+          <div class="button-wrapper"><button disabled="disabled" class="button-primary">
+              Find cars
+            </button></div>
+        </form>
+      </section>
+    </div>
+  </div>
+</div> -->
