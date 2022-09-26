@@ -205,26 +205,23 @@ public class UserDAOImpl implements IUserDAO{
               	UserDetails userDetails1 = null; 
                 while (rs.next()) {
                 	userDetails1 = new UserDetails();
-                	userDetails1.setUserId(rs.getInt("c_user_id"));
-                	userDetails1.setUserName(rs.getString("c_user_name"));
-                	userDetails1.setUserEmail(rs.getString("c_user_email"));
-                	userDetails1.setUserMobileNumber(rs.getString("c_user_mobile_number"));
+                 	userDetails1.setAuthId(rs.getInt(1));
                 }
-                userDetailsResponse.setUserDetails(userDetails1);
-            	userDetailsResponse.setSuccessResponse();
+            	userDetailsResponse = getUserDetails(userDetails1);
+             	if(CommonConstants.Status.SUCCESS.name().toString().equalsIgnoreCase(userDetailsResponse.getStatus())) {
+             		userDetailsResponse.getUserDetails().setAuthId(userDetails1.getAuthId());
+             	}
             } else {
-            	 userDetailsResponse.setErrorDescription("User Name and Password are not Matching");
-            	 System.out.println("In getUserDetails Error in proc :{}"+ cStmt.getString(4));
+            	userDetailsResponse.setErrorId(cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
             }
         } catch (Exception e) {
-        	userDetailsResponse.setErrorDescription("Failed in fetching User Details");
-        	System.out.println("In getUserDetails e :"+ e);
+        	System.out.println("In authenticateUser e :"+ e);
         } finally {
             CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
         }
 		return userDetailsResponse;
-	}
-	
+	}	
 	
 	
 }
