@@ -1,15 +1,36 @@
 package com.cargobackend.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cargobackend.pojo.dao.user.UserDetails;
+import com.cargobackend.pojo.request.BodyTypeRequest;
+import com.cargobackend.pojo.request.ColorRequest;
+import com.cargobackend.pojo.request.FuelTypeRequest;
+import com.cargobackend.pojo.request.MakeRequest;
+import com.cargobackend.pojo.request.ModelRequest;
+import com.cargobackend.pojo.request.TransmissionTypeRequest;
+import com.cargobackend.pojo.request.VariantRequest;
+import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
+import com.cargobackend.pojo.response.ColorResponse;
+import com.cargobackend.pojo.response.FuelTypeResponse;
+import com.cargobackend.pojo.response.LocationResponse;
+import com.cargobackend.pojo.response.MakeResponse;
+import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserDetailsResponse;
+import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.service.ICargoService;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping({"/cargo"})
 public class CargoController {
 	
@@ -92,5 +113,13 @@ public class CargoController {
     	return cargoService.getTransmissionType(transmissionTypeReqeust);
     }
 
+
+    @PostMapping(value = {"variant"})
+    @ResponseBody
+    public VariantResponse getVariant(@RequestBody VariantRequest variantRequest) {
+    	System.out.println("\n CargoController  getVariant "+variantRequest);
+    	return cargoService.getVariant(variantRequest);
+    }
+    
 
 }
