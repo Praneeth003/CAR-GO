@@ -28,4 +28,69 @@ public class CargoController {
 		return cargoService.getCarMakes(null);
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@PostMapping(value = {"model"})
+    @ResponseBody
+    public ModelResponse getModel(@RequestBody ModelRequest modelRequest) {
+    	System.out.println("\n CargoController  getModel "+modelRequest);
+    	return cargoService.getModel(modelRequest);
+    }
+    
+    @PostMapping(value = {"bodyType"})
+    @ResponseBody
+    public BodyTypeResponse getBodyType(@RequestBody BodyTypeRequest bodyTypeReqeust) {
+    	System.out.println("\n CargoController  getBodyType "+bodyTypeReqeust);
+    	return cargoService.getBodyType(bodyTypeReqeust);
+    }
+    
+    
+    @PostMapping(value = {"fuelType"})
+    @ResponseBody
+    public FuelTypeResponse getFuelType(@RequestBody FuelTypeRequest fuelTypeReqeust) {
+    	System.out.println("\n CargoController  getFuelType "+fuelTypeReqeust);
+    	return cargoService.getFuelType(fuelTypeReqeust);
+    }
+
+    @PostMapping(value = {"transmissionType"})
+    @ResponseBody
+    public TransmissionTypeResponse getTransmissionTypeReqeust(@RequestBody TransmissionTypeRequest transmissionTypeReqeust) {
+    	System.out.println("\n CargoController  getTransmissionTypeReqeust "+transmissionTypeReqeust);
+    	return cargoService.getTransmissionType(transmissionTypeReqeust);
+    }
+
+
 }
