@@ -2,27 +2,28 @@ package com.cargobackend.pojo.response;
 
 import java.util.List;
 
-import com.cargobackend.pojo.dao.cargo.CarMake;
+import com.cargobackend.pojo.dao.cargo.BodyType;
 import com.cargobackend.pojo.response.common.BaseResponse;
 
-public class CarMakeResponse extends BaseResponse{
+public class BodyTypeResponse extends BaseResponse {
 
-	List<CarMake> carmakeList;
+	List<BodyType> bodyTypeList;
 
-	public List<CarMake> getCarmakeList() {
-		return carmakeList;
+	public List<BodyType> getBodyTypeList() {
+		return bodyTypeList;
 	}
 
-	public void setCarmakeList(List<CarMake> carmakeList) {
-		this.carmakeList = carmakeList;
+	public void setBodyTypeList(List<BodyType> bodyTypeList) {
+		this.bodyTypeList = bodyTypeList;
 	}
 
 	@Override
 	public String toString() {
-		return "CarMakeResponse [carmakeList=" + carmakeList + ", getCarmakeList()=" + getCarmakeList()
+		return "BodyTypeResponse [bodyTypeList=" + bodyTypeList + ", getBodyTypeList()=" + getBodyTypeList()
 				+ ", getStatus()=" + getStatus() + ", getErrorCode()=" + getErrorCode() + ", getErrorId()="
 				+ getErrorId() + ", getErrorDescription()=" + getErrorDescription() + ", toString()=" + super.toString()
 				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + "]";
 	}
-
+	
+	
 }

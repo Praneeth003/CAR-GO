@@ -39,4 +39,11 @@ public class UserServiceImpl implements IUserService{
 		return userDAO.authenticateUser(userDetails);
 	}
 
+
+	@Override
+	public UserDetailsResponse logOutUser(UserDetails userDetails) {
+		// TODO Auto-generated method stub
+		return userDAO.logOutUser(userDetails);
+	}
+
 }

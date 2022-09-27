@@ -205,7 +205,7 @@ public class UserDAOImpl implements IUserDAO{
               	UserDetails userDetails1 = null; 
                 while (rs.next()) {
                 	userDetails1 = new UserDetails();
-                 	userDetails1.setAuthId(rs.getInt(1));
+                	userDetails1.setAuthId(rs.getInt(1));
                 }
             	userDetailsResponse = getUserDetails(userDetails1);
              	if(CommonConstants.Status.SUCCESS.name().toString().equalsIgnoreCase(userDetailsResponse.getStatus())) {
@@ -221,7 +221,68 @@ public class UserDAOImpl implements IUserDAO{
             CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
         }
 		return userDetailsResponse;
-	}	
+	}
+
+	@Override
+	public UserDetailsResponse logOutUser(UserDetails userDetails) {
+    	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+    	userDetailsResponse.setFailedResponse();
+    	
+		System.out.println("In logOutUser userDetails "+userDetails);
+	    Connection connection = null;
+        CallableStatement cStmt = null;
+        ResultSet rs = null;
+        String procedureName = "proc_logout_user_v1dot0";
+        final String procedureCall = "{call " + procedureName + "(?,?,?,?,?)}";
+        try {
+            connection = jdbcTemplate.getDataSource().getConnection();
+            cStmt = connection.prepareCall(procedureCall);
+            
+            int i=1;
+            /* input parameters start */     
+            
+    		if(userDetails.getUserId() != null){
+				cStmt.setInt(i++, userDetails.getUserId());
+			}else{
+				cStmt.setNull(i++, Types.NULL);
+			}
+    		
+       		if(userDetails.getAuthId() != null){
+    			cStmt.setInt(i++, userDetails.getAuthId());
+    		}else{
+    			cStmt.setNull(i++, Types.NULL);
+    		}
+       		
+     		if(userDetails.getUserName() != null){
+				cStmt.setString(i++, userDetails.getUserName());
+			}else{
+				cStmt.setNull(i++, Types.NULL);
+			}
+            /* input parameters start */  
+            
+            /* register output parameters start */
+            cStmt.registerOutParameter(i++, Types.INTEGER);
+            cStmt.registerOutParameter(i++, Types.VARCHAR);
+            /* register output parameters end */
+            
+            System.out.println("In logOutUser Calling DB procedure cStmt Before{}"+ cStmt);
+            rs = cStmt.executeQuery();
+            System.out.println("In logOutUser Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
+            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+            	userDetailsResponse.setSuccessResponse();
+            } else {
+           	 	System.out.println("In logOutUser Error in proc :{}"+ cStmt.getString(4));
+            	userDetailsResponse.setErrorId(cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+            }
+        } catch (Exception e) {
+        	System.out.println("In logOutUser e :"+ e);
+        } finally {
+            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+        }
+		return userDetailsResponse;
+	}
+	
 	
 	
 }

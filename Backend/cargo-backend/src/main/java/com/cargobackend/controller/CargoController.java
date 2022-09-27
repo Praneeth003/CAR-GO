@@ -48,7 +48,6 @@ public class CargoController {
 		System.out.println("\n CargoController getCarMake ");
 		return cargoService.getCarMakes(null);
 	}
-
 	
 	@GetMapping("/location")
 	@ResponseBody

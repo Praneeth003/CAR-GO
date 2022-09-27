@@ -1,4 +1,4 @@
-package com.cargobackend.pojo.dao;
+package com.cargobackend.pojo.dao.cargo;
 
 public class CarMake {
 

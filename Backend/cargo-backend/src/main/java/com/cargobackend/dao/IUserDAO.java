@@ -10,4 +10,6 @@ public interface IUserDAO {
 	public UserDetailsResponse getUserDetails(UserDetails userDetails);
 	
 	public UserDetailsResponse authenticateUser(UserDetails userDetails);
+	
+	public UserDetailsResponse logOutUser(UserDetails userDetails);
 }

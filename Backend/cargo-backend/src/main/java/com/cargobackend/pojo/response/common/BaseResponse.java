@@ -61,10 +61,10 @@ public class BaseResponse implements Serializable {
     }
 
     public void setFailedResponse() {
-        this.setStatus(CommonConstants.Status.FAILURE.toString());
+        this.setStatus(CommonConstants.Status.FAILURE.name().toString());
     }
 
     public void setSuccessResponse() {
-        this.setStatus(CommonConstants.Status.SUCCESS.toString());
+        this.setStatus(CommonConstants.Status.SUCCESS.name().toString());
     }
 }

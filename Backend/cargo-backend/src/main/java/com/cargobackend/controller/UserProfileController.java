@@ -38,11 +38,19 @@ public class UserProfileController {
     	return userService.getUserDetails(userDetails);
     }
     
+
     @PostMapping(value = {"/authenticate"})
     @ResponseBody
     public UserDetailsResponse authenticateUser(@RequestBody UserDetails userDetails) {
     	System.out.println("\n UserProfileController  authenticate "+userDetails);
     	return userService.authenticateUser(userDetails);
+    }
+
+    @PostMapping(value = {"/logOut"})
+    @ResponseBody
+    public UserDetailsResponse logOutUser(@RequestBody UserDetails userDetails) {
+    	System.out.println("\n UserProfileController  authenticate "+userDetails);
+    	return userService.logOutUser(userDetails);
     }
 	
 }
