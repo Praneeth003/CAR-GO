@@ -50,41 +50,21 @@ public class CargoController {
 	}
 
 	
+	@GetMapping("/location")
+	@ResponseBody
+	public LocationResponse getLocation() {
+		System.out.println("\n CargoController getLocation ");
+		return cargoService.getLocation();
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@PostMapping(value = {"model"})
+    @PostMapping(value = {"/make"})
+    @ResponseBody
+    public MakeResponse getMake(@RequestBody MakeRequest makeRequest) {
+    	System.out.println("\n CargoController  getMake "+makeRequest);
+    	return cargoService.getMake(makeRequest);
+    }
+    
+    @PostMapping(value = {"model"})
     @ResponseBody
     public ModelResponse getModel(@RequestBody ModelRequest modelRequest) {
     	System.out.println("\n CargoController  getModel "+modelRequest);
@@ -113,6 +93,12 @@ public class CargoController {
     	return cargoService.getTransmissionType(transmissionTypeReqeust);
     }
 
+    @PostMapping(value = {"color"})
+    @ResponseBody
+    public ColorResponse getColor(@RequestBody ColorRequest colorReqeust) {
+    	System.out.println("\n CargoController  getColor "+colorReqeust);
+    	return cargoService.getColor(colorReqeust);
+    }
 
     @PostMapping(value = {"variant"})
     @ResponseBody

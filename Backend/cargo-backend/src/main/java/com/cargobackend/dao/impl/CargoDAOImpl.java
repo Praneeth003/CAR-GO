@@ -45,10 +45,9 @@ import com.cargobackend.utils.CommonConstants;
 import com.cargobackend.utils.CommonUtils;
 
 @Repository("CargoDAOImpl")
-public class CargoDAOImpl implements ICargoDAO{
-	
+public class CargoDAOImpl implements ICargoDAO {
 
-    private final JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
 	public CargoDAOImpl(@Qualifier("cargoDataSource") DataSource cargoDataSource) {
 		super();
@@ -57,142 +56,118 @@ public class CargoDAOImpl implements ICargoDAO{
 
 	@Override
 	public CarMakeResponse getCarMakes(Boolean status) {
-		
+
 		CarMakeResponse carMakeResponse = new CarMakeResponse();
 		carMakeResponse.setFailedResponse();
-		System.out.println("In getCarMakes carMakeResponse......"+carMakeResponse);
-	    Connection connection = null;
-        CallableStatement cStmt = null;
-        ResultSet rs = null;
-        String procedureName = "proc_get_car_make_v1dot0";
-        final String procedureCall = "{call " + procedureName + "(?, ?, ?)}";
-        try {
-            connection = jdbcTemplate.getDataSource().getConnection();
-            cStmt = connection.prepareCall(procedureCall);
-            /* input parameters */            
-    		if(status != null){
+		System.out.println("In getCarMakes carMakeResponse......" + carMakeResponse);
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_car_make_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?, ?, ?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			if (status != null) {
 				cStmt.setBoolean(1, status);
-			}else{
+			} else {
 				cStmt.setNull(1, Types.NULL);
 			}
-            /* register output parameters */
-            cStmt.registerOutParameter(2, Types.INTEGER);
-            cStmt.registerOutParameter(3, Types.VARCHAR);
-            System.out.println("In getCarMakes Calling DB procedure cStmt Before{}"+ cStmt);
-            rs = cStmt.executeQuery();
-            System.out.println("In getCarMakes Calling DB procedure cStmt After {}"+ cStmt);
-            if (cStmt.getInt(2) == CommonConstants.DB_PROC_SUCCESS_RESPONSE) {
-            	List<CarMake> carMakeList = new ArrayList<>();
-            	CarMake carMake = null;
-                while (rs.next()) {
-                	carMake = new CarMake();
-                	carMake.setMakeId(rs.getInt("c_make_id"));
-                	carMake.setMakeName(rs.getString("c_make_name"));
-                	carMake.setMakeDescription(rs.getString("c_make_description"));
-                	carMake.setMakeStatus(rs.getBoolean("c_status"));
-                	carMakeList.add(carMake);
-                }
-                carMakeResponse.setCarmakeList(carMakeList);
-                carMakeResponse.setSuccessResponse();
-             	System.out.println("In getCarMakesException carMakeResponse:"+ carMakeResponse);
-            } else {
-            	 System.out.println("In getCarMakes Error in proc :{}"+ cStmt.getString(4));
-            }
-        } catch (Exception e) {
-        	 System.out.println("In getCarMakesException e :"+ e);
-        } finally {
-            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
-        }
+			/* register output parameters */
+			cStmt.registerOutParameter(2, Types.INTEGER);
+			cStmt.registerOutParameter(3, Types.VARCHAR);
+			System.out.println("In getCarMakes Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getCarMakes Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(2) == CommonConstants.DB_PROC_SUCCESS_RESPONSE) {
+				List<CarMake> carMakeList = new ArrayList<>();
+				CarMake carMake = null;
+				while (rs.next()) {
+					carMake = new CarMake();
+					carMake.setMakeId(rs.getInt("c_make_id"));
+					carMake.setMakeName(rs.getString("c_make_name"));
+					carMake.setMakeDescription(rs.getString("c_make_description"));
+					carMake.setMakeStatus(rs.getBoolean("c_make_status"));
+					carMakeList.add(carMake);
+				}
+				carMakeResponse.setCarmakeList(carMakeList);
+				carMakeResponse.setSuccessResponse();
+				System.out.println("In getCarMakesException carMakeResponse:" + carMakeResponse);
+			} else {
+				System.out.println("In getCarMakes Error in proc :{}" + cStmt.getString(4));
+			}
+		} catch (Exception e) {
+			System.out.println("In getCarMakesException e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
 		return carMakeResponse;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public MakeResponse getMake(MakeRequest makeRequest) {
+		MakeResponse response = new MakeResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_make_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+
+			int i = 1;
+
+			if (makeRequest == null || makeRequest.getMakeIdList() == null || makeRequest.getMakeIdList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(makeRequest.getMakeIdList(),
+						CommonConstants.DELIMITER));
+			}
+
+			if (makeRequest == null || makeRequest.getMakeNameList() == null
+					|| makeRequest.getMakeNameList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromList(makeRequest.getMakeNameList(),
+						CommonConstants.DELIMITER));
+			}
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getMake Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getMake Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<Make> makeList = new ArrayList<>();
+				Make make = null;
+				while (rs.next()) {
+					make = new Make();
+					make.setMakeId(rs.getInt("c_make_id"));
+					make.setMakeName(rs.getString("c_make_name"));
+					make.setMakeDescription(rs.getString("c_make_description"));
+					make.setMakeStatus(rs.getBoolean("c_make_status"));
+					makeList.add(make);
+				}
+				response.setMakeList(makeList);
+				response.setSuccessResponse();
+				System.out.println("In getCarMakesException response:" + response);
+			} else {
+				System.out.println("In getCarMakes Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getMake e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
 
 	@Override
 	public ModelResponse getModel(ModelRequest modelRequest) {
@@ -486,8 +461,69 @@ public class CargoDAOImpl implements ICargoDAO{
 		return response;
 	}
 
+	@Override
+	public ColorResponse getColor(ColorRequest colorRequest) {
+		ColorResponse response = new ColorResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_color_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
 
+			int i = 1;
 
+			if (colorRequest == null || colorRequest.getColorIdList() == null
+					|| colorRequest.getColorIdList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(colorRequest.getColorIdList(),
+						CommonConstants.DELIMITER));
+			}
+
+			if (colorRequest == null || colorRequest.getColorNameList() == null
+					|| colorRequest.getColorNameList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromList(colorRequest.getColorNameList(),
+						CommonConstants.DELIMITER));
+			}
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getColor Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getColor Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<Color> colorList = new ArrayList<>();
+				Color color = null;
+				while (rs.next()) {
+					color = new Color();
+					color.setColorId(rs.getInt("c_color_id"));
+					color.setColorName(rs.getString("c_color_name"));
+					color.setColorDescription(rs.getString("c_color_description"));
+					colorList.add(color);
+				}
+				response.setColorList(colorList);
+				response.setSuccessResponse();
+				System.out.println("In getColor response:" + response);
+			} else {
+				System.out.println("In getColor Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getColor e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
 
 	@Override
 	public VariantResponse getVariant(VariantRequest variantRequest) {
@@ -714,6 +750,55 @@ public class CargoDAOImpl implements ICargoDAO{
 			}
 		} catch (Exception e) {
 			System.out.println("In getVariant e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+
+	@Override
+	public LocationResponse getLocation() {
+		LocationResponse response = new LocationResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_location_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			int i = 1;
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getLocation Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getLocation Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<Location> locationList = new ArrayList<>();
+				Location location = null;
+				while (rs.next()) {
+					location = new Location();
+					location.setLocationId(rs.getInt("c_location_id"));
+					location.setLocationName(rs.getString("c_location_name"));
+					location.setLocationGPS(rs.getString("c_location_gps"));
+					location.setLocationStateName(rs.getString("c_location_state_name"));
+					location.setLocationCountryName(rs.getString("c_location_country_name"));
+					location.setLocationStatus(rs.getBoolean("c_location_status"));
+					locationList.add(location);
+				}
+				response.setLocationList(locationList);
+				response.setSuccessResponse();
+				System.out.println("In getLocation response:" + response);
+			} else {
+				System.out.println("In getLocation Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getLocation e :" + e);
 		} finally {
 			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
 		}

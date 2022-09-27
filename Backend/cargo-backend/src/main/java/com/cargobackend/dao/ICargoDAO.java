@@ -20,24 +20,9 @@ import com.cargobackend.pojo.response.VariantResponse;
 public interface ICargoDAO {
 
 	public CarMakeResponse getCarMakes(Boolean status);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
+	public MakeResponse getMake(MakeRequest makeRequest);
+	
 	public ModelResponse getModel(ModelRequest modelRequest);
 	
 	public BodyTypeResponse getBodyType(BodyTypeRequest bodyTypeRequest);
@@ -46,5 +31,9 @@ public interface ICargoDAO {
 	
 	public TransmissionTypeResponse getTransmissionType(TransmissionTypeRequest transmissionTypeRequest);
 	
-    public VariantResponse getVariant(VariantRequest variantRequest);
+	public ColorResponse getColor(ColorRequest colorRequest);
+	
+	public VariantResponse getVariant(VariantRequest variantRequest);
+	
+	public LocationResponse getLocation();
 }

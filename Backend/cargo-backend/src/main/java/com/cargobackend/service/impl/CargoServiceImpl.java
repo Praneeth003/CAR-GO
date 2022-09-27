@@ -40,26 +40,11 @@ public class CargoServiceImpl implements ICargoService{
 	}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	@Override
+	public MakeResponse getMake(MakeRequest makeRequest) {
+		// TODO Auto-generated method stub
+		return cargoDAO.getMake(makeRequest);
+	}
 
 
 	@Override
@@ -89,9 +74,25 @@ public class CargoServiceImpl implements ICargoService{
 		return cargoDAO.getTransmissionType(transmissionTypeRequest);
 	}
 
+
+	@Override
+	public ColorResponse getColor(ColorRequest colorRequest) {
+		// TODO Auto-generated method stub
+		return cargoDAO.getColor(colorRequest);
+	}
+
+
 	@Override
 	public VariantResponse getVariant(VariantRequest variantRequest) {
 		// TODO Auto-generated method stub
 		return cargoDAO.getVariant(variantRequest);
 	}
+
+
+	@Override
+	public LocationResponse getLocation() {
+		// TODO Auto-generated method stub
+		return cargoDAO.getLocation();
+	}
+
 }
