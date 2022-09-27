@@ -1,0 +1,17 @@
+<div class="input-group date">
+  <input *ngIf="calendarFormat; else elseBlock"
+    [ngClass]="{'error': (name=='from'&&!validation[1]||name=='to'&&(!validation[2]||!validation[3]))}"
+    placeholder="{{placeHolder}}" class="form-control" #dp="bsDatepicker" [name]="name" [bsConfig]="bsConfig"
+    [(ngModel)]="model" [minDate]="minDate" [maxDate]="maxDate" (ngModelChange)="onModelChange()"
+    [isDisabled]="disabled" bsDatepicker readonly />
+  <ng-template #elseBlock><input placeholder="{{placeHolder}}" readonly></ng-template>
+  <span (click)="dp.toggle()" class="input-group-addon pointer">
+    <span><i class="far fa-calendar-alt"></i></span>
+  </span>
+</div>
+<span *ngIf="name == 'from' && !validation[0]" style="color: #e61010"><i class="fas fa-exclamation-triangle"></i>
+  Start date is not selected</span>
+<span *ngIf="name == 'to' && !validation[1]" style="color: #e61010"><i class="fas fa-exclamation-triangle"></i>
+  Stop date is not selected</span>
+<span *ngIf="name == 'to' && !validation[2]" style="color: #e61010"><i class="fas fa-exclamation-triangle"></i>
+  Stop date cannot come before start date</span>

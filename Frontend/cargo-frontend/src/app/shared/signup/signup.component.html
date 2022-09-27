@@ -1,0 +1,129 @@
+
+
+
+
+<div class="page-bg">
+  <div class="content">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-5 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="form-block">
+                  <div class="mb-4">
+                  <h3>Sign Up</h3>
+                 
+                </div>
+                <!-- <form> -->
+                  <div class="form-group mb-4"> 
+                    <label>User Name</label>
+                    <input type="text" class="form-control" placeholder="Username" [(ngModel)] = "username">
+                  </div>
+                  <div class="form-group mb-4"> 
+                    <label>Email Address</label>
+                    <input type="text" class="form-control" placeholder="e-mail Address" [(ngModel)] = "email">
+                  </div>
+                  <div class="form-group mb-4"> 
+                    <label>Mobile Number</label>
+                    <input type="text" class="form-control" placeholder="Mobile Number" [(ngModel)] = "mNo">
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>Password</label>
+                    <input type = "password" placeholder="Password" [(ngModel)] = "psswd" class="form-control">
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>Re Enter Password</label>
+                    <input type = "password" placeholder="Password" [(ngModel)] = "reEnterPsswd" class="form-control">
+                  </div>
+                <!-- </form> -->
+                <!-- <button class="btn btn-primary btn-lg me-3" (click)="login()">Login</button>  -->
+                 <button class="btn btn-success btn-lg" (click)="signup()">Sign UP</button>
+                 <h6 style="color: red;" [hidden] = "!signUpFailed"> Sign Up Failed {{errorMessage}}</h6>
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- <div class="page page-home">
+  <div class="page-container">
+  
+    <div class="top top-webp"
+      style="background-image: url(&quot;https://zoomcar-assets.zoomcar.com/images/original/a121667db0d5e435e48884b015120bc180a4ad2f.jpg?1661426287&quot;);">
+      <section class="search">
+        <div>
+        
+          
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <input style = "border-width:0px" class="placeholder" placeholder="User Name" [(ngModel)] = "username">
+
+                </div>
+              </div>
+          </div>
+
+
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Email Address" [(ngModel)] = "email">
+
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Mobile Number" [(ngModel)] = "mNo">
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" type = "password" placeholder="Password" [(ngModel)] = "psswd">
+
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Re Enter Password" [(ngModel)] = "reEnterPsswd">
+                </div>
+              </div>
+          </div>
+        
+          <div class="button-wrapper"><button class="button-primary" (click)="signup()">
+              Sign Up
+            </button></div>
+          </div>
+          <h3 style="color: red;" [hidden] = "!signUpFailed"> Sign Up Failed {{errorMessage}}</h3>
+      </section>
+    </div>
+  </div>
+</div> -->

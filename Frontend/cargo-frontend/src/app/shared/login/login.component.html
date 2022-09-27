@@ -1,0 +1,90 @@
+
+<div class="page-bg">
+  <div class="content">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-5 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="form-block">
+                  <div class="mb-4">
+                  <h3>Login</h3>
+                  <!-- <p class="mb-4">Book Free Test Drive Today. Serving Over 50000+ Happy Customers.</p> -->
+                </div>
+                <!-- <form> -->
+                  <div class="form-group mb-4"> 
+                    <label>User Name</label>
+                    <input type="text" class="form-control" placeholder="Username" [(ngModel)] = "username">
+                  </div>
+                  <div class="form-group mb-4">
+                    <label>Password</label>
+                    <input type = "password" placeholder="Password" [(ngModel)] = "psswrd" class="form-control">
+                  </div>
+                <!-- </form> -->
+                <button class="btn btn-primary btn-lg me-3" (click)="login()">Login</button> 
+                 <button class="btn btn-success btn-lg" [routerLink]="['/signup']" href = "/signup">Sign UP</button>
+                 <!-- <h6 style="color: red;" [hidden] = "!signUpFailed"> Login Failed {{errorMessage}}</h6> -->
+                 <small *ngIf="signUpFailed" class="text-danger">
+                   <br/>  <br/>
+                   <i class="fas fa-exclamation-triangle"></i>
+                  Login Failed {{errorMessage}}</small>
+              </div>
+              
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- <div class="page page-home">
+  <div class="page-container">
+   
+    <div class="top top-webp"
+      style="background-image: url(&quot;https://zoomcar-assets.zoomcar.com/images/original/a121667db0d5e435e48884b015120bc180a4ad2f.jpg?1661426287&quot;);">
+
+      
+      <section class="search">
+        <div>
+         
+          
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Username" [(ngModel)] = "username">
+                    
+               
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                 
+                 
+                  
+                  <input style = "border-width:0px" class="placeholder" type = "password" placeholder="Password" [(ngModel)] = "psswrd">
+                 
+                </div>
+              </div>
+          </div>
+         
+          <div class="button-wrapper"><button class="button-primary" (click)="login()">
+              <a> Login </a>
+            </button></div>
+            <div class="button-wrapper"><button class="button-primary" [routerLink]="['/signup']" href = "/signup">
+              Signup
+            </button></div>
+            <h6 style="color: red;" [hidden] = "!signUpFailed"> Login Failed {{errorMessage}}</h6>
+          </div>
+      </section>
+    </div>
+  </div>
+</div> -->

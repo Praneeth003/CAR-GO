@@ -1,0 +1,60 @@
+
+
+@import '~ngx-toastr/toastr.css';
+
+/* Nagaiah styles */
+
+.page-bg {
+  /* background: url(https://zoomcar-assets.zoomcar.com/images/original/a121667db0d5e435e48884b015120bc180a4ad2f.jpg?1661426287); */
+  background-image:url('../../../assets/bg.jpeg');
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+#toast-container > div {
+  opacity: 1;
+}
+.toast {
+  font-size: initial !important;
+  border: initial !important;
+  backdrop-filter: blur(0) !important;
+}
+.toast-success {
+  background-color: #51A351 !important;
+}
+.toast-error {
+  background-color: #BD362F !important;
+}
+.toast-info {
+  background-color: #2F96B4 !important;
+}
+.toast-warning {
+  background-color: #F89406 !important;
+}
+
+.toast-top-right{
+  z-index: 9999999999999999999999999999999;
+}
+
+#toast-container > div {
+  opacity:1;
+}
+
+.content {
+  padding: 10rem 0;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+.form-block {
+  background:rgba(255, 255, 255, 0.95);
+  padding: 30px 30px;
+  -webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 20px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}

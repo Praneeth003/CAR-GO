@@ -1,0 +1,68 @@
+.desktop_header {
+    width: 100%;
+    background-color: #973218;
+    color: white;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body {
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    margin: 0;
+    min-height: 100%;
+    box-sizing: border-box;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+
+.desktop_header #logo {
+    margin: 0 0 0 16px;
+    flex: 1;
+}
+
+.desktop_header nav li {
+    display: flex;
+    align-items: center;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+.desktop_header a {
+    color: white;
+}
+
+a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.desktop_header nav ul {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    font-weight: bold;
+    font-size: 18px;
+    -webkit-padding-start: 0px;
+    padding-inline-start: 0px;
+    padding-right : 20pt;
+}
