@@ -17,9 +17,11 @@ UNIQUE KEY (c_make_name)
 insert into tbl_make
 (c_make_name,c_make_description,c_make_status)
 values
-("Maruti Suzuki","Maruti Suzuki desc",1),
-("Hyundai","Hyundai desc",1),
-("Ford","Ford desc",0);
+("Volkswagen","Volkswagen desc",1),
+("Ford","Ford desc",1),
+("Chevrolet","Chevrolet desc",1),
+("Honda","Honda desc",1);
+
 
 create table tbl_body_type(
 c_body_type_id int NOT NULL AUTO_INCREMENT,
@@ -35,8 +37,7 @@ insert into tbl_body_type
 values
 ("Hatchback","Hatchback desc",1),
 ("Sedan","Sedan desc",1),
-("SUV","SUV",1),
-("MUV","MUV desc",1),;
+("SUV","SUV",1);
 
 create table tbl_model(
 c_model_id int NOT NULL AUTO_INCREMENT,
@@ -53,23 +54,17 @@ FOREIGN KEY (c_make_id) REFERENCES tbl_make(c_make_id)
 insert into tbl_model
 (c_model_name,c_model_description,c_model_status,c_make_id,c_body_type_id)
 values
-("Ertiga","Ertiga desc",1,1,4),
-("Breza","Breza desc",1,1,3),
-("Baleno","Baleno desc",1,1,1),
-("Dzire","Dzire desc",1,1,2),
-("Alto","Alto desc",1,1,1),
-("Alcazar","Alcazar desc",1,2,3),
-("Venue","Venue desc",1,2,3),
-("Elantra","Elantra desc",1,2,2),
-("Aura","Aura desc",1,2,2),
-("i20","i20 desc",1,2,1),
-("Santra","Santra desc",1,2,1);
+("Polo","Polo desc",1,1,1),
+("Vento","Vento desc",1,1,2),
+("Virtus","Virtus desc",1,1,2),
+("Taigun","Taigun desc",1,1,3),
+("T-Roc","T-Roc desc",1,1,3);
 
 
 create table tbl_color(
 c_color_id int NOT NULL AUTO_INCREMENT,
 c_color_name varchar(30) NOT NULL, 
-c_color_description varchar(500) 
+c_color_description varchar(500), 
 PRIMARY KEY (c_color_id),
 UNIQUE KEY (c_color_name)
 );
@@ -79,7 +74,7 @@ insert into tbl_color
 values
 ("White","White desc"),
 ("Red","Red desc"),
-("Blue","Blue desc");
+("Silver","Silver desc");
 
 
 create table tbl_fuel_type(
@@ -132,48 +127,118 @@ c_price_per_kilometer BIGINT(20) NOT NULL,
 c_kilometers_driven BIGINT(20) NOT NULL,
 c_number_plate varchar(30) NOT NULL, 
 PRIMARY KEY (c_variant_id),
-CONSTRAINT u_variant_fuel_tansmission UNIQUE(c_variant_name,c_fuel_type_id,c_transmission_type_id),
 FOREIGN KEY (c_model_id) REFERENCES tbl_model(c_model_id),
 FOREIGN KEY (c_color_id) REFERENCES tbl_color(c_color_id),
 FOREIGN KEY (c_fuel_type_id) REFERENCES tbl_fuel_type(c_fuel_type_id),
 FOREIGN KEY (c_transmission_type_id) REFERENCES tbl_transmission_type(c_transmission_type_id)
 );
 
+insert into tbl_variant
+(c_variant_name,c_variant_description,c_variant_status,c_model_id,c_color_id,c_fuel_type_id,c_transmission_type_id,c_mileage,
+c_manufacturing_date,c_price_per_kilometer,c_kilometers_driven,c_number_plate)
+values
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,3,11,"2020-02-01",16,1200,"Cargo"),
 
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,3,11,"2020-02-01",16,1200,"Cargo"),
 
--- ("Alcazar","Alcazar desc",1,2,3),
--- ("Venue","Venue desc",1,2,3),
--- ("Elantra","Elantra desc",1,2,2),
--- ("Aura","Aura desc",1,2,2),
--- ("i20","i20 desc",1,2,1),
--- ("Santra","Santra desc",1,2,1);
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,3,11,"2020-02-01",16,1200,"Cargo"),
 
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,3,11,"2020-02-01",16,1200,"Cargo"),
 
--- insert into tbl_variant
--- (c_variant_name,c_variant_description,c_variant_status,c_model_id,c_color_id,c_fuel_type_id,c_transmission_type_id,
--- c_mileage,c_manufacturing_date,c_price_per_kilometer,c_kilometers_driven,c_number_plate)
--- values
--- ("Manual","Manual desc",1),
--- ("AMT","AMT desc",1),
--- ("Automatic","Automatic desc",1);
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,3,11,"2020-02-01",16,1200,"Cargo"),
+
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,1,15,"2020-01-01",12,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,2,13,"2020-02-01",14,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,3,11,"2020-02-01",16,1200,"Cargo");
 
 
 create table tbl_variant_image(
 c_variant_image_id int NOT NULL AUTO_INCREMENT,
-c_variant_image_view ENUM('exterior', 'interior')  NOT NULL, 
-c_variant_image_description varchar(500) ,
+c_variant_image varchar(500) NOT NULL,
+c_variant_image_view ENUM('EXTERIOR', 'INTERIOR')  NOT NULL, 
+c_variant_image_description varchar(500)  DEFAULT 'Desc',
 c_variant_image_status tinyint(1) NOT NULL DEFAULT '1',
 c_variant_id int NOT NULL,
 PRIMARY KEY (c_variant_image_id),
 FOREIGN KEY (c_variant_id) REFERENCES tbl_variant(c_variant_id)
 );
 
--- tbl_car_image
--- c_id 
--- c_car_id
--- c_view :- ENUM :- TOP / LSIDE / RSIDE / REAR / FRONT / CUSTOM
--- c_image :- blob
--- c_description :- 
+insert into tbl_variant_image
+(c_variant_image,c_variant_image_view,c_variant_image_status,c_variant_id)
+values
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,1),
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,2),
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,3),
+
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,4),
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,5),
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,6),
+
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,7),
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,8),
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,9),
+
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,10),
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,11),
+(".//assets//Dump//Volkswagen//Polo//white.jpg","EXTERIOR",1,12),
+
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,13),
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,14),
+(".//assets//Dump//Volkswagen//Polo//red.jpg","EXTERIOR",1,15),
+
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,16),
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,17),
+(".//assets//Dump//Volkswagen//Polo//silver.jpg","EXTERIOR",1,18);
+
+
+create table tbl_location(
+c_location_id int NOT NULL AUTO_INCREMENT,
+c_location_name varchar(30) NOT NULL, 
+c_location_gps varchar(500)  DEFAULT NULL,
+c_location_state_name varchar(30) NOT NULL, 
+c_location_country_name varchar(30) NOT NULL, 
+c_location_status tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (c_location_id),
+UNIQUE KEY (c_location_name)
+);
+
+insert into tbl_location
+(c_location_name,c_location_state_name,c_location_country_name,c_location_status)
+values
+("Amsterdam","New York","USA",1),
+("New York City","New York","USA",1),
+("Albany","New York","USA",0),
+("Buffalo","New York","USA",0),
+("Geneva","New York","USA",0),
+("Hornell","New York","USA",0),
+("Jamestown","New York","USA",0),
+("Olean","New York","USA",0);
+
+create table tbl_variant_location_history(
+c_variant_location_id int NOT NULL AUTO_INCREMENT,
+c_location_id int NOT NULL,
+c_variant_id int NOT NULL,
+c_is_available tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (c_variant_location_id),
+FOREIGN KEY (c_location_id) REFERENCES tbl_location(c_location_id),
+FOREIGN KEY (c_variant_id) REFERENCES tbl_variant(c_variant_id)
+);
+
+insert into tbl_variant_location_history
+(c_location_id,c_variant_id,c_is_available)
+values
+(1,1,1),(1,2,1),(1,3,1),(1,4,1),(1,5,1),(1,6,1),(1,16,1),(1,17,1),(1,18,1),
+(2,7,1),(2,8,1),(2,9,1),(2,10,1),(2,11,1),(2,12,1),(2,13,1),(2,14,1),(2,15,1);
 
 
 create table tbl_user(
