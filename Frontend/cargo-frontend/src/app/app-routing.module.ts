@@ -4,6 +4,7 @@ import { LoginComponent } from './shared/login/login.component';
 import { SignupComponent } from './shared/signup/signup.component';
 import { BookingPreviewComponent } from './user/booking/booking-preview/booking-preview.component';
 import { BookingSummaryComponent } from './user/booking/booking-summary/booking-summary.component';
+import { CarPageComponent } from './user/car-page/car-page.component';
 import { CartComponent } from './user/cart/cart.component';
 import { HomePageComponent } from './user/home-page/home-page.component';
 import { JourneyDetailsComponent } from './user/journey-details/journey-details.component';
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user/journey-details', component: JourneyDetailsComponent },
   { path: 'user/home', component: HomePageComponent },
+  { path: 'user/car/:carId', component: CarPageComponent },
   { path: 'user/cart', component: CartComponent },
   { path: 'user/booking', component: BookingPreviewComponent },
   { path: 'user/booking-summary', component: BookingSummaryComponent }

@@ -259,5 +259,8 @@ export class HomePageComponent implements OnInit {
     this.getVariants();
   }
 
+  expandCar(item){
+    this.router.navigate(["/user/car/" + item.variantId]); 
+  }
 
 }

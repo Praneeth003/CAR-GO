@@ -10,9 +10,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { UtilsModule } from '../shared/utils/utils/utils.module';
 import { ConstantsModule } from '../shared/constants.module';
+import { CarPageComponent } from './car-page/car-page.component';
 
 @NgModule({
-  declarations: [HomePageComponent, JourneyDetailsComponent],
+  declarations: [HomePageComponent, JourneyDetailsComponent, CarPageComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
