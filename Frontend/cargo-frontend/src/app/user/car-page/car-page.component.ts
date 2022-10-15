@@ -44,4 +44,12 @@ export class CarPageComponent implements OnInit {
       this.errorDisp = true;
     }
   }
+
+  addToCart() {
+    this.router.navigate(["/user/cart"]); 
+  }
+
+  bookNow() {
+    this.router.navigate(["/user/payment"]); 
+  }
 }
