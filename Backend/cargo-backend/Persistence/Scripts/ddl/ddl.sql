@@ -20,7 +20,8 @@ values
 ("Volkswagen","Volkswagen desc",1),
 ("Ford","Ford desc",1),
 ("Chevrolet","Chevrolet desc",1),
-("Honda","Honda desc",1);
+("Honda","Honda desc",1),
+("Kia","Kia desc",1);
 
 
 create table tbl_body_type(
@@ -48,7 +49,8 @@ c_make_id int NOT NULL,
 c_body_type_id int NOT NULL,
 PRIMARY KEY (c_model_id),
 UNIQUE KEY (c_model_name),
-FOREIGN KEY (c_make_id) REFERENCES tbl_make(c_make_id)
+FOREIGN KEY (c_make_id) REFERENCES tbl_make(c_make_id),
+FOREIGN KEY (c_body_type_id) REFERENCES tbl_body_type(c_body_type_id)
 );
 
 insert into tbl_model
@@ -137,29 +139,29 @@ insert into tbl_variant
 (c_variant_name,c_variant_description,c_variant_status,c_model_id,c_color_id,c_fuel_type_id,c_transmission_type_id,c_mileage,
 c_manufacturing_date,c_price_per_kilometer,c_kilometers_driven,c_number_plate)
 values
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,3,11,"2020-02-01",16,1200,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,1,3,11,"2020-02-01",80,1200,"Cargo"),
 
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,3,11,"2020-02-01",16,1200,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,1,3,11,"2020-02-01",80,1200,"Cargo"),
 
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,3,11,"2020-02-01",16,1200,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,1,3,11,"2020-02-01",80,1200,"Cargo"),
 
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,3,11,"2020-02-01",16,1200,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,1,2,3,11,"2020-02-01",80,1200,"Cargo"),
 
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,3,11,"2020-02-01",16,1200,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,2,2,3,11,"2020-02-01",80,1200,"Cargo"),
 
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,1,15,"2020-01-01",12,1000,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,2,13,"2020-02-01",14,1500,"Cargo"),
-("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,3,11,"2020-02-01",16,1200,"Cargo");
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,1,15,"2020-01-01",70,1000,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,2,13,"2020-02-01",75,1500,"Cargo"),
+("Highline 1.2 ","Highline 1.2 desc",1,1,3,2,3,11,"2020-02-01",80,1200,"Cargo");
 
 
 create table tbl_variant_image(
@@ -266,3 +268,163 @@ FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id)
 );
 
 
+insert into tbl_make
+(c_make_name,c_make_description,c_make_status)
+values
+("Kia","Kia desc",1);
+
+insert into tbl_model
+(c_model_name,c_model_description,c_model_status,c_make_id,c_body_type_id)
+values
+("Seltos","Seltos desc",1,4,3),
+("Sonet","Sonet desc",1,4,3);
+
+insert into tbl_variant
+(c_variant_name,c_variant_description,c_variant_status,c_model_id,c_color_id,c_fuel_type_id,c_transmission_type_id,c_mileage,
+c_manufacturing_date,c_price_per_kilometer,c_kilometers_driven,c_number_plate)
+values
+("GTX PLUS","GTX PLUSdesc",1,6,1,1,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,1,1,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,1,1,3,11,"2020-02-01",85,1200,"Cargo"),
+
+("GTX PLUS","GTX PLUSdesc",1,6,2,1,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,2,1,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,2,1,3,11,"2020-02-01",85,1200,"Cargo"),
+
+("GTX PLUS","GTX PLUSdesc",1,6,3,1,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,3,1,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,3,1,3,11,"2020-02-01",85,1200,"Cargo"),
+
+("GTX PLUS","GTX PLUSdesc",1,6,1,2,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,1,2,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,1,2,3,11,"2020-02-01",85,1200,"Cargo"),
+
+("GTX PLUS","GTX PLUSdesc",1,6,2,2,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,2,2,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,2,2,3,11,"2020-02-01",85,1200,"Cargo"),
+
+("GTX PLUS","GTX PLUSdesc",1,6,3,2,1,15,"2020-01-01",75,1000,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,3,2,2,13,"2020-02-01",80,1500,"Cargo"),
+("GTX PLUS","GTX PLUSdesc",1,6,3,2,3,11,"2020-02-01",85,1200,"Cargo");
+
+insert into tbl_variant_image
+(c_variant_image,c_variant_image_view,c_variant_image_status,c_variant_id)
+values
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,19),
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,20),
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,21),
+
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,22),
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,23),
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,24),
+
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,25),
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,26),
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,27),
+
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,28),
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,29),
+(".//assets//Dump//Kia//Seltos//white.jpg","EXTERIOR",1,30),
+
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,31),
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,32),
+(".//assets//Dump//Kia//Seltos//red.jpg","EXTERIOR",1,33),
+
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,34),
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,35),
+(".//assets//Dump//Kia//Seltos//silver.jpg","EXTERIOR",1,36);
+
+insert into tbl_variant_location_history
+(c_location_id,c_variant_id,c_is_available)
+values
+(1,19,1),(1,20,1),(1,21,1),(1,22,1),(1,23,1),(1,24,1),(1,34,1),(1,35,1),(1,36,1),
+(2,25,1),(2,26,1),(2,27,1),(2,28,1),(2,29,1),(2,30,1),(2,31,1),(2,32,1),(2,33,1);
+
+create table tbl_add_on(
+c_add_on_id int NOT NULL AUTO_INCREMENT,
+c_add_on_name varchar(30) NOT NULL, 
+c_add_on_description varchar(500) ,
+c_add_on_type varchar(30) NOT NULL,
+c_add_on_value double NOT NULL,
+PRIMARY KEY (c_add_on_id),
+UNIQUE KEY (c_add_on_name)
+);
+
+insert into tbl_add_on
+(c_add_on_name,c_add_on_description,c_add_on_type,c_add_on_value)
+values
+("Extra Miles","20 % of Extra DIstance at 50% percent of original rate","PERCENTAGE",10),
+("Road Side Assistance","desc","FIXED",1000);
+
+create table tbl_user_profile(
+c_user_profile_id int NOT NULL AUTO_INCREMENT,
+c_user_id int NOT NULL, 
+c_user_profile_name varchar(500) ,
+c_licence_number varchar(30) NOT NULL,
+c_licence_image blob,
+c_is_active tinyint(1) NOT NULL DEFAULT '1',
+c_is_primary tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (c_user_profile_id),
+FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id)
+);
+
+create table tbl_payment_info(
+c_payment_info_id int NOT NULL AUTO_INCREMENT,
+c_user_id int NOT NULL,
+c_payment_method varchar(500), 
+c_is_active tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (c_payment_info_id),
+FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id)
+);
+
+create table tbl_cart(
+c_cart_id int NOT NULL AUTO_INCREMENT,
+c_user_id int NOT NULL, 
+c_variant_id int NOT NULL, 
+c_user_profile_id int NOT NULL,
+c_is_active tinyint(1) NOT NULL DEFAULT '1',
+c_from_date varchar(500),
+c_to_date varchar(500),
+c_pickup_location_id int NOT NULL,
+c_drop_location_id int NOT NULL,
+c_price double,
+PRIMARY KEY (c_cart_id),
+FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id),
+FOREIGN KEY (c_user_profile_id) REFERENCES tbl_user_profile(c_user_profile_id),
+FOREIGN KEY (c_variant_id) REFERENCES tbl_variant(c_variant_id),
+FOREIGN KEY (c_pickup_location_id) REFERENCES tbl_location(c_location_id),
+FOREIGN KEY (c_drop_location_id) REFERENCES tbl_location(c_location_id)
+);
+
+create table tbl_user_cart_add_on(
+c_user_cart_add_on_id int NOT NULL AUTO_INCREMENT,
+c_cart_id int NOT NULL, 
+c_add_on_id int NOT NULL, 
+c_is_active tinyint(1) NOT NULL DEFAULT '1',
+PRIMARY KEY (c_user_cart_add_on_id),
+FOREIGN KEY (c_cart_id) REFERENCES tbl_cart(c_cart_id),
+FOREIGN KEY (c_add_on_id) REFERENCES tbl_add_on(c_add_on_id)
+);
+
+
+create table tbl_booking_info(
+c_booking_info_id int NOT NULL AUTO_INCREMENT,
+c_user_id int NOT NULL,
+c_payment_info_id int NOT NULL,
+c_payment_info_reference_id varchar(500), 
+c_status varchar(500),
+PRIMARY KEY (c_booking_info_id),
+FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id),
+FOREIGN KEY (c_payment_info_id) REFERENCES tbl_payment_info(c_payment_info_id)
+);
+
+
+
+create table tbl_booking_cart_info(
+c_booking_cart_info_id int NOT NULL AUTO_INCREMENT,
+c_cart_id int NOT NULL, 
+c_booking_info_id int NOT NULL,
+PRIMARY KEY (c_booking_cart_info_id),
+FOREIGN KEY (c_cart_id) REFERENCES tbl_cart(c_cart_id),
+FOREIGN KEY (c_booking_info_id) REFERENCES tbl_booking_info(c_booking_info_id)
+);
