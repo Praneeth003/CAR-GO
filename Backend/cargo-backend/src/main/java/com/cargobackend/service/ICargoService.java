@@ -1,5 +1,7 @@
 package com.cargobackend.service;
 
+import com.cargobackend.pojo.dao.cargo.PaymentInfo;
+import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.dao.cargo.Variant;
 
 import com.cargobackend.pojo.request.BodyTypeRequest;
@@ -16,7 +18,9 @@ import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.pojo.response.AddOnResponse;
 
@@ -43,5 +47,13 @@ public interface ICargoService {
 	public LocationResponse getLocation();
 
 	public AddOnResponse getAddOns();
+
+	public UserProfileResponse getUserProfiles(Integer userId);
+
+	public PaymentInfoResponse getPaymentInfo(Integer userId);
+
+	public PaymentInfoResponse addPaymentInfo(PaymentInfo paymentInfo);
+
+	public UserProfileResponse addUserProfile(UserProfile userProfile);
 }
 

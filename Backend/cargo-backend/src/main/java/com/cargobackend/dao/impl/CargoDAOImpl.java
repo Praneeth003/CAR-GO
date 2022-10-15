@@ -23,9 +23,12 @@ import com.cargobackend.pojo.dao.cargo.FuelType;
 import com.cargobackend.pojo.dao.cargo.Location;
 import com.cargobackend.pojo.dao.cargo.Make;
 import com.cargobackend.pojo.dao.cargo.Model;
+import com.cargobackend.pojo.dao.cargo.PaymentInfo;
 import com.cargobackend.pojo.dao.cargo.TransmissionType;
+import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.dao.cargo.Variant;
 import com.cargobackend.pojo.dao.cargo.VariantImage;
+import com.cargobackend.pojo.dao.user.UserDetails;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
@@ -41,10 +44,14 @@ import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserDetailsResponse;
+import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.utils.CommonConstants;
 import com.cargobackend.utils.CommonUtils;
+import com.google.gson.Gson;
 
 @Repository("CargoDAOImpl")
 public class CargoDAOImpl implements ICargoDAO {
@@ -997,5 +1004,267 @@ public class CargoDAOImpl implements ICargoDAO {
 		}
 		return response;
 	}
+	
+	@Override
+	public UserProfileResponse getUserProfiles(Integer userId) {
+		UserProfileResponse response = new UserProfileResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_user_profile_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+			
+			if (userId == null) {
+				cStmt.setNull(i++, Types.NULL);
+			} else {
+				cStmt.setInt(i++, userId);
+			}
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getUserProfiles By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getUserProfiles By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<UserProfile> userProfileList = new ArrayList<>();
+				UserProfile userProfile = null;
+//				Boolean b = false;
+				while (rs.next()) {
+//					b = false;
+//					for (Variant v : variantList) {
+//						if (v.getVariantId() == rs.getInt("c_variant_id")) {
+//							b = true;
+//							break;
+//						}
+//					}
+
+					userProfile = new UserProfile();
+
+					userProfile.setUserProfileId(rs.getInt("c_user_profile_id"));
+					userProfile.setUserId(rs.getInt("c_user_id"));
+					userProfile.setUserProfileName(rs.getString("c_user_profile_name"));
+					userProfile.setLicenceNumber(rs.getString("c_licence_number"));
+					userProfile.setLicenceImage(rs.getBlob("c_licence_image"));
+					userProfile.setIsActive(rs.getBoolean("c_is_active"));
+					userProfile.setIsPrimary(rs.getBoolean("c_is_primary"));
+
+					userProfileList.add(userProfile);
+
+				}
+				response.setUserProfileList(userProfileList);
+				response.setSuccessResponse();
+				System.out.println("In getUserProfiles response:" + userProfileList);
+			} else {
+				System.out.println("In getUserProfiles Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In AddOnResponse e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	@Override
+	public PaymentInfoResponse getPaymentInfo(Integer userId) {
+		PaymentInfoResponse response = new PaymentInfoResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_payment_info_v1dot0";
+		Gson gson = new Gson();
+		final String procedureCall = "{call " + procedureName + "(?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+			
+			if (userId == null) {
+				cStmt.setNull(i++, Types.NULL);
+			} else {
+				cStmt.setInt(i++, userId);
+			}
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<PaymentInfo> paymentInfoList = new ArrayList<>();
+				PaymentInfo paymentInfo = null;
+//				Boolean b = false;
+				while (rs.next()) {
+//					b = false;
+//					for (Variant v : variantList) {
+//						if (v.getVariantId() == rs.getInt("c_variant_id")) {
+//							b = true;
+//							break;
+//						}
+//					}
+
+					paymentInfo = new PaymentInfo();
+					
+					paymentInfo.setPaymentInfoId(rs.getInt("c_payment_info_id"));
+					paymentInfo.setUserId(rs.getInt("c_user_id"));
+					paymentInfo.setPaymentMethodInfo(gson.fromJson(rs.getString("c_payment_method_info"), CardInfo.class));
+					paymentInfo.setIsActive(rs.getBoolean("c_is_active"));
+
+					paymentInfoList.add(paymentInfo);
+
+				}
+				response.setPaymentInfoList(paymentInfoList);
+				response.setSuccessResponse();
+				System.out.println("In AddOnResponse response:" + paymentInfoList);
+			} else {
+				System.out.println("In AddOnResponse Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In AddOnResponse e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	 @Override
+		public PaymentInfoResponse addPaymentInfo(PaymentInfo paymentInfo) {
+		 	PaymentInfoResponse paymentInfoResponse = new PaymentInfoResponse();
+	    	paymentInfoResponse.setFailedResponse();
+	    	
+			System.out.println("In addPaymentInfo paymentInfo "+paymentInfo);
+		    Connection connection = null;
+	        CallableStatement cStmt = null;
+	        ResultSet rs = null;
+	        String procedureName = "proc_create_payment_info_v1dot0";
+	        final String procedureCall = "{call " + procedureName + "(?,?,?,?,?)}";
+			Gson gson = new Gson();
+	        try {
+	            connection = jdbcTemplate.getDataSource().getConnection();
+	            cStmt = connection.prepareCall(procedureCall);
+	            
+	            int i=1;
+	            /* input parameters start */     
+	            cStmt.setInt(i++,paymentInfo.getUserId());
+	            if(paymentInfo.getPaymentMethodInfo() == null) {
+	            	paymentInfoResponse.setErrorCode("400");
+	            	paymentInfoResponse.setErrorDescription("Payment Details Can't Be Empty");
+	            	return paymentInfoResponse;
+	            }
+	            cStmt.setString(i++,gson.toJson(paymentInfo.getPaymentMethodInfo()));
+	            if(paymentInfo.getIsActive() == null) {
+	            	paymentInfo.setIsActive(true);
+	            }
+	            cStmt.setBoolean(i++,paymentInfo.getIsActive());
+	            /* input parameters start */  
+	            
+	            /* register output parameters start */
+	            cStmt.registerOutParameter(i++, Types.INTEGER);
+	            cStmt.registerOutParameter(i++, Types.VARCHAR);
+	            /* register output parameters end */
+	            
+	            System.out.println("In addPaymentInfo Calling DB procedure cStmt Before{}"+ cStmt);
+	            rs = cStmt.executeQuery();
+	            System.out.println("In addPaymentInfo Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
+	            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+	            	rs.next();
+	            	paymentInfo.setPaymentInfoId(rs.getInt(1));
+	            	List<PaymentInfo> paymentList = new ArrayList<>();
+	            	paymentList.add(paymentInfo);
+	            	paymentInfoResponse.setPaymentInfoList(paymentList);
+	            	paymentInfoResponse.setSuccessResponse();
+	            } else {
+	            	System.out.println("In addPaymentInfo paymentInfoResponse: Else cStmt.getInt(i-2) "+ cStmt.getInt(i-2));
+	            	System.out.println("In addPaymentInfo paymentInfoResponse: Else cStmt.getInt(i-1) "+ cStmt.getInt(i-1));
+	            	paymentInfoResponse.setErrorId(cStmt.getInt(i-2));
+	            	paymentInfoResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+	            }
+	        } catch (Exception e) {
+	        	 System.out.println("In addPaymentInfo e :"+ e);
+	        } finally {
+	            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+	        }
+	     	System.out.println("In addUserProfile paymentInfoResponse:"+ paymentInfoResponse);
+			return paymentInfoResponse;
+
+		}
+
+	 @Override
+		public UserProfileResponse addUserProfile(UserProfile userProfile) {
+		 	UserProfileResponse userProfileResponse = new UserProfileResponse();
+	    	userProfileResponse.setFailedResponse();
+	    	
+			System.out.println("In addUserProfile userProfile "+userProfile);
+		    Connection connection = null;
+	        CallableStatement cStmt = null;
+	        ResultSet rs = null;
+	        String procedureName = "proc_create_user_profile_v1dot0";
+	        final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?,?)}";
+	        try {
+	            connection = jdbcTemplate.getDataSource().getConnection();
+	            cStmt = connection.prepareCall(procedureCall);
+	            
+	            int i=1;
+	            /* input parameters start */     
+	            cStmt.setInt(i++,userProfile.getUserId());
+	            cStmt.setString(i++,userProfile.getUserProfileName());
+	            cStmt.setString(i++,userProfile.getLicenceNumber());
+	            cStmt.setBlob(i++,userProfile.getLicenceImage());
+	            if(userProfile.getIsActive() == null) {
+	            	userProfile.setIsActive(true);
+	            }
+	            cStmt.setBoolean(i++,userProfile.getIsActive());
+	            if(userProfile.getIsPrimary() == null) {
+	            	userProfile.setIsPrimary(false);
+	            }
+	            cStmt.setBoolean(i++,userProfile.getIsPrimary());
+	            /* input parameters start */  
+	            
+	            /* register output parameters start */
+	            cStmt.registerOutParameter(i++, Types.INTEGER);
+	            cStmt.registerOutParameter(i++, Types.VARCHAR);
+	            /* register output parameters end */
+	            
+	            System.out.println("In addUserProfile Calling DB procedure cStmt Before{}"+ cStmt);
+	            rs = cStmt.executeQuery();
+	            System.out.println("In addUserProfile Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
+	            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+	            	rs.next();
+	            	userProfile.setUserProfileId(rs.getInt(1));
+	            	List<UserProfile> userProfileList = new ArrayList<>();
+	            	userProfileList.add(userProfile);
+	            	userProfileResponse.setUserProfileList(userProfileList);
+	            	userProfileResponse.setSuccessResponse();
+	            } else {
+	            	System.out.println("In addUserProfile userProfileResponse: Else cStmt.getInt(i-2) "+ cStmt.getInt(i-2));
+	            	System.out.println("In addUserProfile userProfileResponse: Else cStmt.getInt(i-1) "+ cStmt.getInt(i-1));
+	            	userProfileResponse.setErrorId(cStmt.getInt(i-2));
+	            	userProfileResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+	            }
+	        } catch (Exception e) {
+	        	 System.out.println("In addUserProfile e :"+ e);
+	        } finally {
+	            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+	        }
+	     	System.out.println("In addUserProfile userProfileResponse:"+ userProfileResponse);
+			return userProfileResponse;
+
+		}
 
 }

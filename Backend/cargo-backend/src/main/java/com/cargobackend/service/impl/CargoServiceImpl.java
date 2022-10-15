@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 
 import com.cargobackend.dao.ICargoDAO;
+import com.cargobackend.pojo.dao.cargo.PaymentInfo;
+import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
@@ -19,7 +21,9 @@ import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.service.ICargoService;
 
@@ -108,5 +112,30 @@ public class CargoServiceImpl implements ICargoService{
 		// TODO Auto-generated method stub
 		return cargoDAO.getAddOns();
 	}
+	
+	@Override
+	public UserProfileResponse getUserProfiles(Integer userId) {
+		// TODO Auto-generated method stub
+		return cargoDAO.getUserProfiles(userId);
+	}
+	
+	@Override
+	public PaymentInfoResponse getPaymentInfo(Integer userId) {
+		// TODO Auto-generated method stub
+		return cargoDAO.getPaymentInfo(userId);
+	}
+	
+	@Override
+	public PaymentInfoResponse addPaymentInfo(PaymentInfo paymentInfo ) {
+		// TODO Auto-generated method stub
+		return cargoDAO.addPaymentInfo(paymentInfo);
+	}
+	
+	@Override
+	public UserProfileResponse addUserProfile(UserProfile userProfile ) {
+		// TODO Auto-generated method stub
+		return cargoDAO.addUserProfile(userProfile);
+	}
+	
 
 }

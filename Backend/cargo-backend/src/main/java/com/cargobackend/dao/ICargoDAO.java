@@ -1,5 +1,7 @@
 package com.cargobackend.dao;
 
+import com.cargobackend.pojo.dao.cargo.PaymentInfo;
+import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.dao.cargo.Variant;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
@@ -16,7 +18,9 @@ import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 
 public interface ICargoDAO {
@@ -42,4 +46,12 @@ public interface ICargoDAO {
 	public LocationResponse getLocation();
 
 	public AddOnResponse getAddOns();
+
+	UserProfileResponse getUserProfiles(Integer userId);
+
+	PaymentInfoResponse getPaymentInfo(Integer userId);
+
+	public PaymentInfoResponse addPaymentInfo(PaymentInfo paymentInfo);
+
+	public UserProfileResponse addUserProfile(UserProfile userProfile);
 }

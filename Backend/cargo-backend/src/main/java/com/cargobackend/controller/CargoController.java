@@ -26,10 +26,14 @@ import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
+import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
 import com.cargobackend.pojo.response.UserDetailsResponse;
+import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.service.ICargoService;
+import com.cargobackend.pojo.dao.cargo.PaymentInfo;
+import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.dao.cargo.Variant;
 
 @Controller
@@ -123,5 +127,32 @@ public class CargoController {
     	return cargoService.getAddOns();
     }
     
+    @GetMapping(value = {"/user_profile/{userId}"})
+    @ResponseBody
+    public UserProfileResponse getUserProfiles(@PathVariable Integer userId) {
+    	System.out.println("\n CargoController  getUserProfiles "+userId);
+    	return cargoService.getUserProfiles(userId);
+    }
+    
+    @GetMapping(value = {"/payment_info/{userId}"})
+    @ResponseBody
+    public PaymentInfoResponse getPaymentInfo(@PathVariable Integer userId) {
+    	System.out.println("\n CargoController  getPaymentInfo "+userId);
+    	return cargoService.getPaymentInfo(userId);
+    }
+    
+    @PostMapping(value = {"/payment_info"})
+    @ResponseBody
+    public PaymentInfoResponse addPaymentInfo(@RequestBody PaymentInfo paymentInfo) {
+    	System.out.println("\n CargoController  addPaymentInfo "+paymentInfo);
+    	return cargoService.addPaymentInfo(paymentInfo);
+    }
+    
+    @PostMapping(value = {"/user_profile"})
+    @ResponseBody
+    public UserProfileResponse addUserProfile(@RequestBody UserProfile userProfile) {
+    	System.out.println("\n CargoController  addUserProfile "+userProfile);
+    	return cargoService.addUserProfile(userProfile);
+    }
 
 }
