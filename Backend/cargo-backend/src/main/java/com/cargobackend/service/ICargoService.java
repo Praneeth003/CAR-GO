@@ -1,5 +1,7 @@
 package com.cargobackend.service;
 
+import com.cargobackend.pojo.dao.cargo.Variant;
+
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
@@ -16,6 +18,7 @@ import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
 import com.cargobackend.pojo.response.VariantResponse;
+import com.cargobackend.pojo.response.AddOnResponse;
 
 public interface ICargoService {
 
@@ -35,5 +38,10 @@ public interface ICargoService {
 	
 	public VariantResponse getVariant(VariantRequest variantRequest);
 	
+	public VariantResponse getVariantById(Integer variantId);
+	
 	public LocationResponse getLocation();
+
+	public AddOnResponse getAddOns();
 }
+

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cargobackend.pojo.dao.user.UserDetails;
@@ -17,6 +18,7 @@ import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
+import com.cargobackend.pojo.response.AddOnResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
@@ -28,6 +30,7 @@ import com.cargobackend.pojo.response.TransmissionTypeResponse;
 import com.cargobackend.pojo.response.UserDetailsResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.service.ICargoService;
+import com.cargobackend.pojo.dao.cargo.Variant;
 
 @Controller
 @CrossOrigin(origins = "*")
@@ -104,6 +107,20 @@ public class CargoController {
     public VariantResponse getVariant(@RequestBody VariantRequest variantRequest) {
     	System.out.println("\n CargoController  getVariant "+variantRequest);
     	return cargoService.getVariant(variantRequest);
+    }
+    
+    @GetMapping(value = {"/variant_by_id/{id}"})
+    @ResponseBody
+    public VariantResponse getVariantById(@PathVariable Integer id) {
+    	System.out.println("\n CargoController  getVariantById "+id);
+    	return cargoService.getVariantById(id);
+    }
+    
+    @GetMapping(value = {"/add_on"})
+    @ResponseBody
+    public AddOnResponse getAddOns() {
+    	System.out.println("\n CargoController  getAddOns ");
+    	return cargoService.getAddOns();
     }
     
 

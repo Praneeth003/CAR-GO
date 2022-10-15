@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.cargobackend.dao.ICargoDAO;
+import com.cargobackend.pojo.dao.cargo.AddOn;
 import com.cargobackend.pojo.dao.cargo.BodyType;
 import com.cargobackend.pojo.dao.cargo.CarMake;
 import com.cargobackend.pojo.dao.cargo.Color;
@@ -32,6 +33,7 @@ import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
+import com.cargobackend.pojo.response.AddOnResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
@@ -690,7 +692,7 @@ public class CargoDAOImpl implements ICargoDAO {
 					variant.setVariantStatus(rs.getBoolean("c_variant_status"));
 					variant.setVariantMileage(rs.getLong("c_mileage"));
 					variant.setVariantManufacturingDate(rs.getDate("c_manufacturing_date"));
-					variant.setVariantPricePerKm(rs.getLong("c_kilometers_driven"));
+					variant.setVariantPricePerKm(rs.getLong("c_price_per_kilometer"));
 					variant.setVaraintKilometersDriven(rs.getLong("c_kilometers_driven"));
 					variant.setVaraintNumberPlate(rs.getString("c_number_plate"));
 
@@ -741,7 +743,7 @@ public class CargoDAOImpl implements ICargoDAO {
 				}
 				response.setVariantList(variantList);
 				response.setSuccessResponse();
-				System.out.println("In getVariant response:" + response);
+//				System.out.println("In getVariant response:" + response);
 			} else {
 				System.out.println("In getVariant Error in proc :{}" + cStmt.getInt(i - 2));
 				response.setErrorId(cStmt.getInt(i - 2));
@@ -799,6 +801,197 @@ public class CargoDAOImpl implements ICargoDAO {
 			}
 		} catch (Exception e) {
 			System.out.println("In getLocation e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	@Override
+	public VariantResponse getVariantById(Integer variantId) {
+		VariantResponse response = new VariantResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_variant_by_id_v1dot0";
+		Variant variant = null;
+		final String procedureCall = "{call " + procedureName + "(?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			if (variantId == null) {
+				cStmt.setNull(i++, Types.NULL);
+			} else {
+				cStmt.setInt(i++, variantId);
+			}
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getVariant By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getVariant By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<Variant> variantList = new ArrayList<>();
+				Make make = null;
+				Model model = null;
+				BodyType bodyType = null;
+				Color color = null;
+				TransmissionType transmissionType = null;
+				FuelType fuelType = null;
+				VariantImage variantImage = null;
+//				Boolean b = false;
+				while (rs.next()) {
+//					b = false;
+//					for (Variant v : variantList) {
+//						if (v.getVariantId() == rs.getInt("c_variant_id")) {
+//							b = true;
+//							break;
+//						}
+//					}
+
+					variant = new Variant();
+					make = new Make();
+					model = new Model();
+					bodyType = new BodyType();
+					fuelType = new FuelType();
+					color = new Color();
+					variantImage = new VariantImage();
+					transmissionType = new TransmissionType();
+
+					variant.setVariantId(rs.getInt("c_variant_id"));
+					variant.setVariantName(rs.getString("c_variant_name"));
+					variant.setVariantDescription(rs.getString("c_variant_description"));
+					variant.setVariantStatus(rs.getBoolean("c_variant_status"));
+					variant.setVariantMileage(rs.getLong("c_mileage"));
+					variant.setVariantManufacturingDate(rs.getDate("c_manufacturing_date"));
+					variant.setVariantPricePerKm(rs.getLong("c_price_per_kilometer"));
+					variant.setVaraintKilometersDriven(rs.getLong("c_kilometers_driven"));
+					variant.setVaraintNumberPlate(rs.getString("c_number_plate"));
+
+					make.setMakeId(rs.getInt("c_make_id"));
+					make.setMakeName(rs.getString("c_make_name"));
+					make.setMakeDescription(rs.getString("c_make_description"));
+					make.setMakeStatus(rs.getBoolean("c_make_status"));
+
+					model.setModelId(rs.getInt("c_model_id"));
+					model.setModelName(rs.getString("c_model_name"));
+					model.setModelDescription(rs.getString("c_model_description"));
+					model.setModelStatus(rs.getBoolean("c_model_status"));
+					model.setMake(make);
+
+					bodyType.setBodyTypeId(rs.getInt("c_body_type_id"));
+					bodyType.setBodyTypeName(rs.getString("c_body_type_name"));
+					bodyType.setBodyTypeDescription(rs.getString("c_body_type_description"));
+					bodyType.setBodyTypeStatus(rs.getBoolean("c_body_type_status"));
+					model.setBodyType(bodyType);
+					variant.setModel(model);
+
+					fuelType.setFuelTypeId(rs.getInt("c_fuel_type_id"));
+					fuelType.setFuelTypeName(rs.getString("c_fuel_type_name"));
+					fuelType.setFuelTypeDescription(rs.getString("c_fuel_type_description"));
+					fuelType.setFuelTypeStatus(rs.getBoolean("c_fuel_type_status"));
+					variant.setFuelType(fuelType);
+
+					transmissionType.setTransmissionTypeId(rs.getInt("c_transmission_type_id"));
+					transmissionType.setTransmissionTypeName(rs.getString("c_transmission_type_name"));
+					transmissionType.setTransmissionTypeDescription(rs.getString("c_transmission_type_description"));
+					transmissionType.setTransmissionTypeStatus(rs.getBoolean("c_transmission_type_status"));
+					variant.setTransmissionType(transmissionType);
+
+					color.setColorId(rs.getInt("c_color_id"));
+					color.setColorName(rs.getString("c_color_name"));
+					color.setColorDescription(rs.getString("c_color_description"));
+					variant.setColor(color);
+
+					variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+					variantImage.setVariantImageData(rs.getString("c_variant_image"));
+					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+					variant.setVariantImage(variantImage);
+
+					variantList.add(variant);
+
+				}
+				response.setVariantList(variantList);
+				response.setSuccessResponse();
+				System.out.println("In getVariantById response:" + variantList);
+			} else {
+				System.out.println("In getVariantById Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getVariantById e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	@Override
+	public AddOnResponse getAddOns() {
+		AddOnResponse response = new AddOnResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_add_on_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<AddOn> addOnList = new ArrayList<>();
+				AddOn addOn = null;
+//				Boolean b = false;
+				while (rs.next()) {
+//					b = false;
+//					for (Variant v : variantList) {
+//						if (v.getVariantId() == rs.getInt("c_variant_id")) {
+//							b = true;
+//							break;
+//						}
+//					}
+
+					addOn = new AddOn();
+
+					addOn.setAddOnId(rs.getInt("c_add_on_id"));
+					addOn.setAddOnName(rs.getString("c_add_on_name"));
+					addOn.setAddOnDescription(rs.getString("c_add_on_description"));
+					addOn.setAddOnComputeStrategy(rs.getString("c_add_on_type"));
+					addOn.setAddOnValue(rs.getDouble("c_add_on_value"));
+
+					addOnList.add(addOn);
+
+				}
+				response.setAddOnList(addOnList);
+				response.setSuccessResponse();
+				System.out.println("In AddOnResponse response:" + addOnList);
+			} else {
+				System.out.println("In AddOnResponse Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In AddOnResponse e :" + e);
 		} finally {
 			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
 		}

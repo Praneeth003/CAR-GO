@@ -1,5 +1,6 @@
 package com.cargobackend.dao;
 
+import com.cargobackend.pojo.dao.cargo.Variant;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
@@ -7,6 +8,7 @@ import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
+import com.cargobackend.pojo.response.AddOnResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
@@ -35,5 +37,9 @@ public interface ICargoDAO {
 	
 	public VariantResponse getVariant(VariantRequest variantRequest);
 	
+	public VariantResponse getVariantById(Integer variantId);
+	
 	public LocationResponse getLocation();
+
+	public AddOnResponse getAddOns();
 }

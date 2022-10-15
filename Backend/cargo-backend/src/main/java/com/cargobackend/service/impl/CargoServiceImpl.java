@@ -2,6 +2,7 @@ package com.cargobackend.service.impl;
 
 import org.springframework.stereotype.Service;
 
+
 import com.cargobackend.dao.ICargoDAO;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
@@ -10,6 +11,7 @@ import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
+import com.cargobackend.pojo.response.AddOnResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
@@ -87,12 +89,24 @@ public class CargoServiceImpl implements ICargoService{
 		// TODO Auto-generated method stub
 		return cargoDAO.getVariant(variantRequest);
 	}
+	
+	@Override
+	public VariantResponse getVariantById(Integer variantId) {
+		// TODO Auto-generated method stub
+		return cargoDAO.getVariantById(variantId);
+	}
 
 
 	@Override
 	public LocationResponse getLocation() {
 		// TODO Auto-generated method stub
 		return cargoDAO.getLocation();
+	}
+	
+	@Override
+	public AddOnResponse getAddOns() {
+		// TODO Auto-generated method stub
+		return cargoDAO.getAddOns();
 	}
 
 }
