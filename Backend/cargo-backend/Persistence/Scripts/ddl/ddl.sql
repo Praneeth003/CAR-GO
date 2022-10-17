@@ -371,7 +371,7 @@ FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id)
 create table tbl_payment_info(
 c_payment_info_id int NOT NULL AUTO_INCREMENT,
 c_user_id int NOT NULL,
-c_payment_method varchar(500), 
+c_payment_method_info text DEFAULT NULL, 
 c_is_active tinyint(1) NOT NULL DEFAULT '1',
 PRIMARY KEY (c_payment_info_id),
 FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id)
@@ -381,7 +381,6 @@ create table tbl_cart(
 c_cart_id int NOT NULL AUTO_INCREMENT,
 c_user_id int NOT NULL, 
 c_variant_id int NOT NULL, 
-c_user_profile_id int NOT NULL,
 c_is_active tinyint(1) NOT NULL DEFAULT '1',
 c_from_date varchar(500),
 c_to_date varchar(500),
@@ -390,7 +389,6 @@ c_drop_location_id int NOT NULL,
 c_price double,
 PRIMARY KEY (c_cart_id),
 FOREIGN KEY (c_user_id) REFERENCES tbl_user(c_user_id),
-FOREIGN KEY (c_user_profile_id) REFERENCES tbl_user_profile(c_user_profile_id),
 FOREIGN KEY (c_variant_id) REFERENCES tbl_variant(c_variant_id),
 FOREIGN KEY (c_pickup_location_id) REFERENCES tbl_location(c_location_id),
 FOREIGN KEY (c_drop_location_id) REFERENCES tbl_location(c_location_id)
@@ -423,8 +421,26 @@ FOREIGN KEY (c_payment_info_id) REFERENCES tbl_payment_info(c_payment_info_id)
 create table tbl_booking_cart_info(
 c_booking_cart_info_id int NOT NULL AUTO_INCREMENT,
 c_cart_id int NOT NULL, 
+c_user_profile_id int NOT NULL,
 c_booking_info_id int NOT NULL,
 PRIMARY KEY (c_booking_cart_info_id),
 FOREIGN KEY (c_cart_id) REFERENCES tbl_cart(c_cart_id),
+FOREIGN KEY (c_user_profile_id) REFERENCES tbl_user_profile(c_user_profile_id),
 FOREIGN KEY (c_booking_info_id) REFERENCES tbl_booking_info(c_booking_info_id)
 );
+
+SET GLOBAL log_bin_trust_function_creators = 1;
+
+CREATE FUNCTION SPLIT_STR(
+  x VARCHAR(255),
+  delim VARCHAR(12),
+  pos INT
+)
+RETURNS VARCHAR(255)
+RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(x, delim, pos),
+       LENGTH(SUBSTRING_INDEX(x, delim, pos -1)) + 1),
+       delim, '');
+
+ALTER TABLE tbl_cart Modify column c_from_date TimeStamp NOT NULL;   
+
+ALTER TABLE tbl_cart Modify column c_to_date TimeStamp NOT NULL;   
