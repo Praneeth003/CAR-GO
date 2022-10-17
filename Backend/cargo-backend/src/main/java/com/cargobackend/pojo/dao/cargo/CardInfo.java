@@ -5,7 +5,16 @@ public class CardInfo {
 	String cardExpMonth;
 	String cardExpYear;
 	String cvv;
+	String nameOnCard;
 	
+	public String getNameOnCard() {
+		return nameOnCard;
+	}
+
+	public void setNameOnCard(String nameOnCard) {
+		this.nameOnCard = nameOnCard;
+	}
+
 	public String getCardNumber() {
 		return cardNumber;
 	}
@@ -41,7 +50,7 @@ public class CardInfo {
 	@Override
 	public String toString() {
 		return "CardInfo [cardNumber=" + cardNumber + ", cardExpMonth=" + cardExpMonth + ", cardExpYear=" + cardExpYear
-				+ ", cvv=" + cvv + "]";
+				+ ", cvv=" + cvv + ", nameOnCard=" + nameOnCard + "]";
 	}
 	
 }

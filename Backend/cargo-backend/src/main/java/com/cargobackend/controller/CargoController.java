@@ -1,5 +1,15 @@
 package com.cargobackend.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,17 +21,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cargobackend.pojo.dao.user.UserDetails;
+import com.cargobackend.pojo.request.AddToCartRequest;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
+import com.cargobackend.pojo.request.CreateBookingRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
 import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
 import com.cargobackend.pojo.response.AddOnResponse;
+import com.cargobackend.pojo.response.AddToCartResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
+import com.cargobackend.pojo.response.CreateBookingResponse;
 import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
@@ -153,6 +167,19 @@ public class CargoController {
     public UserProfileResponse addUserProfile(@RequestBody UserProfile userProfile) {
     	System.out.println("\n CargoController  addUserProfile "+userProfile);
     	return cargoService.addUserProfile(userProfile);
+    }
+@PostMapping(value = {"/add_to_cart"})
+    @ResponseBody
+    public AddToCartResponse addToCart(@RequestBody AddToCartRequest addToCartRequest) {
+    	System.out.println("\n CargoController  addToCart "+addToCartRequest);
+    	return cargoService.addToCart(addToCartRequest);
+    }
+
+        return ResponseEntity.ok()
+//                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 
 }

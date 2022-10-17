@@ -6,7 +6,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -17,7 +19,10 @@ import org.springframework.stereotype.Repository;
 import com.cargobackend.dao.ICargoDAO;
 import com.cargobackend.pojo.dao.cargo.AddOn;
 import com.cargobackend.pojo.dao.cargo.BodyType;
+import com.cargobackend.pojo.dao.cargo.BookingInfo;
 import com.cargobackend.pojo.dao.cargo.CarMake;
+import com.cargobackend.pojo.dao.cargo.CardInfo;
+import com.cargobackend.pojo.dao.cargo.CartEntry;
 import com.cargobackend.pojo.dao.cargo.Color;
 import com.cargobackend.pojo.dao.cargo.FuelType;
 import com.cargobackend.pojo.dao.cargo.Location;
@@ -28,18 +33,23 @@ import com.cargobackend.pojo.dao.cargo.TransmissionType;
 import com.cargobackend.pojo.dao.cargo.UserProfile;
 import com.cargobackend.pojo.dao.cargo.Variant;
 import com.cargobackend.pojo.dao.cargo.VariantImage;
+import com.cargobackend.pojo.dao.cargo.BookingInfo.BookingStatus;
 import com.cargobackend.pojo.dao.user.UserDetails;
+import com.cargobackend.pojo.request.AddToCartRequest;
 import com.cargobackend.pojo.request.BodyTypeRequest;
 import com.cargobackend.pojo.request.ColorRequest;
+import com.cargobackend.pojo.request.CreateBookingRequest;
 import com.cargobackend.pojo.request.FuelTypeRequest;
 import com.cargobackend.pojo.request.MakeRequest;
 import com.cargobackend.pojo.request.ModelRequest;
 import com.cargobackend.pojo.request.TransmissionTypeRequest;
 import com.cargobackend.pojo.request.VariantRequest;
 import com.cargobackend.pojo.response.AddOnResponse;
+import com.cargobackend.pojo.response.AddToCartResponse;
 import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.CarMakeResponse;
 import com.cargobackend.pojo.response.ColorResponse;
+import com.cargobackend.pojo.response.CreateBookingResponse;
 import com.cargobackend.pojo.response.FuelTypeResponse;
 import com.cargobackend.pojo.response.LocationResponse;
 import com.cargobackend.pojo.response.MakeResponse;
@@ -49,6 +59,7 @@ import com.cargobackend.pojo.response.TransmissionTypeResponse;
 import com.cargobackend.pojo.response.UserDetailsResponse;
 import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
+import com.cargobackend.pojo.response.common.BaseResponse;
 import com.cargobackend.utils.CommonConstants;
 import com.cargobackend.utils.CommonUtils;
 import com.google.gson.Gson;
@@ -541,7 +552,7 @@ public class CargoDAOImpl implements ICargoDAO {
 		Connection connection = null;
 		CallableStatement cStmt = null;
 		ResultSet rs = null;
-		String procedureName = "proc_get_variant_v1dot0";
+		String procedureName = "proc_get_variant_v1dot1";
 		final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 		try {
 			connection = jdbcTemplate.getDataSource().getConnection();
@@ -549,8 +560,9 @@ public class CargoDAOImpl implements ICargoDAO {
 			/* input parameters */
 			int i = 1;
 			List<Integer> idList = null;
-			cStmt.setNull(i++, Types.NULL);
-			cStmt.setNull(i++, Types.NULL);
+			
+            cStmt.setTimestamp(i++, variantRequest.getFromDate());
+			cStmt.setTimestamp(i++, variantRequest.getToDate());
 
 			if (variantRequest == null || variantRequest.getFromLocation() == null
 					|| variantRequest.getFromLocation().getLocationId() == null) {
@@ -683,7 +695,6 @@ public class CargoDAOImpl implements ICargoDAO {
 //							break;
 //						}
 //					}
-
 					variant = new Variant();
 					make = new Make();
 					model = new Model();
@@ -692,7 +703,6 @@ public class CargoDAOImpl implements ICargoDAO {
 					color = new Color();
 					variantImage = new VariantImage();
 					transmissionType = new TransmissionType();
-
 					variant.setVariantId(rs.getInt("c_variant_id"));
 					variant.setVariantName(rs.getString("c_variant_name"));
 					variant.setVariantDescription(rs.getString("c_variant_description"));
@@ -930,6 +940,7 @@ public class CargoDAOImpl implements ICargoDAO {
 				System.out.println("In getVariantById response:" + variantList);
 			} else {
 				System.out.println("In getVariantById Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In getVariant Error in proc :{}" + cStmt.getInt(i - 1));
 				response.setErrorId(cStmt.getInt(i - 2));
 				response.setErrorDescription(
 						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
@@ -944,23 +955,35 @@ public class CargoDAOImpl implements ICargoDAO {
 	
 	@Override
 	public AddOnResponse getAddOns() {
+		return getAddOns(new ArrayList<Integer>());
+	}
+	
+	@Override
+	public AddOnResponse getAddOns(List<Integer> addOnIds) {
 		AddOnResponse response = new AddOnResponse();
 		response.setFailedResponse();
 		Connection connection = null;
 		CallableStatement cStmt = null;
 		ResultSet rs = null;
 		String procedureName = "proc_get_add_on_v1dot0";
-		final String procedureCall = "{call " + procedureName + "(?,?)}";
+		final String procedureCall = "{call " + procedureName + "(?,?,?)}";
 		try {
 			connection = jdbcTemplate.getDataSource().getConnection();
 			cStmt = connection.prepareCall(procedureCall);
 			/* input parameters */
 			int i = 1;
-
+			
+			if (addOnIds == null || addOnIds.isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(addOnIds, CommonConstants.DELIMITER));
+			}
 
 			/* register output parameters */
 			cStmt.registerOutParameter(i++, Types.INTEGER);
 			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			
+			
 			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
 			rs = cStmt.executeQuery();
 			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
@@ -1266,5 +1289,700 @@ public class CargoDAOImpl implements ICargoDAO {
 			return userProfileResponse;
 
 		}
+	 
+	 @Override
+	 public AddToCartResponse addToCart(AddToCartRequest addToCartRequest) {
+		AddToCartResponse response = new AddToCartResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		ResultSet nRs = null;
+		String procedureName = "proc_create_cart_entry_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?,?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			cStmt.setInt(i++, addToCartRequest.getUserId());
+			cStmt.setInt(i++, addToCartRequest.getVariantId());
+            cStmt.setBoolean(i++,true);
+            cStmt.setTimestamp(i++, addToCartRequest.getFromDate());
+			cStmt.setTimestamp(i++, addToCartRequest.getToDate());
+			cStmt.setInt(i++, addToCartRequest.getPickupLocationId());
+			cStmt.setInt(i++, addToCartRequest.getDropLocationId());
+			cStmt.setDouble(i++, addToCartRequest.getPrice());
+			List<Integer> addOnIds = addToCartRequest.getAddOnIds();
+			
+			if (addOnIds == null || addOnIds.isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(addOnIds, CommonConstants.DELIMITER));
+			}
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getVariant Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getVariant Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<Variant> variantList = new ArrayList<>();
+				CartEntry cartEntry = new CartEntry();
+				Variant variant = null;
+				Make make = null;
+				Model model = null;
+				BodyType bodyType = null;
+				Color color = null;
+				TransmissionType transmissionType = null;
+				FuelType fuelType = null;
+				VariantImage variantImage = null;
+				Location pickupLocation = null;
+				Location dropLocation = null;
+//					Boolean b = false;
+				while (rs.next()) {
+//						b = false;
+//						for (Variant v : variantList) {
+//							if (v.getVariantId() == rs.getInt("c_variant_id")) {
+//								b = true;
+//								break;
+//							}
+//						}
+
+					cartEntry = new CartEntry();
+					variant = new Variant();
+					make = new Make();
+					model = new Model();
+					bodyType = new BodyType();
+					fuelType = new FuelType();
+					color = new Color();
+					variantImage = new VariantImage();
+					transmissionType = new TransmissionType();
+					pickupLocation = new Location();
+					dropLocation = new Location();
+
+					variant.setVariantId(rs.getInt("c_variant_id"));
+					variant.setVariantName(rs.getString("c_variant_name"));
+					variant.setVariantDescription(rs.getString("c_variant_description"));
+					variant.setVariantStatus(rs.getBoolean("c_variant_status"));
+					variant.setVariantMileage(rs.getLong("c_mileage"));
+					variant.setVariantManufacturingDate(rs.getDate("c_manufacturing_date"));
+					variant.setVariantPricePerKm(rs.getLong("c_price_per_kilometer"));
+					variant.setVaraintKilometersDriven(rs.getLong("c_kilometers_driven"));
+					variant.setVaraintNumberPlate(rs.getString("c_number_plate"));
+
+					make.setMakeId(rs.getInt("c_make_id"));
+					make.setMakeName(rs.getString("c_make_name"));
+					make.setMakeDescription(rs.getString("c_make_description"));
+					make.setMakeStatus(rs.getBoolean("c_make_status"));
+
+					model.setModelId(rs.getInt("c_model_id"));
+					model.setModelName(rs.getString("c_model_name"));
+					model.setModelDescription(rs.getString("c_model_description"));
+					model.setModelStatus(rs.getBoolean("c_model_status"));
+					model.setMake(make);
+
+					bodyType.setBodyTypeId(rs.getInt("c_body_type_id"));
+					bodyType.setBodyTypeName(rs.getString("c_body_type_name"));
+					bodyType.setBodyTypeDescription(rs.getString("c_body_type_description"));
+					bodyType.setBodyTypeStatus(rs.getBoolean("c_body_type_status"));
+					model.setBodyType(bodyType);
+					variant.setModel(model);
+
+					fuelType.setFuelTypeId(rs.getInt("c_fuel_type_id"));
+					fuelType.setFuelTypeName(rs.getString("c_fuel_type_name"));
+					fuelType.setFuelTypeDescription(rs.getString("c_fuel_type_description"));
+					fuelType.setFuelTypeStatus(rs.getBoolean("c_fuel_type_status"));
+					variant.setFuelType(fuelType);
+
+					transmissionType.setTransmissionTypeId(rs.getInt("c_transmission_type_id"));
+					transmissionType.setTransmissionTypeName(rs.getString("c_transmission_type_name"));
+					transmissionType.setTransmissionTypeDescription(rs.getString("c_transmission_type_description"));
+					transmissionType.setTransmissionTypeStatus(rs.getBoolean("c_transmission_type_status"));
+					variant.setTransmissionType(transmissionType);
+
+					color.setColorId(rs.getInt("c_color_id"));
+					color.setColorName(rs.getString("c_color_name"));
+					color.setColorDescription(rs.getString("c_color_description"));
+					variant.setColor(color);
+
+					variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+					variantImage.setVariantImageData(rs.getString("c_variant_image"));
+					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+					variant.setVariantImage(variantImage);
+					
+					pickupLocation.setLocationId(rs.getInt("pickup_location_id"));
+					pickupLocation.setLocationName(rs.getString("pickup_location_name"));
+					pickupLocation.setLocationGPS(rs.getString("pickup_location_gps"));
+					pickupLocation.setLocationStateName(rs.getString("pickup_location_state_name"));
+					pickupLocation.setLocationCountryName(rs.getString("pickup_location_country_name"));
+					pickupLocation.setLocationStatus(rs.getBoolean("pickup_location_status"));
+					
+					dropLocation.setLocationId(rs.getInt("drop_location_id"));
+					dropLocation.setLocationName(rs.getString("drop_location_name"));
+					dropLocation.setLocationGPS(rs.getString("drop_location_gps"));
+					dropLocation.setLocationStateName(rs.getString("drop_location_state_name"));
+					dropLocation.setLocationCountryName(rs.getString("drop_location_country_name"));
+					dropLocation.setLocationStatus(rs.getBoolean("drop_location_status"));
+					
+					cartEntry.setCartId(rs.getInt("c_cart_id"));
+					cartEntry.setUserId(rs.getInt("c_user_id"));
+					cartEntry.setIsActive(rs.getBoolean("c_is_active"));
+					cartEntry.setFromDate(rs.getString("c_from_date"));
+					cartEntry.setToDate(rs.getString("c_to_date"));
+					cartEntry.setPrice(rs.getDouble("c_price"));
+					cartEntry.setVariant(variant);
+					cartEntry.setPickupLocation(pickupLocation);
+					cartEntry.setDropLocation(dropLocation);
+
+				}
+				List<AddOn> addOnList = new ArrayList<>();
+				if(cStmt.getMoreResults()){
+					nRs = cStmt.getResultSet();
+                    if(nRs !=null){
+                    	while(nRs.next()) {
+                    		AddOn addOn = new AddOn();
+
+        					addOn.setAddOnId(nRs.getInt("c_add_on_id"));
+        					addOn.setAddOnName(nRs.getString("c_add_on_name"));
+        					addOn.setAddOnDescription(nRs.getString("c_add_on_description"));
+        					addOn.setAddOnComputeStrategy(nRs.getString("c_add_on_type"));
+        					addOn.setAddOnValue(nRs.getDouble("c_add_on_value"));
+
+        					addOnList.add(addOn);
+                    	}
+                    }
+                }
+				cartEntry.setAddOnList(addOnList);
+				response.setCartEntry(cartEntry);
+				response.setSuccessResponse();
+//					System.out.println("In getVariant response:" + response);
+			} else {
+				System.out.println("In getVariant Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In getVariant Error in proc :{}" + cStmt.getInt(i - 1));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getVariant e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	 }
+	 
+
+	public CreateBookingResponse createBooking(CreateBookingRequest createBookingRequest) {
+		CreateBookingResponse response = new CreateBookingResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		ResultSet nRs = null;
+		ResultSet pRs = null;
+		String procedureName = "proc_create_booking_info_v1dot0";
+		Gson gson = new Gson();
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			cStmt.setInt(i++, createBookingRequest.getUserId());
+			cStmt.setInt(i++, createBookingRequest.getPaymentMethodInfoId());
+			cStmt.setNull(i++, Types.NULL);
+			
+			List<Integer> cartIds = createBookingRequest.getCartIds(); 
+			if (cartIds == null || cartIds.isEmpty()) {
+				cStmt.setString(i++, CommonConstants.EMPTY);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(cartIds, CommonConstants.DELIMITER));
+			}
+			
+			List<Integer> userProfileIds = createBookingRequest.getUserProfileIds(); 
+			if (userProfileIds == null || userProfileIds.isEmpty()) {
+				cStmt.setString(i++, CommonConstants.EMPTY);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(userProfileIds, CommonConstants.DELIMITER));
+			}
+			
+			cStmt.setString(i++, BookingStatus.INITIATED.name());
+			
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In createBooking Calling DB procedure cStmt Before{}" + cStmt);
+			pRs = cStmt.executeQuery();
+			System.out.println("In createBooking Calling DB procedure cStmt After {}" + cStmt);
+			
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				BookingInfo bookingInfo = new BookingInfo();
+				PaymentInfo paymentInfo = new PaymentInfo();
+				UserDetails userInfo = new UserDetails();
+				while (pRs.next()) {
+					bookingInfo.setBookingInfoId(pRs.getInt("c_booking_info_id"));
+					paymentInfo.setPaymentInfoId(pRs.getInt("c_payment_info_id"));
+					paymentInfo.setUserId(pRs.getInt("c_user_id"));
+					paymentInfo.setPaymentMethodInfo(gson.fromJson(pRs.getString("c_payment_method_info"), CardInfo.class));
+					paymentInfo.setIsActive(pRs.getBoolean("c_is_active"));
+					userInfo.setUserId(pRs.getInt("c_user_id"));
+					userInfo.setUserName(pRs.getString("c_user_name"));
+					userInfo.setUserEmail(pRs.getString("c_user_email"));
+					userInfo.setUserMobileNumber(pRs.getString("c_user_mobile_number"));
+					bookingInfo.setStatus(pRs.getString("c_status"));
+					bookingInfo.setPaymentInfo(paymentInfo);
+					bookingInfo.setUser(userInfo);
+				}
+				
+				CartEntry cartEntry = new CartEntry();
+				Variant variant = null;
+				Make make = null;
+				Model model = null;
+				BodyType bodyType = null;
+				Color color = null;
+				TransmissionType transmissionType = null;
+				FuelType fuelType = null;
+				VariantImage variantImage = null;
+				Location pickupLocation = null;
+				Location dropLocation = null;
+				UserProfile userProfile = null;
+//					Boolean b = false;
+
+				Map<Integer,CartEntry> cartMap = new HashMap<Integer,CartEntry>();
+				if(cStmt.getMoreResults()){
+					rs = cStmt.getResultSet();
+                    if(rs !=null){
+						while (rs.next()) {
+		//						b = false;
+		//						for (Variant v : variantList) {
+		//							if (v.getVariantId() == rs.getInt("c_variant_id")) {
+		//								b = true;
+		//								break;
+		//							}
+		//						}
+		
+							cartEntry = new CartEntry();
+							variant = new Variant();
+							make = new Make();
+							model = new Model();
+							bodyType = new BodyType();
+							fuelType = new FuelType();
+							color = new Color();
+							variantImage = new VariantImage();
+							transmissionType = new TransmissionType();
+							pickupLocation = new Location();
+							dropLocation = new Location();
+							userProfile = new UserProfile();
+		
+							variant.setVariantId(rs.getInt("c_variant_id"));
+							variant.setVariantName(rs.getString("c_variant_name"));
+							variant.setVariantDescription(rs.getString("c_variant_description"));
+							variant.setVariantStatus(rs.getBoolean("c_variant_status"));
+							variant.setVariantMileage(rs.getLong("c_mileage"));
+							variant.setVariantManufacturingDate(rs.getDate("c_manufacturing_date"));
+							variant.setVariantPricePerKm(rs.getLong("c_price_per_kilometer"));
+							variant.setVaraintKilometersDriven(rs.getLong("c_kilometers_driven"));
+							variant.setVaraintNumberPlate(rs.getString("c_number_plate"));
+		
+							make.setMakeId(rs.getInt("c_make_id"));
+							make.setMakeName(rs.getString("c_make_name"));
+							make.setMakeDescription(rs.getString("c_make_description"));
+							make.setMakeStatus(rs.getBoolean("c_make_status"));
+		
+							model.setModelId(rs.getInt("c_model_id"));
+							model.setModelName(rs.getString("c_model_name"));
+							model.setModelDescription(rs.getString("c_model_description"));
+							model.setModelStatus(rs.getBoolean("c_model_status"));
+							model.setMake(make);
+		
+							bodyType.setBodyTypeId(rs.getInt("c_body_type_id"));
+							bodyType.setBodyTypeName(rs.getString("c_body_type_name"));
+							bodyType.setBodyTypeDescription(rs.getString("c_body_type_description"));
+							bodyType.setBodyTypeStatus(rs.getBoolean("c_body_type_status"));
+							model.setBodyType(bodyType);
+							variant.setModel(model);
+		
+							fuelType.setFuelTypeId(rs.getInt("c_fuel_type_id"));
+							fuelType.setFuelTypeName(rs.getString("c_fuel_type_name"));
+							fuelType.setFuelTypeDescription(rs.getString("c_fuel_type_description"));
+							fuelType.setFuelTypeStatus(rs.getBoolean("c_fuel_type_status"));
+							variant.setFuelType(fuelType);
+		
+							transmissionType.setTransmissionTypeId(rs.getInt("c_transmission_type_id"));
+							transmissionType.setTransmissionTypeName(rs.getString("c_transmission_type_name"));
+							transmissionType.setTransmissionTypeDescription(rs.getString("c_transmission_type_description"));
+							transmissionType.setTransmissionTypeStatus(rs.getBoolean("c_transmission_type_status"));
+							variant.setTransmissionType(transmissionType);
+		
+							color.setColorId(rs.getInt("c_color_id"));
+							color.setColorName(rs.getString("c_color_name"));
+							color.setColorDescription(rs.getString("c_color_description"));
+							variant.setColor(color);
+		
+							variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+							variantImage.setVariantImageData(rs.getString("c_variant_image"));
+							variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+							variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+							variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+							variant.setVariantImage(variantImage);
+							
+							pickupLocation.setLocationId(rs.getInt("pickup_location_id"));
+							pickupLocation.setLocationName(rs.getString("pickup_location_name"));
+							pickupLocation.setLocationGPS(rs.getString("pickup_location_gps"));
+							pickupLocation.setLocationStateName(rs.getString("pickup_location_state_name"));
+							pickupLocation.setLocationCountryName(rs.getString("pickup_location_country_name"));
+							pickupLocation.setLocationStatus(rs.getBoolean("pickup_location_status"));
+							
+							dropLocation.setLocationId(rs.getInt("drop_location_id"));
+							dropLocation.setLocationName(rs.getString("drop_location_name"));
+							dropLocation.setLocationGPS(rs.getString("drop_location_gps"));
+							dropLocation.setLocationStateName(rs.getString("drop_location_state_name"));
+							dropLocation.setLocationCountryName(rs.getString("drop_location_country_name"));
+							dropLocation.setLocationStatus(rs.getBoolean("drop_location_status"));
+							
+							userProfile.setUserProfileId(rs.getInt("c_user_profile_id"));
+							userProfile.setUserId(rs.getInt("c_user_id"));
+							userProfile.setUserProfileName(rs.getString("c_user_profile_name"));
+							userProfile.setLicenceNumber(rs.getString("c_licence_number"));
+							userProfile.setLicenceImage(rs.getBlob("c_licence_image"));
+							userProfile.setIsActive(rs.getBoolean("c_is_active"));
+							userProfile.setIsPrimary(rs.getBoolean("c_is_primary"));
+							
+							cartEntry.setCartId(rs.getInt("c_cart_id"));
+							cartEntry.setUserId(rs.getInt("c_user_id"));
+							cartEntry.setIsActive(rs.getBoolean("c_is_active"));
+							cartEntry.setFromDate(rs.getString("c_from_date"));
+							cartEntry.setToDate(rs.getString("c_to_date"));
+							cartEntry.setPrice(rs.getDouble("c_price"));
+							cartEntry.setVariant(variant);
+							cartEntry.setPickupLocation(pickupLocation);
+							cartEntry.setDropLocation(dropLocation);
+							cartEntry.setUserProfile(userProfile);
+							cartEntry.setAddOnList(new ArrayList<>());
+							
+							cartMap.put(cartEntry.getCartId(), cartEntry);
+							
+		
+						}
+                    }
+				}
+				
+				
+				
+				if(cStmt.getMoreResults()){
+					nRs = cStmt.getResultSet();
+                    if(nRs !=null){
+                    	while(nRs.next()) {
+                    		AddOn addOn = new AddOn();
+
+        					addOn.setAddOnId(nRs.getInt("c_add_on_id"));
+        					addOn.setAddOnName(nRs.getString("c_add_on_name"));
+        					addOn.setAddOnDescription(nRs.getString("c_add_on_description"));
+        					addOn.setAddOnComputeStrategy(nRs.getString("c_add_on_type"));
+        					addOn.setAddOnValue(nRs.getDouble("c_add_on_value"));
+        					
+        					Integer cartId = nRs.getInt("c_cart_id");
+        					
+        					if(cartMap.get(cartId) != null) {
+        						
+        						cartMap.get(cartId).getAddOnList().add(addOn);
+        					}
+                    	}
+                    }
+                }
+				
+				bookingInfo.setCartList(new ArrayList<>(cartMap.values()));
+				response.setBookingInfo(bookingInfo);
+				response.setSuccessResponse();
+//					System.out.println("In getVariant response:" + response);
+			} else {
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 1));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In createBooking e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, pRs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	@Override
+	public CreateBookingResponse getBooking(Integer bookingId) {
+		CreateBookingResponse response = new CreateBookingResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		ResultSet nRs = null;
+		ResultSet pRs = null;
+		String procedureName = "proc_get_booking_info_v1dot0";
+		Gson gson = new Gson();
+		final String procedureCall = "{call " + procedureName + "(?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			cStmt.setInt(i++, bookingId);
+			
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In createBooking Calling DB procedure cStmt Before{}" + cStmt);
+			pRs = cStmt.executeQuery();
+			System.out.println("In createBooking Calling DB procedure cStmt After {}" + cStmt);
+			
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				BookingInfo bookingInfo = new BookingInfo();
+				PaymentInfo paymentInfo = new PaymentInfo();
+				UserDetails userInfo = new UserDetails();
+				while (pRs.next()) {
+					bookingInfo.setBookingInfoId(pRs.getInt("c_booking_info_id"));
+					bookingInfo.setPaymentInfoReferenceId(pRs.getString("c_payment_info_reference_id"));;
+					paymentInfo.setPaymentInfoId(pRs.getInt("c_payment_info_id"));
+					paymentInfo.setUserId(pRs.getInt("c_user_id"));
+					paymentInfo.setPaymentMethodInfo(gson.fromJson(pRs.getString("c_payment_method_info"), CardInfo.class));
+					paymentInfo.setIsActive(pRs.getBoolean("c_is_active"));
+					userInfo.setUserId(pRs.getInt("c_user_id"));
+					userInfo.setUserName(pRs.getString("c_user_name"));
+					userInfo.setUserEmail(pRs.getString("c_user_email"));
+					userInfo.setUserMobileNumber(pRs.getString("c_user_mobile_number"));
+					bookingInfo.setStatus(pRs.getString("c_status"));
+					bookingInfo.setPaymentInfo(paymentInfo);
+					bookingInfo.setUser(userInfo);
+				}
+				
+				CartEntry cartEntry = new CartEntry();
+				Variant variant = null;
+				Make make = null;
+				Model model = null;
+				BodyType bodyType = null;
+				Color color = null;
+				TransmissionType transmissionType = null;
+				FuelType fuelType = null;
+				VariantImage variantImage = null;
+				Location pickupLocation = null;
+				Location dropLocation = null;
+				UserProfile userProfile = null;
+//					Boolean b = false;
+
+				Map<Integer,CartEntry> cartMap = new HashMap<Integer,CartEntry>();
+				if(cStmt.getMoreResults()){
+					rs = cStmt.getResultSet();
+                    if(rs !=null){
+						while (rs.next()) {
+		//						b = false;
+		//						for (Variant v : variantList) {
+		//							if (v.getVariantId() == rs.getInt("c_variant_id")) {
+		//								b = true;
+		//								break;
+		//							}
+		//						}
+		
+							cartEntry = new CartEntry();
+							variant = new Variant();
+							make = new Make();
+							model = new Model();
+							bodyType = new BodyType();
+							fuelType = new FuelType();
+							color = new Color();
+							variantImage = new VariantImage();
+							transmissionType = new TransmissionType();
+							pickupLocation = new Location();
+							dropLocation = new Location();
+							userProfile = new UserProfile();
+		
+							variant.setVariantId(rs.getInt("c_variant_id"));
+							variant.setVariantName(rs.getString("c_variant_name"));
+							variant.setVariantDescription(rs.getString("c_variant_description"));
+							variant.setVariantStatus(rs.getBoolean("c_variant_status"));
+							variant.setVariantMileage(rs.getLong("c_mileage"));
+							variant.setVariantManufacturingDate(rs.getDate("c_manufacturing_date"));
+							variant.setVariantPricePerKm(rs.getLong("c_price_per_kilometer"));
+							variant.setVaraintKilometersDriven(rs.getLong("c_kilometers_driven"));
+							variant.setVaraintNumberPlate(rs.getString("c_number_plate"));
+		
+							make.setMakeId(rs.getInt("c_make_id"));
+							make.setMakeName(rs.getString("c_make_name"));
+							make.setMakeDescription(rs.getString("c_make_description"));
+							make.setMakeStatus(rs.getBoolean("c_make_status"));
+		
+							model.setModelId(rs.getInt("c_model_id"));
+							model.setModelName(rs.getString("c_model_name"));
+							model.setModelDescription(rs.getString("c_model_description"));
+							model.setModelStatus(rs.getBoolean("c_model_status"));
+							model.setMake(make);
+		
+							bodyType.setBodyTypeId(rs.getInt("c_body_type_id"));
+							bodyType.setBodyTypeName(rs.getString("c_body_type_name"));
+							bodyType.setBodyTypeDescription(rs.getString("c_body_type_description"));
+							bodyType.setBodyTypeStatus(rs.getBoolean("c_body_type_status"));
+							model.setBodyType(bodyType);
+							variant.setModel(model);
+		
+							fuelType.setFuelTypeId(rs.getInt("c_fuel_type_id"));
+							fuelType.setFuelTypeName(rs.getString("c_fuel_type_name"));
+							fuelType.setFuelTypeDescription(rs.getString("c_fuel_type_description"));
+							fuelType.setFuelTypeStatus(rs.getBoolean("c_fuel_type_status"));
+							variant.setFuelType(fuelType);
+		
+							transmissionType.setTransmissionTypeId(rs.getInt("c_transmission_type_id"));
+							transmissionType.setTransmissionTypeName(rs.getString("c_transmission_type_name"));
+							transmissionType.setTransmissionTypeDescription(rs.getString("c_transmission_type_description"));
+							transmissionType.setTransmissionTypeStatus(rs.getBoolean("c_transmission_type_status"));
+							variant.setTransmissionType(transmissionType);
+		
+							color.setColorId(rs.getInt("c_color_id"));
+							color.setColorName(rs.getString("c_color_name"));
+							color.setColorDescription(rs.getString("c_color_description"));
+							variant.setColor(color);
+		
+							variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+							variantImage.setVariantImageData(rs.getString("c_variant_image"));
+							variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+							variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+							variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+							variant.setVariantImage(variantImage);
+							
+							pickupLocation.setLocationId(rs.getInt("pickup_location_id"));
+							pickupLocation.setLocationName(rs.getString("pickup_location_name"));
+							pickupLocation.setLocationGPS(rs.getString("pickup_location_gps"));
+							pickupLocation.setLocationStateName(rs.getString("pickup_location_state_name"));
+							pickupLocation.setLocationCountryName(rs.getString("pickup_location_country_name"));
+							pickupLocation.setLocationStatus(rs.getBoolean("pickup_location_status"));
+							
+							dropLocation.setLocationId(rs.getInt("drop_location_id"));
+							dropLocation.setLocationName(rs.getString("drop_location_name"));
+							dropLocation.setLocationGPS(rs.getString("drop_location_gps"));
+							dropLocation.setLocationStateName(rs.getString("drop_location_state_name"));
+							dropLocation.setLocationCountryName(rs.getString("drop_location_country_name"));
+							dropLocation.setLocationStatus(rs.getBoolean("drop_location_status"));
+							
+							userProfile.setUserProfileId(rs.getInt("c_user_profile_id"));
+							userProfile.setUserId(rs.getInt("c_user_id"));
+							userProfile.setUserProfileName(rs.getString("c_user_profile_name"));
+							userProfile.setLicenceNumber(rs.getString("c_licence_number"));
+							userProfile.setLicenceImage(rs.getBlob("c_licence_image"));
+							userProfile.setIsActive(rs.getBoolean("c_is_active"));
+							userProfile.setIsPrimary(rs.getBoolean("c_is_primary"));
+							
+							cartEntry.setCartId(rs.getInt("c_cart_id"));
+							cartEntry.setUserId(rs.getInt("c_user_id"));
+							cartEntry.setIsActive(rs.getBoolean("c_is_active"));
+							cartEntry.setFromDate(rs.getString("c_from_date"));
+							cartEntry.setToDate(rs.getString("c_to_date"));
+							cartEntry.setPrice(rs.getDouble("c_price"));
+							cartEntry.setVariant(variant);
+							cartEntry.setPickupLocation(pickupLocation);
+							cartEntry.setDropLocation(dropLocation);
+							cartEntry.setUserProfile(userProfile);
+							cartEntry.setAddOnList(new ArrayList<>());
+							
+							cartMap.put(cartEntry.getCartId(), cartEntry);
+							
+		
+						}
+                    }
+				}
+				
+				
+				
+				if(cStmt.getMoreResults()){
+					nRs = cStmt.getResultSet();
+                    if(nRs !=null){
+                    	while(nRs.next()) {
+                    		AddOn addOn = new AddOn();
+
+        					addOn.setAddOnId(nRs.getInt("c_add_on_id"));
+        					addOn.setAddOnName(nRs.getString("c_add_on_name"));
+        					addOn.setAddOnDescription(nRs.getString("c_add_on_description"));
+        					addOn.setAddOnComputeStrategy(nRs.getString("c_add_on_type"));
+        					addOn.setAddOnValue(nRs.getDouble("c_add_on_value"));
+        					
+        					Integer cartId = nRs.getInt("c_cart_id");
+        					
+        					if(cartMap.get(cartId) != null) {
+        						
+        						cartMap.get(cartId).getAddOnList().add(addOn);
+        					}
+                    	}
+                    }
+                }
+				
+				bookingInfo.setCartList(new ArrayList<>(cartMap.values()));
+				response.setBookingInfo(bookingInfo);
+				response.setSuccessResponse();
+//					System.out.println("In getVariant response:" + response);
+			} else {
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 1));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In createBooking e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, pRs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	@Override
+	public BaseResponse updateBookingStatus(Integer bookingReferenceId, String paymentReferenceId, BookingStatus status) {
+		CreateBookingResponse response = new CreateBookingResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_update_booking_info_v1dot";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			cStmt.setInt(i++, bookingReferenceId);
+			cStmt.setString(i++, paymentReferenceId);
+			cStmt.setString(i++, status.name());
+
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In createBooking Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In createBooking Calling DB procedure cStmt After {}" + cStmt);
+			
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				response.setSuccessResponse();
+//					System.out.println("In getVariant response:" + response);
+			} else {
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In createBooking Error in proc :{}" + cStmt.getInt(i - 1));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In createBooking e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
+	}
+	
+	
 
 }

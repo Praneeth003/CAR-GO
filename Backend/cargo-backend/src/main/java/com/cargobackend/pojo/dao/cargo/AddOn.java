@@ -2,7 +2,7 @@ package com.cargobackend.pojo.dao.cargo;
 
 public class AddOn {
 	
-	enum AddOnComputeStrategy {
+	public enum AddOnComputeStrategy {
 		PERCENTAGE,
 		FIXED
 	}
