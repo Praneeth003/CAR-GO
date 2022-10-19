@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { SharedService } from '../shared.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { LocalStorageService } from 'angular-web-storage';
 
 @Component({
   selector: 'app-header',

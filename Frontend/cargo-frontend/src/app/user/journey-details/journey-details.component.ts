@@ -35,6 +35,8 @@ export class JourneyDetailsComponent implements OnInit {
     feDate: { value: null },
     sDate: { value: null },
     eDate: { value: null },
+    fromDate:null,
+    toDate:null
   }
 
   constructor(private http: HttpClient,    private waterDataService: SharedService, private constantsModule:ConstantsModule,
@@ -119,6 +121,8 @@ export class JourneyDetailsComponent implements OnInit {
       // currentUrlParams['maxDate'] = maxDate;
       // currentUrlParams['minDate'] = minDate;
       // this.navigate(currentUrlParams);
+      this.selectedFilterParams.fromDate =this.selectedFilterParams.sDate.value;
+      this.selectedFilterParams.toDate = this.selectedFilterParams.eDate.value;
       console.log("\n In requestHeatMap ",this.selectedFilterParams);
       this.constantsModule.selectedFilterParams = this.selectedFilterParams;
       console.log("\n In requestHeatMap ",this.constantsModule.selectedFilterParams);

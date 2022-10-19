@@ -51,22 +51,39 @@ export class SignupComponent implements OnInit {
     this.http.post<any>('http://localhost:8081/user/register', data).subscribe(resp => {
       console.log(resp)
       if(resp.status == "SUCCESS"){
-        
+        this.setUserDetails(resp['userDetails']);
+
         this.waterDataService.userName.next( {userName:resp.userDetails.userName,authId:resp.userDetails.authId} );
-        let data = this.localStorage.get('journeyDetailsFilter');
-        console.log("\n journeyDetailsFilter data ",data);
-        if(data != null && data != undefined && data['data'] != undefined){
-          this.router.navigate(["/user/home"]); 
+
+        let variantAddOnData = this.localStorage.get('selectedAddon');
+        console.log("\n journeyDetailsFilter data ",variantAddOnData);
+        if(variantAddOnData != null && variantAddOnData != undefined && variantAddOnData['data'] != undefined){
+          this.router.navigate(["/user/payment"]); 
         }else{
-          this.router.navigate(["/user/journey-details"]); 
+          let journeyDetailsFilter = this.localStorage.get('journeyDetailsFilter');
+          console.log("\n journeyDetailsFilter data ",journeyDetailsFilter);
+          if(journeyDetailsFilter != null && journeyDetailsFilter != undefined && journeyDetailsFilter['data'] != undefined){
+            this.router.navigate(["/user/home"]); 
+          }else{
+            this.router.navigate(["/user/journey-details"]); 
+          }
         }
+
       }
       else{
+        this.localStorage.remove('userDetails');
+        this.localStorage.remove('selectedAddon');
         this.signUpFailed = true
         this.errorMessage = resp.errorDescription
       }
     })
 
+  }
+
+  setUserDetails(userDetails) {
+    this.localStorage.set('userDetails', {
+      data:userDetails
+    });
   }
 
 }

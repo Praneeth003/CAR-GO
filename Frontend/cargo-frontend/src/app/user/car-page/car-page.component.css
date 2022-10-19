@@ -1,0 +1,13 @@
+.carousel-item img{
+    width: 100%;
+    height: 500px;
+}
+.carousel-dark .carousel-caption {
+    color: #FFF;
+}
+.make-name{
+    font-size: 18px;
+    font-weight: 500;
+    color: #666;
+    padding-right: 10px;
+}

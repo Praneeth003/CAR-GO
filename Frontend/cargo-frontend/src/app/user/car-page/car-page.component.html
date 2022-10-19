@@ -1,5 +1,131 @@
-<p>
-  Car Page Works {{carData.variantName}}
-</p>
-<button (click)="addToCart()"> Add to Cart</button>
-<button (click)="bookNow()"> Book Now</button>
+<div class="container-fluid">
+  <div class="row my-3">
+    <div class="col-sm-12 col-lg-8">
+      <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+            aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+            aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2"
+            aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active" data-bs-interval="10000">
+            <img
+              src="https://stimg.cardekho.com/images/carexteriorimages/630x420/Lamborghini/Urus/4418/Lamborghini-Urus-V8/1621927166506/front-left-side-47.jpg?tr=w-456"
+              class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>First slide label</h5>
+              <p>Some representative placeholder content for the first slide.</p>
+            </div>
+          </div>
+          <div class="carousel-item" data-bs-interval="2000">
+            <img
+              src="https://stimg.cardekho.com/images/carexteriorimages/630x420/Lamborghini/Urus/8405/Lamborghini-Urus-Pearl-capsule/1621928013917/side-view-(left)-90.jpg?tr=w-456"
+              class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Some representative placeholder content for the second slide.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="https://images10.gaadicdn.com/usedcar_image/original/VCC_1627596_24_1665564645.jpg?imwidth=930"
+              class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Third slide label</h5>
+              <p>Some representative placeholder content for the third slide.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <div class="accordion mt-3" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+              aria-expanded="true" aria-controls="collapseOne">
+              ADDON 1
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+            data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <p> <input type="checkbox">
+                    <b class="ps-2">Description : </b> Oriented Instrument Concept With Three TFT screens (one for the
+                    instruments, one for infotainment and one for comfort functions, including virtual keyboard feature
+                    with hand-writing recognition)
+                    Dashboard Architecture Follows The Y theme
+                    Selection of Different Kinds Of Colours and Materials,Such as Natural leather, Alcantara,Wood
+                    Finish, Aluminium or Carbon</p>
+                  <p> 
+                    <b>Price Information : </b> Oriented Instrument Concept With Three TFT screens (one for the
+                    instruments, one for infotainment and one for comfort functions, including virtual keyboard feature
+                    with hand-writing recognition)
+                    Dashboard Architecture Follows The Y theme
+                    Selection of Different Kinds Of Colours and Materials,Such as Natural leather, Alcantara,Wood
+                    Finish, Aluminium or Carbon</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              ADDON 2
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+            data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <p> <input type="checkbox">
+                    <b class="ps-2">Description : </b> Oriented Instrument Concept With Three TFT screens (one for the
+                    instruments, one for infotainment and one for comfort functions, including virtual keyboard feature
+                    with hand-writing recognition)
+                    Dashboard Architecture Follows The Y theme
+                    Selection of Different Kinds Of Colours and Materials,Such as Natural leather, Alcantara,Wood
+                    Finish, Aluminium or Carbon</p>
+                  <p> 
+                    <b>Price Information : </b> Oriented Instrument Concept With Three TFT screens (one for the
+                    instruments, one for infotainment and one for comfort functions, including virtual keyboard feature
+                    with hand-writing recognition)
+                    Dashboard Architecture Follows The Y theme
+                    Selection of Different Kinds Of Colours and Materials,Such as Natural leather, Alcantara,Wood
+                    Finish, Aluminium or Carbon</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-4">
+      <h4 class="text-danger border-bottom pb-3"><span class="make-name">Car Make Name : </span>Lamborghini Urus</h4>
+      <h5>Urus V8 2020</h5>
+      <p>Price: <br><b>Rs.3,15,00,000</b></p>
+      <p>Mileage: <br><b>14KM</b></p>
+      <p>Old Meter Reading: <br><b>15000</b></p>
+      <p>Other Details: <br> <b>Automatic Climate Control, Engine Start Stop Button</b></p>
+      <p>Safety: <br><b>Anti-Lock Braking System,<br> Brake Assist <br> Central Locking <br>Power Door Locks</b></p>
+    </div>
+    <div class="col-sm-12 col-lg-4 mt-3">
+      <button (click)="addToCart()" class="btn btn-primary me-2"> Add to Cart</button>
+      <button (click)="bookNow()" class="btn btn-success"> Book Now</button>
+    </div>
+
+  </div>
+</div>
