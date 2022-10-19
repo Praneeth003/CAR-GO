@@ -1119,6 +1119,8 @@ public class CargoDAOImpl implements ICargoDAO {
 			} else {
 				cStmt.setInt(i++, userId);
 			}
+			
+			
 
 			/* register output parameters */
 			cStmt.registerOutParameter(i++, Types.INTEGER);
