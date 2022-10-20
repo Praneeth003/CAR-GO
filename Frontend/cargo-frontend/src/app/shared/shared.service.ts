@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { HttperrorhandlerService } from './http/httperrorhandler.service';
 
 @Injectable({
@@ -29,6 +29,45 @@ export class SharedService {
       catchError(this.errorHandler.handleError('All post data : ', []))
       );
   }
+
+  
+  postUser(params, endPoint):Observable<any>{
+    return this.http.post<any>(this.urlUser + endPoint, params).pipe(
+       catchError(this.errorHandler.handleError('All post data : ', []))
+       );
+   }
+
+  get(endPoint):Observable<any>{
+    return this.http.get<any>(this.urlCargo + endPoint).pipe(
+       catchError(this.errorHandler.handleError('All get data : ', []))
+       );
+   }
+  
+  downloadPDF(endPoint) {
+
+    let headerOptions = new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        'Accept': 'application/pdf'
+        //   'Accept': 'application/octet-stream', // for excel file
+    });
+
+    let requestOptions = { headers: headerOptions, responseType: 'blob' as 'blob' };
+    // post or get depending on your requirement
+    return this.http.get(this.urlCargo + endPoint, requestOptions).pipe(map((data: any) => {
+
+        let blob = new Blob([data], {
+            type: 'application/pdf' // must match the Accept type
+            // type: 'application/octet-stream' // for excel 
+        });
+        var link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = 'samplePDFFile.pdf';
+        link.click();
+        window.URL.revokeObjectURL(link.href);
+
+    }));
+
+}
 
 }
 

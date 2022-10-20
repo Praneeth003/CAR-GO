@@ -4,6 +4,7 @@ import { LoginComponent } from './shared/login/login.component';
 import { SignupComponent } from './shared/signup/signup.component';
 import { BookingPreviewComponent } from './user/booking/booking-preview/booking-preview.component';
 import { BookingSummaryComponent } from './user/booking/booking-summary/booking-summary.component';
+import { PaymentComponent } from './user/booking/payment/payment.component';
 import { CarPageComponent } from './user/car-page/car-page.component';
 import { CartComponent } from './user/cart/cart.component';
 import { HomePageComponent } from './user/home-page/home-page.component';
@@ -19,8 +20,8 @@ const routes: Routes = [
   { path: 'user/home', component: HomePageComponent },
   { path: 'user/car/:carId', component: CarPageComponent },
   { path: 'user/cart', component: CartComponent },
-  { path: 'user/booking', component: BookingPreviewComponent },
-  { path: 'user/booking-summary', component: BookingSummaryComponent }
+  { path: 'user/payment', component: PaymentComponent },
+  { path: 'user/booking-preview', component: BookingPreviewComponent }
 ];
 
 @NgModule({
