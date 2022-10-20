@@ -174,6 +174,20 @@ public class CargoController {
     	System.out.println("\n CargoController  addToCart "+addToCartRequest);
     	return cargoService.addToCart(addToCartRequest);
     }
+    
+    @PostMapping(value = {"/create_booking"})
+    @ResponseBody
+    public CreateBookingResponse createBooking(@RequestBody CreateBookingRequest createBookingRequest) {
+    	System.out.println("\n CargoController  addToCart "+createBookingRequest);
+    	return cargoService.createBooking(createBookingRequest);
+    }
+    
+    @GetMapping(value = {"/booking_invoice/{bookingId}"})
+    @ResponseBody
+    public ResponseEntity<Resource> getBookingInvoice(@PathVariable Integer bookingId) throws IOException {
+    	System.out.println("\n CargoController  addToCart "+bookingId);
+    	File file = cargoService.getBookingInvoice(bookingId);
+    	InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return ResponseEntity.ok()
 //                .headers(headers)

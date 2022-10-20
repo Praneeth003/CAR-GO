@@ -1125,9 +1125,9 @@ public class CargoDAOImpl implements ICargoDAO {
 			/* register output parameters */
 			cStmt.registerOutParameter(i++, Types.INTEGER);
 			cStmt.registerOutParameter(i++, Types.VARCHAR);
-			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
+			System.out.println("In getPaymentInfo By Id Get DB Call Calling DB procedure cStmt Before{}" + cStmt);
 			rs = cStmt.executeQuery();
-			System.out.println("In AddOnResponse By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
+			System.out.println("In getPaymentInfo By Id Get DB Call Calling DB procedure cStmt After {}" + cStmt);
 			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
 				List<PaymentInfo> paymentInfoList = new ArrayList<>();
 				PaymentInfo paymentInfo = null;

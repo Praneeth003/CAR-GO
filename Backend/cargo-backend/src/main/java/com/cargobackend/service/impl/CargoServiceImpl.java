@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 
 import com.cargobackend.dao.ICargoDAO;
+import com.cargobackend.dao.IUserDAO;
 import com.cargobackend.pojo.dao.cargo.AddOn;
 import com.cargobackend.pojo.dao.cargo.AddOn.AddOnComputeStrategy;
 import com.cargobackend.pojo.dao.cargo.BookingInfo;
@@ -57,17 +58,20 @@ import com.cargobackend.pojo.response.MakeResponse;
 import com.cargobackend.pojo.response.ModelResponse;
 import com.cargobackend.pojo.response.PaymentInfoResponse;
 import com.cargobackend.pojo.response.TransmissionTypeResponse;
+import com.cargobackend.pojo.response.UserDetailsResponse;
 import com.cargobackend.pojo.response.UserProfileResponse;
 import com.cargobackend.pojo.response.VariantResponse;
 import com.cargobackend.pojo.response.common.BaseResponse;
 import com.cargobackend.service.ICargoService;
 import com.cargobackend.utils.CommonConstants;
+import com.cargobackend.utils.CommonConstants.UserType;
 import com.google.gson.Gson;
 
 @Service
 public class CargoServiceImpl implements ICargoService{
 	
     private final ICargoDAO cargoDAO;
+    private final IUserDAO userDAO;
     
     private class PaymentInfoResp {
     	String paymentReferenceId;
@@ -81,9 +85,10 @@ public class CargoServiceImpl implements ICargoService{
     }
     
 
-	public CargoServiceImpl(ICargoDAO cargoDAO) {
+	public CargoServiceImpl(ICargoDAO cargoDAO, IUserDAO userDAO) {
 		super();
 		this.cargoDAO = cargoDAO;
+		this.userDAO = userDAO;
 	}
 
 
@@ -194,14 +199,14 @@ public class CargoServiceImpl implements ICargoService{
 		}
 		variantPrice = nDays*variantPrice;
 		Double tripPrice = variantPrice;
-	
+		System.out.println("\n AddOnList ........nDays "+ addOns);
 		if(addOns != null) {
 			for(AddOn addOn : addOns) {
 				if(AddOnComputeStrategy.FIXED.toString().equalsIgnoreCase(addOn.getAddOnComputeStrategy().toString())) {
 					tripPrice = tripPrice + addOn.getAddOnValue();
 				}
-				else if(AddOnComputeStrategy.PERCENTAGE.toString().equalsIgnoreCase(addOn.getAddOnComputeStrategy().toString())) {
-					tripPrice = tripPrice + ((variantPrice * addOn.getAddOnValue()) / 100);
+				else if(AddOnComputeStrategy.PER_DAY.toString().equalsIgnoreCase(addOn.getAddOnComputeStrategy().toString())) {
+					tripPrice = tripPrice + (nDays * addOn.getAddOnValue());
 				}
 			}
 		}
@@ -234,6 +239,15 @@ public class CargoServiceImpl implements ICargoService{
 		}
 		Double tripCost = calculateTripCost(variant, addOns,addToCartRequest);
 		addToCartRequest.setPrice(tripCost);
+		if(addToCartRequest.getUserId() == null) {
+			UserDetails userDetails = new UserDetails();
+			UUID uuid = UUID.randomUUID();
+			userDetails.setUserName("Guest" + uuid.toString().substring(0,13).replace("-",""));
+			userDetails.setUserPassword("Pass1234");
+			userDetails.setUserType("GUEST");
+			UserDetailsResponse usd = userDAO.registerUser(userDetails); 
+			addToCartRequest.setUserId(usd.getUserDetails().getUserId());
+		}
 		return cargoDAO.addToCart(addToCartRequest);
 		
 	}
@@ -290,11 +304,15 @@ public class CargoServiceImpl implements ICargoService{
 		return bookingInfo.getCartList().stream().map(cart -> (cart.getPrice() != null ? cart.getPrice() : 0.0)).mapToDouble(Double::doubleValue).sum();
 	}
 	
+	public String nullToString(String a) {
+		return a == null ? "" :a;
+	}
+	
 	public File generateBookingInvoice(BookingInfo bookingInfo) {
 		
 		Gson gson = new Gson();
 		UserDetails user = bookingInfo.getUser();
-		String userInfo = user.getUserName() +"\n" + user.getUserMobileNumber() + "\n" + user.getUserEmail();
+		String userInfo = user.getUserName() +"\n" + nullToString(user.getUserMobileNumber()) + "\n" + nullToString(user.getUserEmail());
 		
 		InvoiceRequest invoice = new InvoiceRequest();
 		invoice.setFrom("Cargo, Inc");

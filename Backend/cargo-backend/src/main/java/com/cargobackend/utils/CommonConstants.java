@@ -28,6 +28,8 @@ public class CommonConstants {
     public static final String DELIMITER = ",";
     
     public static final String ALL = "ALL";
+
+    public static final String EMPTY = "EMPTY";
     
     public enum HttpStatusCode {
 
