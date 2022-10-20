@@ -103,16 +103,16 @@
                       alt = "Error Loading Image"/>
                       <ul>
                         <li><i class="fas fa-shopping-cart"></i></li>
-                        <li><i class="fas fa-heart"></i></li>
-                        <li><i class="fas fa-plus"></i></li>
-                        <li><i class="fas fa-expand"></i></li>
+                        <!-- <li><i class="fas fa-heart"></i></li>
+                        <li><i class="fas fa-plus"></i></li> -->
+                        <li><i class="fas fa-expand" (click) = "expandCar(item)"></i></li>
                       </ul>
                     </div>
                     <div class="part-2">
                       <h3 class="product-title">{{item['variantName'] + " "+item['fuelType']['fuelTypeName']
                         + " "+ item['transmissionType']['transmissionTypeName']}}</h3>
                       <!-- <p>{{item['variantMileage'] +" "+ "Mileage"}}</p> -->
-                      <p>{{"$" + item['variantPricePerKm'] +" per 100 miles"}}</p>
+                      <p>{{"$" + item['variantPricePerKm'] +" per day"}}</p>
                     </div>
                   </div>
                 </div>

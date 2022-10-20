@@ -39,6 +39,7 @@ export class HomePageComponent implements OnInit {
     private utils:UtilsModule,private router: Router,   private localStorage: LocalStorageService ){ }
 
   ngOnInit() {
+    this.localStorage.remove("selectedVariant");
     this.varaint1 = ".//assets//Dump//Volkswagen//Polo//white.jpg";
     this.disp= false;
     console.log("\n HomePageComponent selectedFilterParams",this.constantsModule.selectedFilterParams);
@@ -260,7 +261,15 @@ export class HomePageComponent implements OnInit {
   }
 
   expandCar(item){
+    this.setSelectedVariant(item);
     this.router.navigate(["/user/car/" + item.variantId]); 
+  }
+
+
+  setSelectedVariant(variant) {
+    this.localStorage.set('selectedVariant', {
+      data:variant
+    });
   }
 
 }
