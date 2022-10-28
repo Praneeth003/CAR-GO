@@ -249,8 +249,8 @@ c_user_name varchar(30) NOT NULL,
 c_user_type ENUM('GUEST', 'REGISTERED','ADMIN')  NOT NULL, 
 c_user_verification_type varchar(30) DEFAULT NULL,  
 c_user_description varchar(500) DEFAULT NULL,
-c_user_email varchar(30) NOT NULL, 
-c_user_mobile_number varchar(15) NOT NULL, 
+c_user_email varchar(30) DEFAULT NULL, 
+c_user_mobile_number varchar(15) DEFAULT NULL, 
 c_user_status tinyint(1) NOT NULL DEFAULT '1',
 c_user_password varchar(30) NOT NULL,
 PRIMARY KEY (c_user_id),
@@ -342,8 +342,8 @@ values
 
 create table tbl_add_on(
 c_add_on_id int NOT NULL AUTO_INCREMENT,
-c_add_on_name varchar(30) NOT NULL, 
-c_add_on_description varchar(500) ,
+c_add_on_name varchar(300) NOT NULL, 
+c_add_on_description varchar(1000) ,
 c_add_on_type varchar(30) NOT NULL,
 c_add_on_value double NOT NULL,
 PRIMARY KEY (c_add_on_id),
@@ -353,8 +353,10 @@ UNIQUE KEY (c_add_on_name)
 insert into tbl_add_on
 (c_add_on_name,c_add_on_description,c_add_on_type,c_add_on_value)
 values
-("Extra Miles","20 % of Extra DIstance at 50% percent of original rate","PERCENTAGE",10),
-("Road Side Assistance","desc","FIXED",1000);
+("Protect Yourself, and the Wallet","If your car is damaged, you won't pay a thing","FIXED",50),
+("Liability Insurance Supplement","Protect yourself from liability after an accident","FIXED",20),
+("Skip the Pump and Save Time","Pay for gas now and you won't need to refuel before you return","PER_DAY",45.0),
+("Infant Child Seat","For infants less than one year and weigh up to 20 pounds or up to 9 kgs","PER_DAY",20.0);
 
 create table tbl_user_profile(
 c_user_profile_id int NOT NULL AUTO_INCREMENT,
@@ -444,3 +446,30 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(x, delim, pos),
 ALTER TABLE tbl_cart Modify column c_from_date TimeStamp NOT NULL;   
 
 ALTER TABLE tbl_cart Modify column c_to_date TimeStamp NOT NULL;   
+
+
+
+create table tbl_promo_code(
+c_promo_code_id int NOT NULL AUTO_INCREMENT,
+c_promo_code_name varchar(300) NOT NULL, 
+c_promo_code_description varchar(1000) ,
+c_promo_code_type varchar(30) NOT NULL,
+c_promo_code_value double NOT NULL,
+PRIMARY KEY (c_promo_code_id),
+UNIQUE KEY (c_promo_code_name)
+);
+
+insert into tbl_promo_code
+(c_promo_code_name,c_promo_code_description,c_promo_code_type,c_promo_code_value)
+values
+("CARGO20P","Flat 20% Off","PERCENTAGE",20),
+("CARGO10F","Flat 10$ Off","FLAT",10);
+
+create table tbl_booking_promo_code(
+c_booking_promo_code_info_id int NOT NULL AUTO_INCREMENT,
+c_promo_code_id int NOT NULL, 
+c_booking_info_id int NOT NULL,
+PRIMARY KEY (c_booking_promo_code_info_id),
+FOREIGN KEY (c_promo_code_id) REFERENCES tbl_promo_code(c_promo_code_id),
+FOREIGN KEY (c_booking_info_id) REFERENCES tbl_booking_info(c_booking_info_id)
+);
