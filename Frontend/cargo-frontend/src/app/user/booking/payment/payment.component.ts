@@ -36,6 +36,10 @@ export class PaymentComponent implements OnInit {
   username1: any;
   mNo1: any;
   cvv: any;
+  validation: any;
+  selectedFilterParams: any;
+  orderId: string;
+  id: any;
 
   constructor(private http: HttpClient, private waterDataService: SharedService, private constantsModule: ConstantsModule,
     private utils: UtilsModule, private router: Router, private localStorage: LocalStorageService, private toastrService: ToastrService) { }
@@ -82,6 +86,15 @@ export class PaymentComponent implements OnInit {
       "isVisible": true,
       "id": "profile"
     };
+    this.mapLoaderActive = false;
+  }
+
+  async downloadBooking() {
+    this.toastrService.success("Started Downloading InVoice", "");
+    this.mapLoaderActive = true;
+    let endpoint = "booking_invoice/" + this.orderId;
+    let result = await this.waterDataService.downloadPDF(endpoint).toPromise();
+    console.log("result", result);
     this.mapLoaderActive = false;
   }
 
@@ -147,6 +160,65 @@ export class PaymentComponent implements OnInit {
     this.mapLoaderActive = false;
   }
 
+  setPreviouslySelectedAddOn(){
+    let data = this.localStorage.get('cartData');
+    console.log("\n existing cartData ", data);
+    if (data != null && data != undefined && data['data'] != undefined) {
+      let cartData = data['data'];
+      console.log("\n cartData", cartData);
+      let currentCartData = cartData[this.id];
+      console.log("\n currentCartData ", currentCartData);
+      this.setPreviouslySelectedAddOn = currentCartData['postData']['addOnIds'];
+      console.log("\n previouslySelectedAddOnID ", this.setPreviouslySelectedAddOn);
+    } else {
+      this.navigateRelHome();
+    }
+  }
+  navigateRelHome() {
+    throw new Error('Method not implemented.');
+  }
+
+  async getLocationList() {
+    this.mapLoaderActive = true;
+    let result = await this.waterDataService.getLocationList().toPromise();
+    console.log("\n getLocationList ",result);
+    this.mapLoaderActive = false;
+    if(result != null && result != undefined){
+      if(result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS){
+        let sList =result['locationList'];
+        if (sList && sList.length > 0) {
+          this.getLocationList = sList;
+        }
+      }
+    }
+  }
+
+  onFromLocationChange(){
+    console.log("\n In onFromLocationChange ");
+    this.validation[3] = !this.utils.isEmptyObj(this.selectedFilterParams.fromLocation);
+  }
+
+  onToLocationChange(){
+    console.log("\n In onToLocationChange ");
+    this.validation[4] = !this.utils.isEmptyObj(this.selectedFilterParams.toLocation);
+  }
+
+  isValid(): boolean {
+    this.validation[0] = this.selectedFilterParams.sDate['value'] != null && this.selectedFilterParams.sDate['value'] != undefined;
+    this.validation[1] = this.selectedFilterParams.eDate['value'] != null && this.selectedFilterParams.eDate['value'] != null;
+    if (this.validation[0] && this.validation[1]) {
+      this.validation[2] = this.utils.getModelDateWithDateFormat(this.selectedFilterParams.sDate['value'], this.selectedFilterParams.format) >
+        this.utils.getModelDateWithDateFormat(this.selectedFilterParams.eDate['value'], this.selectedFilterParams.format) ? false : true;
+    }
+    this.validation[3] = !this.utils.isEmptyObj(this.selectedFilterParams.fromLocation);
+    this.validation[4] = !this.utils.isEmptyObj(this.selectedFilterParams.toLocation);
+    let valid = true;
+    for (let ind = 0; ind < this.validation.length; ind++) {
+      valid = valid && this.validation[ind];
+    }
+    console.log("\n In isValid ",valid);
+    return valid;
+  }
 
   checkAddPaymentInfo() {
     if (this.mNo1 == null || this.username1 == null || this.mNo1 == undefined || this.username1 == undefined
