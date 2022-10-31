@@ -37,6 +37,13 @@ public class UserProfileController {
     	System.out.println("\n UserProfileController  getUserDetails "+userDetails);
     	return userService.getUserDetails(userDetails);
     }
+
+    @PostMapping(value = {"/getLoginedUserDetails"})
+    @ResponseBody
+    public UserDetailsResponse getLoginedUserDetails(@RequestBody UserDetails userDetails) {
+    	System.out.println("\n UserProfileController  getLoginedUserDetails "+userDetails);
+    	return userService.getUserDetails(userDetails);
+    }
     
 
     @PostMapping(value = {"/authenticate"})

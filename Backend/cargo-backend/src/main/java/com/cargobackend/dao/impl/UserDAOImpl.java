@@ -91,7 +91,8 @@ public class UserDAOImpl implements IUserDAO{
 
 	}
 
-	@Override
+	
+    @Override
 	public UserDetailsResponse getUserDetails(UserDetails userDetails) {	
     	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
     	userDetailsResponse.setFailedResponse();
@@ -265,6 +266,25 @@ public class UserDAOImpl implements IUserDAO{
             cStmt.registerOutParameter(i++, Types.VARCHAR);
             /* register output parameters end */
             
+            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+            	UserDetails userDetails1 = null; 
+                while (rs.next()) {
+                	userDetails1 = new UserDetails();
+                	userDetails1.setUserId(rs.getInt("c_user_id"));
+                	userDetails1.setUserName(rs.getString("c_user_name"));
+                	userDetails1.setUserEmail(rs.getString("c_user_email"));
+                	userDetails1.setUserMobileNumber(rs.getString("c_user_mobile_number"));
+                }
+                if(userDetails1 != null) {
+                    userDetailsResponse.setUserDetails(userDetails1);
+                	userDetailsResponse.setSuccessResponse();
+                }
+            } else {
+           	 	System.out.println("In getUserDetails Error in proc :{}"+ cStmt.getString(4));
+            	userDetailsResponse.setErrorId(cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+            }
+
             System.out.println("In logOutUser Calling DB procedure cStmt Before{}"+ cStmt);
             rs = cStmt.executeQuery();
             System.out.println("In logOutUser Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
@@ -282,6 +302,65 @@ public class UserDAOImpl implements IUserDAO{
         }
 		return userDetailsResponse;
 	}
+    public UserDetailsResponse getLoggedInUserDetails(UserDetails userDetails) {	
+    	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+    	userDetailsResponse.setFailedResponse();
+    	
+		System.out.println("In getLoggedInUserDetails userDetails "+userDetails);
+	    Connection connection = null;
+        CallableStatement cStmt = null;
+        ResultSet rs = null;
+        String procedureName = "proc_get_user_details_v1dot0";
+        final String procedureCall = "{call " + procedureName + "(?,?,?,?,?)}";
+        try {
+            connection = jdbcTemplate.getDataSource().getConnection();
+            cStmt = connection.prepareCall(procedureCall);
+            
+            int i=1;
+    
+            
+    		if(userDetails.getUserId() != null){
+				cStmt.setInt(i++, userDetails.getUserId());
+			}else{
+				cStmt.setNull(i++, Types.NULL);
+			}
+    	
+            /* input parameters start */  
+            
+            /* register output parameters start */
+            cStmt.registerOutParameter(i++, Types.INTEGER);
+            cStmt.registerOutParameter(i++, Types.VARCHAR);
+            /* register output parameters end */
+            
+            System.out.println("In getLoggedInUserDetails Calling DB procedure cStmt Before{}"+ cStmt);
+            rs = cStmt.executeQuery();
+            System.out.println("In getLoggedInUserDetails Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
+            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+            	UserDetails userDetails1 = null; 
+                while (rs.next()) {
+                	userDetails1 = new UserDetails();
+                	userDetails1.setUserId(rs.getInt("c_user_id"));
+                	userDetails1.setUserName(rs.getString("c_user_name"));
+                	userDetails1.setUserEmail(rs.getString("c_user_email"));
+                	userDetails1.setUserMobileNumber(rs.getString("c_user_mobile_number"));
+                }
+                if(userDetails1 != null) {
+                    userDetailsResponse.setUserDetails(userDetails1);
+                	userDetailsResponse.setSuccessResponse();
+                }
+            } else {
+           	 	System.out.println("In getLoggedInUserDetails Error in proc :{}"+ cStmt.getString(4));
+            	userDetailsResponse.setErrorId(cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+            }
+        } catch (Exception e) {
+        	System.out.println("In getLoggedInUserDetails e :"+ e);
+        } finally {
+            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+        }
+		return userDetailsResponse;
+	}
+    
 	
 	
 	
