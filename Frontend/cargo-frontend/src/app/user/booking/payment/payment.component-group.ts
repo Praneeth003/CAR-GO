@@ -8,11 +8,11 @@ import { SharedService } from 'src/app/shared/shared.service';
 import { UtilsModule } from 'src/app/shared/utils/utils/utils.module';
 
 @Component({
-  selector: 'app-payment',
-  templateUrl: './payment.component-new.html',
+  selector: 'app-payment1',
+  templateUrl: './payment.component-group.html',
   styleUrls: ['./payment.component.css']
 })
-export class PaymentComponent implements OnInit {
+export class PaymentComponent1 implements OnInit {
 
   disp = false;
   errorDisp = false;
@@ -23,10 +23,14 @@ export class PaymentComponent implements OnInit {
 
   userProfileList = [];
   paymentInfoList = [];
+
+
+  cartResponseArr=[];
   cartResponse = {};
 
   combinedList = [];
 
+  selectedUserProfileArr=[];
   selectedUserProfile = {};
   selectedPaymentInfo = {};
 
@@ -47,10 +51,10 @@ export class PaymentComponent implements OnInit {
     if (data == null || data == undefined || data['data'] == undefined) {
       this.router.navigate(["/user/journey-details"]);
     } else {
-      this.cartResponse = data['data'];
+      this.cartResponseArr = data['data'];
     }
 
-    console.log("\n this.cartResponse ", this.cartResponse);
+    console.log("\n this.cartResponseArr ", this.cartResponseArr);
     this.getUserProfile();
     this.getPaymentInfo();
 
@@ -62,7 +66,7 @@ export class PaymentComponent implements OnInit {
     this.mapLoaderActive = true;
     this.disp = false;
     this.errorDisp = false;
-    let endpoint = "user_profile/" + this.cartResponse['userId'];
+    let endpoint = "user_profile/" + this.cartResponseArr[0]['userId'];
     let result = await this.waterDataService.get(endpoint).toPromise();
     if (result != null && result != undefined) {
       let sList = result['userProfileList'];

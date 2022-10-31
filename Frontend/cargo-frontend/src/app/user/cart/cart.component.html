@@ -1,3 +1,35 @@
-<p>
-  cart works!
-</p>
+<spinner id="cartPage" [show]="mapLoaderActive"></spinner>
+
+<br/>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Variant</th>
+      <th scope="col">Fuel Type</th>
+      <th scope="col">Transmission Type</th>
+      <th scope="col">Price</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let variantId of  cartArr">  
+      <th scope="row">{{ cartData[variantId]['variant']['variantName'] }}</th>
+      <td>{{ cartData[variantId]['variant']['fuelType']['fuelTypeName'] }}</td>
+      <td>{{ cartData[variantId]['variant']['transmissionType']['transmissionTypeName'] }}</td>
+      <td>$ {{ cartData[variantId]['priceResponse']['price'] }}</td>
+      <td>
+        <button (click)="updateCart(variantId)" class="btn btn-success me-2"> Update</button>
+        <button (click)="removeFromCart(variantId)" class="btn btn-primary me-2"> Remove</button>
+      </td>
+    </tr>
+  </tbody>
+  <tr >
+    <td></td>
+    <td></td>
+    <td></td>
+    <th scope="row">$ {{totalPrice}}</th>
+    <td></td>
+  </tr>
+</table>
+
+<button (click)="bookNow()" class="btn btn-success"> Book Now</button>

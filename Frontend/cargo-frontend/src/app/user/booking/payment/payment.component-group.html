@@ -1,0 +1,100 @@
+<div class="container-fluid">
+  <div class="row my-3">
+    <h3>Driver and Payment Information Details</h3>
+    <h4 style="text-align: right;"> Total Price :: ${{this.cartResponse.price}}</h4>
+    <div class="accordion" id="accordionExample">
+
+      <div class="accordion-item"  *ngFor="let  item of combinedList">
+        <h2 class="accordion-header" [id]="'#Id'+item['id']">
+          <button (click)="setActiveClass(item)" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+           [attr.data-target]="item['name']" aria-expanded="true" >
+            {{item['name']}}
+          </button>
+        </h2>
+        <div [id]="item['id']"  [hidden]="!item['isVisible']" class="accordion-collapse collapsed" 
+          data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <div class="row">
+              <div class="col-lg-12">
+
+                <ng-container  *ngIf="item['id'] == 'profile'">
+                <p *ngFor="let  item1 of item['data']"> <input type="checkbox" [name] ="item['id']" (change)="onProfileChange($event,item1)" [checked]="item1['isChecked']"> <span class="check"></span>
+                  <b class="ps-2">Name : </b> {{item1['userProfileName']}}
+                  <b class="ps-2">Licence Number : </b> {{item1['licenceNumber']}}</p>
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
+                        Add New Profile
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                      data-bs-parent="#accordionExample">
+                      <div class="accordion-body">
+                        <div class="row">
+                          <div class="col-lg-12">
+                              <div class="form-group mb-4"> 
+                                <label>Profile Name</label>
+                                <input type="text" class="form-control" placeholder="Profile Name" [(ngModel)] = "username">
+                              </div>
+                              <div class="form-group mb-4"> 
+                                <label>Licence Number</label>
+                                <input type="text" class="form-control" placeholder="Licence Number" [(ngModel)] = "mNo">
+                              </div>
+                              <button class="btn btn-success btn-lg" (click)="checkAddUserProfile()">Create Profile</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container  *ngIf="item['id'] == 'payment'">
+                  <p *ngFor="let  item1 of item['data']"> <input type="checkbox" [name] ="item['id']" (change)="onPaymentInfoChange($event,item1)" [checked]="item1['isChecked']"> <span class="check"></span>
+                    <b class="ps-2">Card Name : </b> {{item1['paymentMethodInfo']['nameOnCard'] != null ? item1['paymentMethodInfo']['nameOnCard'] : '-'}}
+                    <b class="ps-2">Card Number : </b> {{item1['paymentMethodInfo']['cardNumber']}}</p>
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                          Add New Payment Information
+                        </button>
+                      </h2>
+                      <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                          <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group mb-4"> 
+                                  <label>Card Holder Name</label>
+                                  <input type="text" class="form-control" placeholder="Card Holder Name" [(ngModel)] = "username1">
+                                </div>
+                                <div class="form-group mb-4"> 
+                                  <label>Card Number</label>
+                                  <input type="text" class="form-control" placeholder="Card Number" [(ngModel)] = "mNo1">
+                                </div>
+                                <div class="form-group mb-4"> 
+                                  <label>Cvv</label>
+                                  <input type="text" class="form-control" placeholder="CVV" [(ngModel)] = "cvv">
+                                </div>
+                                <button class="btn btn-success btn-lg" (click)="checkAddPaymentInfo()">Create Payment Info</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+      <button class="btn btn-primary"  (click) ="payNow()">Pay Now</button>
+    </div>
+  </div>
+</div>

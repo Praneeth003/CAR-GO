@@ -10,6 +10,7 @@ public class CreateBookingRequest {
 	Integer paymentMethodInfoId;
 	List<Integer> cartIds;
 	List<Integer> userProfileIds;
+	List<Integer> promoCodeIds;
 	BookingInfo.BookingStatus bookingStatus;
 	
 	public Integer getUserId() {
@@ -42,6 +43,15 @@ public class CreateBookingRequest {
 	public void setBookingStatus(BookingInfo.BookingStatus bookingStatus) {
 		this.bookingStatus = bookingStatus;
 	}
+
+	public List<Integer> getPromoCodeIds() {
+		return promoCodeIds;
+	}
+
+	public void setPromoCodeIds(List<Integer> promoCodeIds) {
+		this.promoCodeIds = promoCodeIds;
+	}
+
 	@Override
 	public String toString() {
 		return "CreateBooking [userId=" + userId + ", paymentMethodInfoId=" + paymentMethodInfoId

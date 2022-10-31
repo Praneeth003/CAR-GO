@@ -67,4 +67,8 @@ public class BaseResponse implements Serializable {
     public void setSuccessResponse() {
         this.setStatus(CommonConstants.Status.SUCCESS.name().toString());
     }
+
+    public boolean isSuccess() {
+        return CommonConstants.Status.SUCCESS.name().toString().equals(this.status);
+    }
 }
