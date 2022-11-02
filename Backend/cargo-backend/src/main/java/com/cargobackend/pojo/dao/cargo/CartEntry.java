@@ -13,6 +13,7 @@ public class CartEntry {
 	Location pickupLocation;
 	Location dropLocation;
 	Double price;
+	CartPrice cartPrice;
 	UserProfile userProfile;
 	List<AddOn> addOnList;
 	public Variant getVariant() {
@@ -81,12 +82,39 @@ public class CartEntry {
 	public void setAddOnList(List<AddOn> addOnList) {
 		this.addOnList = addOnList;
 	}
+
+	public Boolean getActive() {
+		return isActive;
+	}
+
+	public void setActive(Boolean active) {
+		isActive = active;
+	}
+
+	public CartPrice getCartPrice() {
+		return cartPrice;
+	}
+
+	public void setCartPrice(CartPrice cartPrice) {
+		this.cartPrice = cartPrice;
+	}
+
 	@Override
 	public String toString() {
-		return "CartEntry [cartId=" + cartId + ", userId=" + userId + ", variant=" + variant + ", isActive=" + isActive
-				+ ", fromDate=" + fromDate + ", toDate=" + toDate + ", pickupLocation=" + pickupLocation
-				+ ", dropLocation=" + dropLocation + ", price=" + price + ", userProfile=" + userProfile
-				+ ", addOnList=" + addOnList + "]";
+		return "CartEntry{" +
+				"cartId=" + cartId +
+				", userId=" + userId +
+				", variant=" + variant +
+				", isActive=" + isActive +
+				", fromDate='" + fromDate + '\'' +
+				", toDate='" + toDate + '\'' +
+				", pickupLocation=" + pickupLocation +
+				", dropLocation=" + dropLocation +
+				", price=" + price +
+				", cartPrice=" + cartPrice +
+				", userProfile=" + userProfile +
+				", addOnList=" + addOnList +
+				'}';
 	}
 	
 	

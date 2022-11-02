@@ -174,4 +174,25 @@ public class CargoController {
                 .body(resource);
     }
 
+    @GetMapping(value = {"/promo_code"})
+    @ResponseBody
+    public PromoCodeResponse getPromoCodes() {
+        System.out.println("\n CargoController  getPromoCodes ");
+        return cargoService.getPromoCodes();
+    }
+
+    @PostMapping(value = {"/cart_price"})
+    @ResponseBody
+    public CartPriceResponse getPromoCodes(@RequestBody GetCartPriceRequest cartPriceRequest) {
+        System.out.println("\n CargoController  cartPriceRequest ");
+        return cargoService.getCartPrice(cartPriceRequest);
+    }
+
+    @PostMapping(value = {"/promo_price"})
+    @ResponseBody
+    public PromoPriceResponse getPromoCodes(@RequestBody GetPromoPriceRequest promoPriceRequest) {
+        System.out.println("\n CargoController  promoPriceRequest ");
+        return cargoService.getPromoPrice(promoPriceRequest);
+    }
+
 }

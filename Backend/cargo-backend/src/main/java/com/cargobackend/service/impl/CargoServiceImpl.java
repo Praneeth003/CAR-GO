@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.UUID;
 
+import com.cargobackend.pojo.dao.cargo.*;
+import com.cargobackend.pojo.request.*;
+import com.cargobackend.pojo.response.*;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.stereotype.Service;
 
@@ -190,29 +193,39 @@ public class CargoServiceImpl implements ICargoService{
 		return cargoDAO.addUserProfile(userProfile);
 	}
 	
-	public double calculateTripCost(Variant variant, List<AddOn> addOns, AddToCartRequest addToCartRequest) {
+	public CartPrice calculateTripCost(Variant variant, List<AddOn> addOns, Timestamp fromTimeStamp, Timestamp toTimestamp) {
 		Double  variantPrice = Double.valueOf(variant.getVariantPricePerKm());
-		int nDays = tripDurationInDays(addToCartRequest.getFromDate(),addToCartRequest.getToDate());
+		int nDays = tripDurationInDays(fromTimeStamp,toTimestamp);
 		System.out.println("\n tripDurationInDays ........nDays "+nDays);
 		if(nDays <=0) {
 			nDays = 1;
 		}
+		CartPrice cartPrice = new CartPrice();
 		variantPrice = nDays*variantPrice;
 		Double tripPrice = variantPrice;
 		System.out.println("\n AddOnList ........nDays "+ addOns);
+		List<AddOnPrice> addOnPriceList = new ArrayList<>();
 		if(addOns != null) {
 			for(AddOn addOn : addOns) {
+				Double addOnPrice = 0.0;
 				if(AddOnComputeStrategy.FIXED.toString().equalsIgnoreCase(addOn.getAddOnComputeStrategy().toString())) {
-					tripPrice = tripPrice + addOn.getAddOnValue();
+					addOnPrice = addOn.getAddOnValue();
 				}
 				else if(AddOnComputeStrategy.PER_DAY.toString().equalsIgnoreCase(addOn.getAddOnComputeStrategy().toString())) {
-					tripPrice = tripPrice + (nDays * addOn.getAddOnValue());
+					addOnPrice = (nDays * addOn.getAddOnValue());
 				}
+				AddOnPrice addOnPriceInfo = new AddOnPrice();
+				addOnPriceInfo.setAddOn(addOn);
+				addOnPriceInfo.setPrice(addOnPrice);
+				addOnPriceList.add(addOnPriceInfo);
+				tripPrice = tripPrice + addOnPrice;
 			}
 		}
+		cartPrice.setAddOnPrices(addOnPriceList);
 		System.out.println("\n tripPrice ........tripPrice "+tripPrice);
 		System.out.println("\n tripPrice ........final tripPrice "+tripPrice);
-		return tripPrice;
+		cartPrice.setPrice(tripPrice);
+		return cartPrice;
 	}
 	
 	public Integer tripDurationInDays(Timestamp fromTimeStamp, Timestamp toTimestamp) {
@@ -237,7 +250,8 @@ public class CargoServiceImpl implements ICargoService{
 			addToCartErrorResponse.setErrorDescription("Variant Not Found");
 			return addToCartErrorResponse;
 		}
-		Double tripCost = calculateTripCost(variant, addOns,addToCartRequest);
+		CartPrice cartPrice = calculateTripCost(variant, addOns,addToCartRequest.getFromDate(),addToCartRequest.getToDate());
+		Double tripCost = cartPrice.getPrice();
 		addToCartRequest.setPrice(tripCost);
 		if(addToCartRequest.getUserId() == null) {
 			UserDetails userDetails = new UserDetails();
@@ -248,7 +262,11 @@ public class CargoServiceImpl implements ICargoService{
 			UserDetailsResponse usd = userDAO.registerUser(userDetails); 
 			addToCartRequest.setUserId(usd.getUserDetails().getUserId());
 		}
-		return cargoDAO.addToCart(addToCartRequest);
+		AddToCartResponse addToCartResponse = cargoDAO.addToCart(addToCartRequest);
+		if(addToCartResponse.isSuccess()){
+			addToCartResponse.getCartEntry().setCartPrice(cartPrice);
+		}
+		return addToCartResponse;
 		
 	}
 	
@@ -299,9 +317,21 @@ public class CargoServiceImpl implements ICargoService{
         String uuidAsString = "pr" + uuid.toString().substring(0,18);
 		return new PaymentInfoResp(uuidAsString, BookingStatus.SUCCESS);
 	}
+
+	public Double getPromoPrice(PromoCode promoCode, Double baseAmount){
+    	if(promoCode.getPromoCodeType() == PromoCode.PromoCodeType.FLAT){
+    		return promoCode.getPromoValue();
+		}
+		else if(promoCode.getPromoCodeType() == PromoCode.PromoCodeType.PERCENTAGE){
+    		return (promoCode.getPromoValue() * baseAmount) /100;
+		}
+    	return 0.0;
+	}
 	
 	public Double getTotalCost(BookingInfo bookingInfo) {
-		return bookingInfo.getCartList().stream().map(cart -> (cart.getPrice() != null ? cart.getPrice() : 0.0)).mapToDouble(Double::doubleValue).sum();
+		Double allCarsPrice =  bookingInfo.getCartList().stream().map(cart -> (cart.getPrice() != null ? cart.getPrice() : 0.0)).mapToDouble(Double::doubleValue).sum();
+		Double promoCodePrice = bookingInfo.getPromoCodeList().stream().map(promoCode -> (getPromoPrice(promoCode,allCarsPrice))).mapToDouble(Double::doubleValue).sum();
+		return (allCarsPrice - promoCodePrice);
 	}
 	
 	public String nullToString(String a) {
@@ -418,6 +448,31 @@ public class CargoServiceImpl implements ICargoService{
 		CreateBookingResponse bookingResponse = cargoDAO.getBooking(bookingId);
 		return generateBookingInvoice(bookingResponse.getBookingInfo());
 	}
-	
+
+	@Override
+	public PromoCodeResponse getPromoCodes(){
+    	return cargoDAO.getPromoCodes();
+	}
+
+    @Override
+    public CartPriceResponse getCartPrice(GetCartPriceRequest cartPriceRequest) {
+		CartPriceResponse cartPriceResponse = new CartPriceResponse();
+        Variant variant = cargoDAO.getVariantById(cartPriceRequest.getVariantId()).getVariantList().get(0);
+        List<AddOn> addOnList = cargoDAO.getAddOns(cartPriceRequest.getAddOnIds()).getAddOnList();
+        CartPrice cartPrice = calculateTripCost(variant, addOnList,cartPriceRequest.getFromDate(),cartPriceRequest.getToDate());
+		cartPriceResponse.setCartPrice(cartPrice);
+		cartPriceResponse.setSuccessResponse();
+        return cartPriceResponse;
+    }
+
+	@Override
+	public PromoPriceResponse getPromoPrice(GetPromoPriceRequest promoPriceRequest) {
+		Double promoPrice = getPromoPrice(promoPriceRequest.getPromo(), promoPriceRequest.getTotalAmount());
+		PromoPriceResponse promoPriceResponse = new PromoPriceResponse();
+		promoPriceResponse.setSuccessResponse();
+		promoPriceResponse.setPromoPrice(promoPrice);
+		return promoPriceResponse;
+	}
+
 
 }
