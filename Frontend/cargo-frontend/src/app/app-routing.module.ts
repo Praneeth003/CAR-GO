@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CreateVariantComponent } from './admin/create-variant/create-variant.component';
 import { LoginComponent } from './shared/login/login.component';
 import { SignupComponent } from './shared/signup/signup.component';
 import { BookingPreviewComponent } from './user/booking/booking-preview/booking-preview.component';
@@ -18,10 +19,11 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'user/journey-details', component: JourneyDetailsComponent },
   { path: 'user/home', component: HomePageComponent },
-  { path: 'user/car/:carId', component: CarPageComponent },
+  { path: 'user/car/:carId/:actionType', component: CarPageComponent },
   { path: 'user/cart', component: CartComponent },
   { path: 'user/payment', component: PaymentComponent },
-  { path: 'user/booking-preview', component: BookingPreviewComponent }
+  { path: 'user/booking-preview', component: BookingPreviewComponent },
+  { path: 'admin/create-variant', component: CreateVariantComponent },
 ];
 
 @NgModule({

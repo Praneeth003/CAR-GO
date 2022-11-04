@@ -1,0 +1,256 @@
+
+
+
+
+<div class="page-bg">
+  <div class="content">
+    <div class="container">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-5 contents">
+          <div class="row justify-content-center">
+            <div class="col-md-12">
+              <div class="form-block" *ngIf="!uploadImages">
+                  <div class="mb-4">
+                  <h3>Add a New Car</h3>
+                 
+                </div>
+                <!-- <form> -->
+                  
+                  <div class="form-group mb-4"> 
+                    <label>Car Name</label>
+                    <input type="text" class="form-control" placeholder="Car Name" [(ngModel)] = "createVariantNewParams['variantName']">
+                  </div>
+
+                  <div class="form-group mb-4"> 
+                    <label>Car Description</label>
+                    <input type="text" class="form-control" placeholder="Car Description" [(ngModel)] = "createVariantNewParams['variantDescription']">
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Model Name</label>
+                    <select name="Model Name" class="form-control form-select" [(ngModel)]="createVariantNewParams['modelId']">
+                      <option value=""  default="true" disabled>Select Model Name
+                      </option>
+                      <option *ngFor="let model of modelList" [ngValue]="model['modelId']">
+                        {{model['modelName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[0]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Model Name is not selected</small>
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Color</label>
+                    <select name="Color" class="form-control form-select" [(ngModel)]="createVariantNewParams['colorId']">
+                      <option value=""  default="true" disabled>Select Color
+                      </option>
+                      <option *ngFor="let color of colorList" [ngValue]="color['colorId']">
+                        {{color['colorName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[1]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Color is not selected</small>
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Body Type</label>
+                    <select name="Body Type" class="form-control form-select" [(ngModel)]="createVariantNewParams['bodyTypeId']">
+                      <option value=""  default="true" disabled>Select Body Type
+                      </option>
+                      <option *ngFor="let bodyType of bodyTypeList" [ngValue]="bodyType['bodyTypeId']">
+                        {{bodyType['bodyTypeName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[2]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Body Type is not selected</small>
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Fuel Type</label>
+                    <select name="Fuel Type" class="form-control form-select" [(ngModel)]="createVariantNewParams['fuelTypeId']">
+                      <option value=""  default="true" disabled>Select Fuel Type
+                      </option>
+                      <option *ngFor="let fuelType of fuelTypeList" [ngValue]="fuelType['fuelTypeId']">
+                        {{fuelType['fuelTypeName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[3]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Fuel Type is not selected</small>
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Transmission Type</label>
+                    <select name="Transmission Type" class="form-control form-select" [(ngModel)]="createVariantNewParams['transmissionTypeId']">
+                      <option value=""  default="true" disabled>Select Transmission Type
+                      </option>
+                      <option *ngFor="let transmissionType of transmissionTypeList" [ngValue]="transmissionType['transmissionTypeId']">
+                        {{transmissionType['transmissionTypeName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[4]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Transmission Type is not selected</small>
+                  </div>
+
+                  <div class="form-group mb-4"> 
+                    <label>Mileage</label>
+                    <input type="text" class="form-control" placeholder="Mileage" [(ngModel)] = "createVariantNewParams['mileage']">
+                  </div>
+
+                  <div class="form-group mb-4"> 
+                    <label>Price Per Day</label>
+                    <input type="text" class="form-control" placeholder="Mileage" [(ngModel)] = "createVariantNewParams['pricePerKilometer']">
+                  </div>
+
+                  <div class="form-group mb-4"> 
+                    <label>Kilometers Driven</label>
+                    <input type="text" class="form-control" placeholder="Kilometers Driven" [(ngModel)] = "createVariantNewParams['kilometersDriven']">
+                  </div>
+
+                  <div class="form-group mb-4"> 
+                    <label>Registration Number</label>
+                    <input type="text" class="form-control" placeholder="Registration Number" [(ngModel)] = "createVariantNewParams['numberPlate']">
+                  </div>
+
+                  <div class="form-group mb-4">
+                    <label>Current Location</label>
+                    <select name="Current Location" class="form-control form-select" [(ngModel)]="createVariantNewParams['currentLocationId']">
+                      <option value=""  default="true" disabled>Select Current Location
+                      </option>
+                      <option *ngFor="let currentLocation of currentLocationList" [ngValue]="currentLocation['currentLocationId']">
+                        {{currentLocation['currentLocationName']}}
+                      </option>
+                    </select>
+                    <small *ngIf="!validation[5]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                      Current Location is not selected</small>
+                  </div>
+
+                 <button class="btn btn-success btn-lg" (click)="goToUploadImages()">Submit</button>
+              </div>
+
+              <div class="form-block" *ngIf="uploadImages">
+                <div class="mb-4">
+                <h3>Upload Images</h3>
+               
+                </div>
+              <!-- <form> -->
+                <div class="col-lg-12">
+                  <div class="d-flex justify-content-start">
+                    <div class="mb-12 me-12">
+                      <div class="form-group mb-12">
+                        <label>Image Type</label>
+                        <select name="Model Name" class="form-control form-select" [(ngModel)]="imageInfo['imageType']">
+                          <option value=""  default="true" disabled>Select Image Type
+                          </option>
+                          <option [ngValue]="EXTERIOR">
+                            Exterior
+                          </option>
+                          <option [ngValue]="EXTERIOR">
+                            Interior
+                          </option>
+                        </select>
+                        <small *ngIf="!validation[0]" class="text-danger"><i class="fas fa-exclamation-triangle"></i>
+                          Image Type is not selected</small>
+                      </div>
+                      <label for="formFile" class="form-label">Car Image</label>
+                      <input class="form-control" type="file" id="file" [(ngModel)]="imageInfo['image']">
+                    </div>
+                    <div class="d-flex align-items-center mt-3">
+                      <button class="btn btn-success" (click)="appendImages()" >Add Another One</button>
+                    </div>
+                   
+                  </div>
+                 
+                </div>
+              <img *ngFor="let url of createVariantNewParams['imageList']"  [src]="url['image']" height="15px" width="20px" style="margin: 3px;"> <br/>
+
+              <br/>
+
+               <button class="btn btn-success btn-lg" (click)="createVariant()">Submit</button>
+            </div>
+              
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- <div class="page page-home">
+  <div class="page-container">
+  
+    <div class="top top-webp"
+      style="background-image: url(&quot;https://zoomcar-assets.zoomcar.com/images/original/a121667db0d5e435e48884b015120bc180a4ad2f.jpg?1661426287&quot;);">
+      <section class="search">
+        <div>
+        
+          
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <input style = "border-width:0px" class="placeholder" placeholder="User Name" [(ngModel)] = "username">
+
+                </div>
+              </div>
+          </div>
+
+
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Email Address" [(ngModel)] = "email">
+
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Mobile Number" [(ngModel)] = "mNo">
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" type = "password" placeholder="Password" [(ngModel)] = "psswd">
+
+                </div>
+              </div>
+          </div>
+
+          <div class="box-border">
+            <div class="field-wrap">
+                <div class="field field-address">
+                  <div class="icon-green-beacon"></div>
+                
+                
+                  <input style = "border-width:0px" class="placeholder" placeholder="Re Enter Password" [(ngModel)] = "reEnterPsswd">
+                </div>
+              </div>
+          </div>
+        
+          <div class="button-wrapper"><button class="button-primary" (click)="signup()">
+              Sign Up
+            </button></div>
+          </div>
+          <h3 style="color: red;" [hidden] = "!signUpFailed"> Sign Up Failed {{errorMessage}}</h3>
+      </section>
+    </div>
+  </div>
+</div> -->
