@@ -21,8 +21,9 @@
                     <input type = "password" placeholder="Password" [(ngModel)] = "psswrd" class="form-control">
                   </div>
                 <!-- </form> -->
-                <button class="btn btn-primary btn-lg me-3" (click)="login()">Login</button> 
-                 <button class="btn btn-success btn-lg" [routerLink]="['/signup']" href = "/signup">Sign UP</button>
+                <button class="btn btn-primary btn-lg me-3" (click)="login()">Login</button>
+                 <button class="btn btn-success btn-lg" [routerLink]="['/signup']" href = "/signup">Sign UP</button> <br> <br>
+                 <button class="btn btn-success btn-lg" [routerLink]="['/user/journey-details']" href = "/user/journey-details">Continue as a Guest</button>
                  <!-- <h6 style="color: red;" [hidden] = "!signUpFailed"> Login Failed {{errorMessage}}</h6> -->
                  <small *ngIf="signUpFailed" class="text-danger">
                    <br/>  <br/>
