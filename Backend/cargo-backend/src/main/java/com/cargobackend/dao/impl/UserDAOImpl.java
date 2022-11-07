@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import com.cargobackend.dao.IUserDAO;
 import com.cargobackend.pojo.dao.cargo.CarMake;
 import com.cargobackend.pojo.dao.user.UserDetails;
+import com.cargobackend.pojo.request.BodyTypeRequest;
+import com.cargobackend.pojo.response.BodyTypeResponse;
 import com.cargobackend.pojo.response.UserDetailsResponse;
 import com.cargobackend.utils.CommonConstants;
 import com.cargobackend.utils.CommonUtils;
@@ -91,6 +93,9 @@ public class UserDAOImpl implements IUserDAO{
 
 	}
 
+    @Override
+	public ModelResponse getModel(ModelRequest modelRequest) {
+
 	@Override
 	public UserDetailsResponse getUserDetails(UserDetails userDetails) {	
     	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
@@ -162,6 +167,9 @@ public class UserDAOImpl implements IUserDAO{
 		return userDetailsResponse;
 	}
 
+    @Override
+	public BodyTypeResponse getBodyType(BodyTypeRequest bodyTypeRequest) {
+
 	@Override
 	public UserDetailsResponse authenticateUser(UserDetails userDetails) {
     	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
@@ -221,6 +229,71 @@ public class UserDAOImpl implements IUserDAO{
             CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
         }
 		return userDetailsResponse;
+	}
+
+    @Override
+	public FuelTypeResponse getFuelType(FuelTypeRequest fuelTypeRequest) {
+		FuelTypeResponse response = new FuelTypeResponse();
+		response.setFailedResponse();
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_get_fuel_type_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?)}";
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+
+			int i = 1;
+
+			if (fuelTypeRequest == null || fuelTypeRequest.getFuelTypeIdList() == null
+					|| fuelTypeRequest.getFuelTypeIdList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromIntegerList(fuelTypeRequest.getFuelTypeIdList(),
+						CommonConstants.DELIMITER));
+			}
+
+			if (fuelTypeRequest == null || fuelTypeRequest.getFuelTypeNameList() == null
+					|| fuelTypeRequest.getFuelTypeNameList().isEmpty()) {
+				cStmt.setString(i++, CommonConstants.ALL);
+			} else {
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromList(fuelTypeRequest.getFuelTypeNameList(),
+						CommonConstants.DELIMITER));
+			}
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In getFuelType Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In getFuelType Calling DB procedure cStmt After {}" + cStmt);
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				List<FuelType> FuelTypeList = new ArrayList<>();
+				FuelType FuelType = null;
+				while (rs.next()) {
+					FuelType = new FuelType();
+					FuelType.setFuelTypeId(rs.getInt("c_fuel_type_id"));
+					FuelType.setFuelTypeName(rs.getString("c_fuel_type_name"));
+					FuelType.setFuelTypeDescription(rs.getString("c_fuel_type_description"));
+					FuelType.setFuelTypeStatus(rs.getBoolean("c_fuel_type_status"));
+					FuelTypeList.add(FuelType);
+				}
+				response.setFuelTypeList(FuelTypeList);
+				response.setSuccessResponse();
+				System.out.println("In getFuelType response:" + response);
+			} else {
+				System.out.println("In getFuelType Error in proc :{}" + cStmt.getInt(i - 2));
+				response.setErrorId(cStmt.getInt(i - 2));
+				response.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In getFuelType e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		return response;
 	}
 
 	@Override

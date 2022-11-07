@@ -774,7 +774,66 @@ public class CargoDAOImpl implements ICargoDAO {
 		}
 		return response;
 	}
+	@Override
+	public UserDetailsResponse registerUser(UserDetails userDetails) {
+      	UserDetailsResponse userDetailsResponse = new UserDetailsResponse();
+    	userDetailsResponse.setFailedResponse();
+    	
+		System.out.println("In regiserUser userDetails "+userDetails);
+	    Connection connection = null;
+        CallableStatement cStmt = null;
+        ResultSet rs = null;
+        String procedureName = "proc_create_user_v1dot0";
+        final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?)}";
+        try {
+            connection = jdbcTemplate.getDataSource().getConnection();
+            cStmt = connection.prepareCall(procedureCall);
+            
+            int i=1;
+            /* input parameters start */     
+            cStmt.setString(i++,userDetails.getUserName());
+            cStmt.setString(i++,userDetails.getUserEmail());
+            cStmt.setString(i++,userDetails.getUserPassword());
+            cStmt.setString(i++,userDetails.getUserMobileNumber());
+            if(userDetails.getUserType() == null) {
+                cStmt.setString(i++,CommonConstants.UserType.REGISTERED.name().toUpperCase());
+            }else {
+                cStmt.setString(i++,userDetails.getUserType().toUpperCase());
+            }
+            /* input parameters start */  
+            
+            /* register output parameters start */
+            cStmt.registerOutParameter(i++, Types.INTEGER);
+            cStmt.registerOutParameter(i++, Types.VARCHAR);
+            /* register output parameters end */
+            
+            System.out.println("In registerUser Calling DB procedure cStmt Before{}"+ cStmt);
+            rs = cStmt.executeQuery();
+            System.out.println("In registerUser Calling DB procedure cStmt After {}"+ cStmt+" i "+i);
+            if (cStmt.getInt(i-2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+              	UserDetails userDetails1 = null; 
+                while (rs.next()) {
+                	userDetails1 = new UserDetails();
+                   	userDetails1.setAuthId(rs.getInt(1));
+                }
+             	userDetailsResponse = getUserDetails(userDetails1);
+             	if(CommonConstants.Status.SUCCESS.name().toString().equalsIgnoreCase(userDetailsResponse.getStatus())) {
+             		userDetailsResponse.getUserDetails().setAuthId(userDetails1.getAuthId());
+             	}
+            } else {
+            	System.out.println("In registerUser userDetailsResponse: Else cStmt.getInt(i-2) "+ cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorId(cStmt.getInt(i-2));
+            	userDetailsResponse.setErrorDescription(CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i-2)).getDescription().toString());
+            }
+        } catch (Exception e) {
+        	 System.out.println("In registerUser e :"+ e);
+        } finally {
+            CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+        }
+     	System.out.println("In registerUser userDetailsResponse:"+ userDetailsResponse);
+		return userDetailsResponse;
 
+	}
 	@Override
 	public LocationResponse getLocation() {
 		LocationResponse response = new LocationResponse();
