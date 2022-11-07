@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BookingUpgradeComponent } from './booking-upgrade.component';
+import { BookingHistoryComponent } from './booking-history.component';
 
-describe('BookingUpgradeComponent', () => {
-  let component: BookingUpgradeComponent;
-  let fixture: ComponentFixture<BookingUpgradeComponent>;
+describe('BookingHistoryComponent', () => {
+  let component: BookingHistoryComponent;
+  let fixture: ComponentFixture<BookingHistoryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BookingUpgradeComponent ]
+      declarations: [ BookingHistoryComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BookingUpgradeComponent);
+    fixture = TestBed.createComponent(BookingHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

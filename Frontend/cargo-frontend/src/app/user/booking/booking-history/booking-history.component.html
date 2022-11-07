@@ -1,0 +1,38 @@
+<spinner id="bookingHistory" [show]="mapLoaderActive"></spinner>
+
+<p *ngIf="errorDispPay">
+  No Booking History Available for the User
+</p>
+
+
+<br/>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Booking ID</th>
+      <th scope="col">Pick up Location </th>
+      <th scope="col">Drop Location</th>
+      <th scope="col">From Date</th>
+      <th scope="col">To Date</th>
+      <th scope="col">Price</th>
+      <th scope="col">Booking Status</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let booking of bookingInfoList" >  
+          <th scope="row">{{ 'cargo'+booking['bookingInfoId'] }}</th>
+          <td>{{ booking['cartList'][0]['pickupLocation']['locationName']}}</td>
+          <td>{{  booking['cartList'][0]['dropLocation']['locationName']}}</td>
+          <td> {{ getBookingFromDate(booking) }}</td>
+          <td> {{ getBookingToDate(booking) }}</td>
+          <td> ${{ booking['totalPrice']}}</td>
+          <td> {{ booking['status']}}</td>
+          <td>
+            <button (click)="upgradeBooking(booking)" [disabled] ="!isUpdateEnabled(booking)" class="btn btn-success me-2"> Upgrade</button>
+            <button (click)="downloadInvoice(booking)" class="btn btn-success me-2">Download</button>
+            <button (click)="cancelBooking(booking)" [disabled] ="!isCancelEnabled(booking)" class="btn btn-primary me-2"> Cancel</button>
+          </td>
+    </tr>
+  </tbody>
+</table>

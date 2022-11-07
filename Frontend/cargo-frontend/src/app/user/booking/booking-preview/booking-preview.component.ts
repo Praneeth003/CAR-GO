@@ -20,13 +20,22 @@ export class BookingPreviewComponent implements OnInit {
     private utils: UtilsModule, private router: Router, private localStorage: LocalStorageService, private toastrService: ToastrService) { }
 
   ngOnInit() {
+    this.localStorage.remove('cartData');
     let data = this.localStorage.get('bookingInfo');
     this.orderId = data['data'].bookingInfoId;
     if(data['data'].status){
-      this.displayMessage = 'Order Placed Succesfully'
+      if(data['data'].status == 'CANCELLED'){
+        this.displayMessage = 'Booking Cancelled Succesfully'
+      }
+      if(data['data'].status == 'COMPLETED'){
+        this.displayMessage = 'Booking Completed Succesfully'
+      }
+      else {
+      this.displayMessage = 'Booking Confirmed'
+      }
     }
     else{
-      this.displayMessage = 'Unable to place order.. Please Contanct Customer Care'
+      this.displayMessage = 'Booking Failed.. Please Contanct Customer Care for further information'
     }
   }
 

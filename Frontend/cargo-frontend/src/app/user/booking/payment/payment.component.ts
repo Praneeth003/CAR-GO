@@ -37,6 +37,8 @@ export class PaymentComponent implements OnInit {
   mNo1: any;
   cvv: any;
 
+  totalPrice=0;
+
   constructor(private http: HttpClient, private waterDataService: SharedService, private constantsModule: ConstantsModule,
     private utils: UtilsModule, private router: Router, private localStorage: LocalStorageService, private toastrService: ToastrService) { }
 

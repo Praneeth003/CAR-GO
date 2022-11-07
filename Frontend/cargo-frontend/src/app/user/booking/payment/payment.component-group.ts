@@ -21,19 +21,22 @@ export class PaymentComponent1 implements OnInit {
   dispPay = false;
   errorDispPay = false;
 
+  validation ={};
+
   userProfileList = [];
   paymentInfoList = [];
 
-
-  cartResponseArr=[];
   cartResponse = {};
+  cartArr=[];
 
   combinedList = [];
 
-  selectedUserProfileArr=[];
   selectedUserProfile = {};
   selectedPaymentInfo = {};
 
+  userProfileForCart ={
+
+  };
   username: any;
   mNo: any;
 
@@ -41,32 +44,151 @@ export class PaymentComponent1 implements OnInit {
   mNo1: any;
   cvv: any;
 
+  userId=null;
+
+  totalPrice=0;
+  taxPrice =0;
+  totalPromoPrice=0;
+  finalPrice=0;
+
+  promoCodeList =[];
+  
+  selectedPromoCode =null;
+  promoCode =null;
+
   constructor(private http: HttpClient, private waterDataService: SharedService, private constantsModule: ConstantsModule,
     private utils: UtilsModule, private router: Router, private localStorage: LocalStorageService, private toastrService: ToastrService) { }
 
   ngOnInit() {
+    this.totalPrice =0;
     this.mapLoaderActive = true;
-    let data = this.localStorage.get('selectedCartResponse');
-    console.log("\n journeyDetailsFilter data ", data);
+    let data = this.localStorage.get('cartResponse');
+    this.selectedPaymentInfo =null;
+    this.selectedPromoCode  =null;
+    console.log("\n cartResponse data ", data);
     if (data == null || data == undefined || data['data'] == undefined) {
       this.router.navigate(["/user/journey-details"]);
     } else {
-      this.cartResponseArr = data['data'];
+      this.cartResponse = data['data'];
     }
-
-    console.log("\n this.cartResponseArr ", this.cartResponseArr);
+    let cartList =[];
+    for(let variantId in this.cartResponse){
+        this.userId = this.cartResponse[variantId]['userId'];
+        this.cartResponse[variantId]["isVisible"] = false;
+        this.totalPrice +=  this.cartResponse[variantId]['price'];
+        this.userProfileForCart[variantId] ={};
+        this.validation[variantId] =true;
+        cartList.push(variantId);
+    }
+    this.taxPrice = this.totalPrice*0.1;
+    this.finalPrice = this.totalPrice + this.taxPrice;
+    this.cartArr = cartList;
+    console.log("\n this.cartResponse ,this.userId,  this.totalPrice ,  this.cartArr ", this.cartResponse,this.userId ,  this.totalPrice,  this.cartArr );
     this.getUserProfile();
     this.getPaymentInfo();
-
+    this.getPromoCodes();
   }
 
+  checkPromoCode(){
+    this.finalPrice = this.totalPrice + this.taxPrice;
+    let valid = false;
+    this.selectedPromoCode  =null;
+    if(this.promoCode == null || this.promoCode == undefined){
+     return;
+    }
+    let index = this.promoCodeList.findIndex(src => src['promoCodeName'] == this.promoCode);
+    if(index != -1){
+      valid = true;
+      this.selectedPromoCode = this.promoCodeList[index];
+    }
+    console.log("\n  this.promoCode, this.promoCodeList this.selectedPromoCode ", this.promoCode,this.promoCodeList, this.selectedPromoCode);
+    if(!valid){
+      this.toastrService.error("Entered Prom Code is not Valid", "");
+    }else{
+      this.toastrService.success("Succesfully applied Promo Code Updating the Price...", "");
+      this.getPriceWithPromoCode();
+    }
+  }
+
+  async getPriceWithPromoCode(){
+    let endPoint = 'promo_price';
+    this.mapLoaderActive = true;
+    let reqData = {
+      "promo": this.selectedPromoCode,
+      "totalAmount": this.totalPrice+this.taxPrice
+    };
+    console.log("\n promo_price reqData ", reqData);
+    let result = await this.waterDataService.post(reqData, endPoint).toPromise();
+    console.log("\n promo_price result ", result);
+    this.mapLoaderActive = false;
+    if (result != null && result != undefined) {
+      if (result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS && result['promoPrice'] != undefined) {
+        this.totalPromoPrice= result['promoPrice'];
+        this.finalPrice = this.totalPrice + this.taxPrice -this.totalPromoPrice;
+        this.toastrService.success("You have successfully Created Booking", "");
+      } else {
+        this.toastrService.error("Alas there seems an issue try again later", "");
+      }
+    }
+    this.mapLoaderActive = false;
+  }
+
+  async getPromoCodes(){
+    this.mapLoaderActive = true;
+    this.dispPay = false;
+    this.errorDispPay = false;
+    let endpoint = "promo_code";
+    let result = await this.waterDataService.get(endpoint).toPromise();
+    if (result != null && result != undefined) {
+      let sList = result['promoCodeList'];
+      if (sList && sList.length > 0) {
+        this.promoCodeList = sList;
+        this.dispPay = true;
+        console.log("\n this.promoCodeList  ", this.promoCodeList);
+      } else {
+        this.errorDispPay = true;
+      }
+    } else {
+      this.errorDispPay = true;
+    }
+    this.combinedList[2] = {
+      "name": "Final Price Break",
+      "isVisible": true,
+      "id": "priceBreakUp"
+    };
+    this.mapLoaderActive = false;
+  }
+
+  onCartProfileChange(vId){
+    console.log("\n onCartProfileChange vId, userProfileForCart ",vId,this.userProfileForCart);
+    for(let variantId in this.cartResponse){
+      if(vId != variantId){
+        let profileList = this.cartResponse[variantId]['profileList'];
+        let index = profileList.findIndex(src => src['userProfileId'] == this.userProfileForCart[vId]['userProfileId']);
+        console.log("\n index ",index);
+        if (index != -1) {
+          profileList[index]['isAvailable'] = false;
+        }else{
+          profileList[index]['isAvailable'] = true;
+        }
+        this.cartResponse[variantId]['profileList'] = null;
+        this.cartResponse[variantId]['profileList'] = profileList;
+      }
+    }
+    console.log("\n onCartProfileChange  this.cartResponse", this.cartResponse);
+  }
+
+  setActiveClassForCartProfile(variantId) {
+    console.log("\n setActiveClassForCartProfile variantId", variantId);
+    this.cartResponse[variantId]["isVisible"] = !this.cartResponse[variantId]["isVisible"];
+  }
 
 
   async getUserProfile() {
     this.mapLoaderActive = true;
     this.disp = false;
     this.errorDisp = false;
-    let endpoint = "user_profile/" + this.cartResponseArr[0]['userId'];
+    let endpoint = "user_profile/" + this.userId;
     let result = await this.waterDataService.get(endpoint).toPromise();
     if (result != null && result != undefined) {
       let sList = result['userProfileList'];
@@ -80,6 +202,14 @@ export class PaymentComponent1 implements OnInit {
     } else {
       this.errorDisp = true;
     }
+    for(let variantId in this.cartResponse){
+      this.cartResponse[variantId]['profileList'] =[];
+      for(let profile of this.userProfileList){
+        profile['isAvailable'] = true;
+        this.cartResponse[variantId]['profileList'].push(profile);
+      }
+    }
+    console.log("\n  this.cartResponse  ",  this.cartResponse);
     this.combinedList[0] = {
       "name": "Existing User Profile",
       "data": this.userProfileList,
@@ -93,7 +223,7 @@ export class PaymentComponent1 implements OnInit {
     this.mapLoaderActive = true;
     this.dispPay = false;
     this.errorDispPay = false;
-    let endpoint = "payment_info/" + this.cartResponse['userId'];
+    let endpoint = "payment_info/" + this.userId;
     let result = await this.waterDataService.get(endpoint).toPromise();
     if (result != null && result != undefined) {
       let sList = result['paymentInfoList'];
@@ -128,7 +258,7 @@ export class PaymentComponent1 implements OnInit {
     let endPoint = 'user_profile';
     this.mapLoaderActive = true;
     let reqData = {
-      "userId": this.cartResponse['userId'],
+      "userId": this.userId,
       "userProfileName": this.username,
       "licenceNumber": this.mNo
     };
@@ -138,8 +268,14 @@ export class PaymentComponent1 implements OnInit {
     this.mapLoaderActive = false;
     if (result != null && result != undefined) {
       if (result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS && result['userProfileList'] != undefined && result['userProfileList'].length > 0) {
-        // this.userProfileList = null;
-        this.userProfileList.push(result['userProfileList'][0]);
+        this.userProfileList = null;
+        // this.userProfileList.push();
+        let resProfile = result['userProfileList'][0];
+        resProfile['isAvailable'] = true;
+        // this.getUserProfile();
+        for(let variantId in this.cartResponse){
+          this.cartResponse[variantId]['profileList'].push(resProfile);
+        }
         console.log("\n this.userProfileList \n", this.userProfileList);
         this.toastrService.success("You have successfully added User Profile", "");
         this.username = null;
@@ -165,7 +301,7 @@ export class PaymentComponent1 implements OnInit {
     let endPoint = 'payment_info';
     this.mapLoaderActive = true;
     let reqData = {
-      "userId": this.cartResponse['userId'],
+      "userId": this.userId,
       "paymentMethodInfo": {
         "cardNumber": this.mNo1,
         "nameOnCard": this.username1
@@ -260,9 +396,28 @@ export class PaymentComponent1 implements OnInit {
     console.log("\n selectedPaymentInfo ", this.selectedPaymentInfo);
   }
 
+  validateProfileInfoForCart(){
+    let bool = true;
+    for(let variantId in this.cartResponse){
+      if(this.userProfileForCart[variantId] && this.userProfileForCart[variantId]['userProfileId']){
+        this.validation[variantId] = true;
+      }else{
+        this.validation[variantId] = false;
+        bool =false;
+      }
+    }
+    return bool;
+
+  }
+
   payNow() {
-    if (this.selectedPaymentInfo == null || this.selectedUserProfile == null || this.cartResponse['userId'] ==null) {
-      this.toastrService.error("Please Select atleast one of both User Profile and Payment Information to Book ", "");
+    let bool = this.validateProfileInfoForCart();
+    if(!bool){
+      this.toastrService.error("Please Select License/Profile for all the Cart Items to proceed ", "");
+      return;
+    }
+    if (this.selectedPaymentInfo == null || this.userId == null) {
+      this.toastrService.error("Please Select Payment Information to Book ", "");
       return;
     }
     this.confirmBooking();
@@ -271,12 +426,21 @@ export class PaymentComponent1 implements OnInit {
   async confirmBooking() {
     let endPoint = 'create_booking';
     this.mapLoaderActive = true;
+    let cartProfileId = [];
+    let cartArr1 =[];
+    for(let variantId in this.cartResponse){
+      cartArr1.push(this.cartResponse[variantId]['cartId']);
+      cartProfileId.push(this.userProfileForCart[variantId]['userProfileId']);
+    }
     let reqData = {
-      "userId": this.cartResponse['userId'],
+      "userId": this.userId,
       "paymentMethodInfoId": this.selectedPaymentInfo['paymentInfoId'],
-      "cartIds": [this.cartResponse['cartId']],
-      "userProfileIds": [this.selectedUserProfile['userProfileId']]
+      "cartIds": cartArr1,
+      "userProfileIds": cartProfileId
     };
+    if(this.selectedPromoCode != null){
+      reqData['promoCodeIds'] =[this.selectedPromoCode['promoCodeId']];
+    }
     console.log("\n addToCartAPI reqData ", reqData);
     let result = await this.waterDataService.post(reqData, endPoint).toPromise();
     console.log("\n addToCartAPI result ", result);
@@ -302,7 +466,6 @@ export class PaymentComponent1 implements OnInit {
       data: bookingInfo
     });
   }
-
 
 
 }
