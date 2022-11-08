@@ -4,9 +4,9 @@ import java.io.File;
 
 import com.cargobackend.pojo.dao.cargo.PaymentInfo;
 import com.cargobackend.pojo.dao.cargo.UserProfile;
-import com.cargobackend.pojo.dao.cargo.Variant;
 import com.cargobackend.pojo.request.*;
 import com.cargobackend.pojo.response.*;
+import com.cargobackend.pojo.response.common.BaseResponse;
 
 public interface ICargoService {
 
@@ -51,5 +51,25 @@ public interface ICargoService {
 	public CartPriceResponse getCartPrice(GetCartPriceRequest cartPriceRequest);
 
 	public PromoPriceResponse getPromoPrice(GetPromoPriceRequest promoPriceRequest);
+
+	public BookingHistoryResponse getBookingHistory(Integer userId);
+
+	public CreateBookingResponse getUpdatedBookingInfo(UpdateBookingRequest bookingRequest);
+
+	public CreateBookingResponse getUpdatedBookingInfoAndPersist(UpdateBookingRequest updateBookingRequest);
+
+	public CreateBookingResponse cancelBooking(Integer bookingInfoId);
+
+	public CreateBookingResponse findBooking(FindBookingRequest findBookingRequest);
+
+	public CreateBookingResponse getBooking(Integer bookingInfoId);
+
+	public BaseResponse finishBooking(FinishBookingRequest finishBookingRequest);
+
+	public BaseResponse deleteVariant(Integer variantId);
+
+	public VariantResponse getVariantS(VariantRequest variantRequest);
+
+	public VariantResponse createVariant(CreateVariantRequest createVariantRequest);
 }
 

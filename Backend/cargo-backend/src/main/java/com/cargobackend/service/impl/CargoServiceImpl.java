@@ -651,30 +651,37 @@ public class CargoServiceImpl implements ICargoService {
 	@Override
 	public VariantResponse createVariant(CreateVariantRequest createVariantRequest) {
 		int index = 0;
-		List<String> imagePathList = new ArrayList<>();
-		for (String base64Iamge : createVariantRequest.getImageList()) {
+		List<VariantImageInfo> imagePathList = new ArrayList<>();
+		for (VariantImageInfo base64IamgeInfo : createVariantRequest.getImageList()) {
 			// byte[] data = Base64.decodeBase64(base64Iamge);
 			// try (OutputStream stream = new FileOutputStream("../" + String.valueOf(index)
 			// + ".bmp")) {
 			// stream.write(data);
 			// }
+			VariantImageInfo newOne = new VariantImageInfo();
+			String base64Iamge = base64IamgeInfo.getImageUri();
+			newOne.setImageType(newOne.getImageType());
 			try {
 				String imageFileDir = "assets/" + createVariantRequest.getVariantName() + "/"
 						+ createVariantRequest.getNumberPlate();
+				String imageFileDirForDB = ".//assets//" + createVariantRequest.getVariantName() + "//"
+						+ createVariantRequest.getNumberPlate()+".jpg";
 				String frontEndPrefix = "../../cargo-frontend/src/";
 				new File(frontEndPrefix + imageFileDir).mkdirs();
 				String base64Image = base64Iamge.split(",")[1];
 				byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 				Path destinationFile = Paths.get(frontEndPrefix + imageFileDir, String.valueOf(index) + ".jpg");
 				Files.write(destinationFile, imageBytes);
-				imagePathList.add(imageFileDir);
+				newOne.setImageUri(imageFileDirForDB);
+				imagePathList.add(newOne);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			index++;
 		}
 		createVariantRequest.setImageList(imagePathList);
-		return null;
+		System.out.println("\n createVariantRequest *******************************************"+createVariantRequest);
+		return cargoDAO.createVariant(createVariantRequest);
 	}
 
 }

@@ -56,7 +56,7 @@ public class CreateBookingRequest {
 	public String toString() {
 		return "CreateBooking [userId=" + userId + ", paymentMethodInfoId=" + paymentMethodInfoId
 				+ ", cartIds=" + cartIds + ", userProfileIds="
-				+ userProfileIds + ", bookingStatus=" + bookingStatus + "]";
+				+ userProfileIds + ", bookingStatus=" + bookingStatus +  ", promoCodeIds=" + promoCodeIds + "]";
 	}
 	
 	
