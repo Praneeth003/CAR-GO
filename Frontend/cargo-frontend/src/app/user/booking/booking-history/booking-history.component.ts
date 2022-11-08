@@ -170,4 +170,24 @@ export class BookingHistoryComponent implements OnInit {
     }
   }
 
+  async downloadBookingInvoice() {
+    this.toastrService.success("Started Downloading InVoice", "");
+    this.mapLoaderActive = true;
+    let endpoint = "booking_invoice/" + this.orderId;
+    let result = await this.waterDataService.downloadPDF(endpoint).toPromise();
+    console.log("result", result);
+    this.mapLoaderActive = false;
+
+  }
+
+  navigate() {
+    let journeyDetailsFilter = this.localStorage.get('journeyDetailsFilter');
+    console.log("\n journeyDetailsFilter data ", journeyDetailsFilter);
+    if (journeyDetailsFilter != null && journeyDetailsFilter != undefined && journeyDetailsFilter['data'] != undefined) {
+      this.router.navigate(["/user/home"]);
+    } else {
+      this.router.navigate(["/user/journey-details"]);
+    }
+  }
+
 }
