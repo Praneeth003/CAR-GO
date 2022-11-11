@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { ConstantsModule } from 'src/app/shared/constants.module';
 import { SharedService } from 'src/app/shared/shared.service';
 
@@ -9,22 +11,23 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class CreateVariantComponent implements OnInit {
 
-  // createVariantNewParams = {imageList:[]}
+  createVariantNewParams = {imageList:[]}
 
-  createVariantNewParams = {
-    "variantName": "Sonet",
-    "variantDescription": "Sonet",
-    "modelId": 7,
-    "colorId": 2,
-    "bodyTypeId": 3,
-    "fuelTypeId": 3,
-    "transmissionTypeId": 3,
-    "mileage": "23",
-    "pricePerKilometer": "100",
-    "kilometersDriven": "2567",
-    "numberPlate": "AP01JS1765",
-    "imageList":[]
-}
+//   createVariantNewParams = {
+//     "variantName": "Sonet",
+//     "variantDescription": "Sonet",
+//     "modelId": 7,
+//     "colorId": 2,
+//     "bodyTypeId": 3,
+//     "fuelTypeId": 3,
+//     "transmissionTypeId": 3,
+//     "mileage": "23",
+//     "pricePerKilometer": "100",
+//     "kilometersDriven": "2567",
+//     "numberPlate": "AP01JS1765",
+//     "imageList":[]
+// }
+// uploadImages = true;
   modelList = []
   bodyTypeList = []
   fuelTypeList = []
@@ -36,9 +39,10 @@ export class CreateVariantComponent implements OnInit {
 
   validation: boolean[] = new Array(6).fill(true);
   mapLoaderActive =false;
-  uploadImages=true
+  currentImage;
+  uploadImages=false
 
-  constructor(private waterDataService : SharedService, private constantsModule:ConstantsModule) { }
+  constructor(private route: ActivatedRoute, private router: Router, private waterDataService : SharedService, private constantsModule:ConstantsModule, private toastrService: ToastrService) { }
 
   ngOnInit() {
     this.getModeList();
@@ -46,6 +50,7 @@ export class CreateVariantComponent implements OnInit {
     this.getFuelTypeList();
     this.getTransmissionTypeList();
     this.getColorList();
+    this.getLocationList()
   }
 
   async getModeList(){
@@ -150,11 +155,53 @@ export class CreateVariantComponent implements OnInit {
     }
   }
 
+  signatures = {
+    JVBERi0: "application/pdf",
+    R0lGODdh: "image/gif",
+    R0lGODlh: "image/gif",
+    iVBORw0KGgo: "image/png",
+    "/9j/": "image/jpg"
+  };
+
+  detectMimeType(b64) {
+    for (var s in this.signatures) {
+      if (b64.indexOf(s) === 0) {
+        return this.signatures[s];
+      }
+    }
+  }
+  selectFile(event){
+    if(!event.target.files[0] || event.target.files[0].length == 0) {
+			// this.ms = 'You must select an image';
+			return;
+		}
+		
+		var mimeType = event.target.files[0].type;
+		
+		if (mimeType.match(/image\/*/) == null) {
+			// this.msg = "Only images are supported";
+			return;
+		}
+		
+		var reader = new FileReader();
+		reader.readAsDataURL(event.target.files[0]);
+		
+		reader.onload = (_event) => {
+			this.currentImage = reader.result; 
+      console.log(this.detectMimeType(this.currentImage))
+		}
+  }
+
+  
+
   appendImages(){
-    this.imageInfo['imageUri'] = document.getElementById("file")['files'][0]['name']
-    this.createVariantNewParams.imageList.push(this.imageInfo);
-    console.log()
-    this.imageInfo = {}
+    this.imageInfo['imageUri'] = this.currentImage
+    let image = {
+      imageUri :"Hello",
+      imageType : "EXTERIOR"
+    }
+    this.createVariantNewParams.imageList.push(this.currentImage);
+    console.log(this.createVariantNewParams)
   }
 
   goToUploadImages(){
@@ -163,8 +210,20 @@ export class CreateVariantComponent implements OnInit {
     this.validation=new Array(6).fill(true);
   }
 
-  createVariant(){
+  async createVariant(){
     console.log(this.createVariantNewParams)
+    let result = await this.waterDataService.post(this.createVariantNewParams,"create_variant").toPromise()
+    console.log(result)
+    if(result != null && result != undefined){
+      if(result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS){
+        this.toastrService.success("Variant Created Successfully");
+        this.router.navigate(["/admin"]);
+        return;
+      }
+    }
+
+    this.toastrService.error("Unable to create variant.. Please contant customer care..");
   }
+  
 
 }
