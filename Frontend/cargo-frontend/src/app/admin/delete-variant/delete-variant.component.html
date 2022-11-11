@@ -1,0 +1,208 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12 col-lg-3 col-xl-2 bg-light">
+      <h1 class="filter-title">Filter Cars</h1>
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex justify-content-between">Model
+          <button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#inner-box"
+            aria-expanded="false" aria-controls="inner-box" id="out" onclick="outerFilter()"> <span
+              class="fas fa-plus"></span>
+          </button> </div>
+        <div id="inner-box" class="collapsed mt-2 mr-1">
+          <div class="my-1" *ngFor="let  item of modelList"> <label class="tick">
+            {{item['modelName']}} <input type="checkbox" [name] ="item['modelName']" (change)="onModelChange($event,item)"> <span class="check"></span>
+            </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex justify-content-between">Body Type <button class="btn ml-auto"
+            type="button" data-toggle="collapse" data-target="#inner-box2" aria-expanded="false"
+            aria-controls="inner-box2"><span class="fas fa-plus"></span></button> </div>
+        <div id="inner-box2" class="collapsed mt-2 mr-1">
+          <div class="my-1" *ngFor="let  item of bodyTypeList"> <label class="tick">
+            {{item['bodyTypeName']}} <input type="checkbox" [name] ="item['bodyTypeName']" (change)="onBodyTypeChange($event,item)"> <span class="check"></span>
+            </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex justify-content-between">Fuel Type
+          <button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#size" aria-expanded="false"
+            aria-controls="size"><span class="fas fa-plus"></span></button> </div>
+        <div id="size" class="collapsed">
+          <div id="inner-box" class="collapsed mt-2 mr-1">
+            <div class="my-1" *ngFor="let  item of fuelTypeList"> <label class="tick">
+              {{item['fuelTypeName']}} <input type="checkbox" [name] ="item['fuelTypeName']" (change)="onFuelTypeChange($event,item)"> <span class="check"></span>
+              </label> </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex justify-content-between">Transmission Type
+          <button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#bodytype" aria-expanded="false"
+            aria-controls="size"><span class="fas fa-plus"></span></button> </div>
+        <div id="bodytype" class="collapsed">
+          <div class="my-1" *ngFor="let  item of transmissionTypeList"> <label class="tick">
+            {{item['transmissionTypeName']}} <input type="checkbox" [name] ="item['transmissionTypeName']" (change)="onTransmissionTypeChange($event,item)"> <span class="check"></span>
+            </label> </div>
+        </div>
+      </div>
+
+      <div class="box border-bottom">
+        <div class="box-label text-uppercase d-flex justify-content-between">Color
+          <button class="btn ml-auto" type="button" data-toggle="collapse" data-target="#color" aria-expanded="false"
+            aria-controls="size"><span class="fas fa-plus"></span></button> </div>
+        <div id="color" class="collapsed">
+          <div id="inner-box" class="collapsed mt-2 mr-1">
+            <div class="my-1" *ngFor="let  item of colorList"> <label class="tick">
+              {{item['colorName']}} <input type="checkbox" [name] ="item['colorName']" (change)="onColorChange($event,item)"> <span class="check"></span>
+              </label> </div>
+            </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- right side Panel -->
+    <div class="col-sm-12 col-lg-9 col-xl-10">
+
+      <spinner id="rainfallSpinner2" [show]="mapLoaderActive"></spinner>
+
+      <section class="section-products">
+        <div class="container">
+          <div class="page-header my-3">
+            <div class="header-start">
+              <!-- <h1 class="h3 title">118 Used Cars in Hyderabad</h1> -->
+            </div>
+            <div class="header-end">
+              <select class="from-control form-select">
+                <option disabled>SortBy: New</option>
+                <option disabled>SortBy: Old</option>
+                <option disabled>SortBy: High</option>
+              </select>
+            </div>
+          </div>
+          <div class="row justify-content-center text-center">
+            <div class="col-md-8 col-lg-6">
+              <!-- <div class="header">
+                <h2>Popular Cars</h2>
+              </div> -->
+            </div>
+          </div>
+          <div class="row">
+
+            <ng-container  *ngIf="disp">
+                <div class="col-md-6 col-lg-4 col-xl-3"  *ngFor="let  item of variantList">
+                  <div [id]="item['variantId']" class="single-product">
+                    <div class="part-1">
+                      <img
+                      [src] = "item['variantImage']['variantImageData']" 
+                      alt = "Error Loading Image"/>
+                      <ul>
+                        <!-- <li><i class="fas fa-shopping-cart"></i></li> -->
+                        <!-- <li><i class="fas fa-heart"></i></li>
+                        <li><i class="fas fa-plus"></i></li> -->
+                        <li><i class="fas fa-trash" (click) = "deleteCar(item)"></i></li>
+                      </ul>
+                    </div>
+                    <div class="part-2">
+                      <h3 class="product-title">{{item['variantName'] + " "+item['fuelType']['fuelTypeName']
+                        + " "+ item['transmissionType']['transmissionTypeName']}}</h3>
+                      <!-- <p>{{item['variantMileage'] +" "+ "Mileage"}}</p> -->
+                      <p>{{"$" + item['variantPricePerKm'] +" per day"}}</p>
+                    </div>
+                  </div>
+                </div>
+      
+            </ng-container>
+
+            <div *ngIf="errorDisp">
+              <h2>No Cars Found with Selection</h2>
+            </div>
+
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- <script>
+  
+
+// For Range Sliders
+var inputLeft = document.getElementById("input-left");
+var inputRight = document.getElementById("input-right");
+
+var thumbLeft = document.querySelector(".slider > .thumb.left");
+var thumbRight = document.querySelector(".slider > .thumb.right");
+var range = document.querySelector(".slider > .range");
+
+var amountLeft = document.getElementById('amount-left')
+var amountRight = document.getElementById('amount-right')
+
+function setLeftValue() {
+var _this = inputLeft,
+min = parseInt(_this.min),
+max = parseInt(_this.max);
+
+_this.value = Math.min(parseInt(_this.value), parseInt(inputRight.value) - 1);
+
+var percent = ((_this.value - min) / (max - min)) * 100;
+
+thumbLeft.style.left = percent + "%";
+range.style.left = percent + "%";
+amountLeft.innerText = parseInt(percent * 100);
+}
+setLeftValue();
+
+function setRightValue() {
+var _this = inputRight,
+min = parseInt(_this.min),
+max = parseInt(_this.max);
+
+_this.value = Math.max(parseInt(_this.value), parseInt(inputLeft.value) + 1);
+
+var percent = ((_this.value - min) / (max - min)) * 100;
+
+amountRight.innerText = parseInt(percent * 100);
+thumbRight.style.right = (100 - percent) + "%";
+range.style.right = (100 - percent) + "%";
+}
+setRightValue();
+
+inputLeft.addEventListener("input", setLeftValue);
+inputRight.addEventListener("input", setRightValue);
+
+inputLeft.addEventListener("mouseover", function () {
+thumbLeft.classList.add("hover");
+});
+inputLeft.addEventListener("mouseout", function () {
+thumbLeft.classList.remove("hover");
+});
+inputLeft.addEventListener("mousedown", function () {
+thumbLeft.classList.add("active");
+});
+inputLeft.addEventListener("mouseup", function () {
+thumbLeft.classList.remove("active");
+});
+
+inputRight.addEventListener("mouseover", function () {
+thumbRight.classList.add("hover");
+});
+inputRight.addEventListener("mouseout", function () {
+thumbRight.classList.remove("hover");
+});
+inputRight.addEventListener("mousedown", function () {
+thumbRight.classList.add("active");
+});
+inputRight.addEventListener("mouseup", function () {
+thumbRight.classList.remove("active");
+});
+});
+</script> -->
