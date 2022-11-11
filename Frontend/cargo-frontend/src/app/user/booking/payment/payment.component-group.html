@@ -2,7 +2,14 @@
   <div class="row my-3">
     <h3>Driver and Payment Information Details</h3>
     <h4 style="text-align: right;"> Total Price :: ${{ totalPrice }}</h4>
+    <h6>Journey Details 
 
+
+      From  
+              {{ getBookingFromDate(title)}} To {{getBookingToDate(title)}} 
+            ({{title['pickupLocation']['locationName']}} -
+            {{title['dropLocation']['locationName']}})
+    </h6>
     <spinner id="paymentPage" [show]="mapLoaderActive"></spinner>
     <div class="accordion" id="accordionExample">
 
@@ -65,7 +72,11 @@
                               <div class="row">
                                 <div class="col-lg-12">
                                   <p> 
-                                    <b>Variant Name : </b> {{ cartResponse[vId]['variant']['variantName']}}</p>
+                                    <b>Variant Name : </b> {{ cartResponse[vId]['variant']['variantName']}} <br/>
+                                    <b>Variant Price : </b> {{ calculateVariantPrice(cartResponse[vId])}} <br/>
+                                    <b>Variant AddOn Price : </b> {{ calculateAddOnPrice(cartResponse[vId]) }}
+                                    <br/>
+                                    <b>Total Price : </b> {{ cartResponse[vId]['cartPrice']['price']}}</p>
                                     <div class="form-group mb-4">
                                       <label> Profile</label>
                                       <select [name]="vId" class="form-control form-select" [(ngModel)]="userProfileForCart[vId]"

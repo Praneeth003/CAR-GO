@@ -56,11 +56,14 @@ export class PaymentComponent1 implements OnInit {
   selectedPromoCode =null;
   promoCode =null;
 
+  title ={};
+
   constructor(private http: HttpClient, private waterDataService: SharedService, private constantsModule: ConstantsModule,
     private utils: UtilsModule, private router: Router, private localStorage: LocalStorageService, private toastrService: ToastrService) { }
 
   ngOnInit() {
     this.totalPrice =0;
+    this.title = {};
     this.mapLoaderActive = true;
     let data = this.localStorage.get('cartResponse');
     this.selectedPaymentInfo =null;
@@ -70,7 +73,12 @@ export class PaymentComponent1 implements OnInit {
       this.router.navigate(["/user/journey-details"]);
     } else {
       this.cartResponse = data['data'];
+      for(let v in this.cartResponse){
+        this.title = this.cartResponse[v];
+        break;
+      }
     }
+    console.log("\n cartResponse  this.title ",  this.title);
     let cartList =[];
     for(let variantId in this.cartResponse){
         this.userId = this.cartResponse[variantId]['userId'];
@@ -80,6 +88,8 @@ export class PaymentComponent1 implements OnInit {
         this.validation[variantId] =true;
         cartList.push(variantId);
     }
+
+
     this.taxPrice = this.totalPrice*0.1;
     this.finalPrice = this.totalPrice + this.taxPrice;
     this.cartArr = cartList;
@@ -125,7 +135,6 @@ export class PaymentComponent1 implements OnInit {
       if (result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS && result['promoPrice'] != undefined) {
         this.totalPromoPrice= result['promoPrice'];
         this.finalPrice = this.totalPrice + this.taxPrice -this.totalPromoPrice;
-        this.toastrService.success("You have successfully Created Booking", "");
       } else {
         this.toastrService.error("Alas there seems an issue try again later", "");
       }
@@ -288,6 +297,22 @@ export class PaymentComponent1 implements OnInit {
   }
 
 
+  getBookingFromDate(booking){
+    console.log("\n getBookingFromDate booking ",booking,new Date());
+    let sDate = booking['fromDate'].toString().substring(0, 10).replaceAll("-","");
+    let formatted =   this.utils.getDateInFormatFromModelDate(sDate, 'mmm dd, yyyy');
+    console.log("\n sDate ",sDate,"  booking['fromDate'", booking['fromDate']," formatted ",formatted); 
+    return formatted;
+  }
+
+  getBookingToDate(booking){
+    console.log("\n getBookingToDate booking ",booking);
+    let sDate = booking['toDate'].toString().substring(0, 10).replaceAll("-","");
+    let formatted =   this.utils.getDateInFormatFromModelDate(sDate, 'mmm dd, yyyy');
+    console.log("\n sDate ",sDate," booking['toDate'] ",booking['toDate']," formatted ",formatted); 
+    return formatted;
+  }
+
   checkAddPaymentInfo() {
     if (this.mNo1 == null || this.username1 == null || this.mNo1 == undefined || this.username1 == undefined
       || this.cvv == null || this.cvv == undefined) {
@@ -408,6 +433,48 @@ export class PaymentComponent1 implements OnInit {
     }
     return bool;
 
+  }
+
+  calculateVariantPrice(cartData){
+    let vPrice =null;
+    let price =null;
+    console.log("\n calculateVariantPrice cartData",cartData);
+    if(cartData['cartPrice'] && cartData['cartPrice']['addOnPrices'] 
+    &&cartData['cartPrice']['addOnPrices'].length >0){
+      price =0;
+      for(let addOn of cartData['cartPrice']['addOnPrices']){
+        console.log("\n  addOn ",addOn );
+        price += addOn['price'];
+      }
+    }
+
+    console.log("\n calculateVariantPrice price",price);
+    if( cartData['cartPrice'] && cartData['cartPrice']['price']){
+      if(price !=null){
+        vPrice = cartData['cartPrice']['price'] -price;
+      }else{
+        vPrice = cartData['cartPrice']['price'];
+      }
+    }
+
+    console.log("\n calculateVariantPrice vPrice",vPrice);
+
+    return vPrice == null ? "-":vPrice;
+
+  }
+
+  calculateAddOnPrice(cartData){
+    let price =null;
+    console.log("\n calculateAddOnPrice cartData",cartData);
+    if(cartData['cartPrice'] && cartData['cartPrice']['addOnPrices'] 
+    &&cartData['cartPrice']['addOnPrices'].length >0){
+      price =0;
+      for(let addOn of cartData['cartPrice']['addOnPrices']){
+        console.log("\n  addOn ",addOn );
+        price += addOn['price'];
+      }
+    }
+    return price == null ? "-":price;
   }
 
   payNow() {
