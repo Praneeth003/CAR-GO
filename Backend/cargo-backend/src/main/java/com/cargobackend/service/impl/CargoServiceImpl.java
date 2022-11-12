@@ -324,7 +324,7 @@ public class CargoServiceImpl implements ICargoService {
 			CustomField bookingDateInfo = new CustomField();
 			bookingDateInfo.setName("Booking Dates");
 			Timestamp fromDate = bookingInfo.getCartList().get(0).getFromDate();
-			Timestamp toDate = bookingInfo.getCartList().get(1).getToDate();
+			Timestamp toDate = bookingInfo.getCartList().get(0).getToDate();
 			bookingDateInfo.setValue(formatter.format(fromDate) + " to " + formatter.format(toDate));
 			customFields.add(bookingDateInfo);
 		}
@@ -340,9 +340,9 @@ public class CargoServiceImpl implements ICargoService {
 				.map(promoCode -> (getPromoPrice(promoCode, allCarsPrice))).mapToDouble(Double::doubleValue).sum();
 
 		invoice.setCustom_fields(customFields);
-		Double totalAmountPaid = getTotalCost(bookingInfo) + (0.1 / 100) * getTotalCost(bookingInfo) - promoCodePrice;
+		Double totalAmountPaid = getTotalCost(bookingInfo) + (10 / 100) * getTotalCost(bookingInfo) - promoCodePrice;
 		invoice.setAmount_paid(totalAmountPaid.toString());
-		invoice.setTax(String.valueOf(0.1));
+		invoice.setTax(String.valueOf(10));
 		invoice.setDiscounts(promoCodePrice);
 
 		InvoiceRequest.Field f = new InvoiceRequest.Field("%", false, false);
@@ -660,12 +660,12 @@ public class CargoServiceImpl implements ICargoService {
 			// }
 			VariantImageInfo newOne = new VariantImageInfo();
 			String base64Iamge = base64IamgeInfo.getImageUri();
-			newOne.setImageType(newOne.getImageType());
+			newOne.setImageType(base64IamgeInfo.getImageType());
 			try {
 				String imageFileDir = "assets/" + createVariantRequest.getVariantName() + "/"
 						+ createVariantRequest.getNumberPlate();
 				String imageFileDirForDB = ".//assets//" + createVariantRequest.getVariantName() + "//"
-						+ createVariantRequest.getNumberPlate()+".jpg";
+						+ createVariantRequest.getNumberPlate()+"//"+String.valueOf(index)+".jpg";
 				String frontEndPrefix = "../../cargo-frontend/src/";
 				new File(frontEndPrefix + imageFileDir).mkdirs();
 				String base64Image = base64Iamge.split(",")[1];
