@@ -1,5 +1,6 @@
 package com.cargobackend.pojo.dao.cargo;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class CartEntry {
@@ -8,8 +9,8 @@ public class CartEntry {
 	Integer userId;
 	Variant variant;
 	Boolean isActive;
-	String fromDate;
-	String toDate;
+	Timestamp fromDate;
+	Timestamp toDate;
 	Location pickupLocation;
 	Location dropLocation;
 	Double price;

@@ -1,6 +1,7 @@
 package com.cargobackend.pojo.dao.cargo;
 
 import java.sql.Date;
+import java.util.List;
 
 public class Variant {
 	
@@ -13,12 +14,25 @@ public class Variant {
 	FuelType fuelType;
 	TransmissionType transmissionType;
 	VariantImage variantImage;
+	List<VariantImage> variantImageList;
 	Long variantMileage;
 	Date variantManufacturingDate;
 	Long variantKilometersDriven;
 	Long variantPricePerKm;
 	String varaintNumberPlate ;
 	
+	public List<VariantImage> getVariantImageList() {
+		return variantImageList;
+	}
+	public void setVariantImageList(List<VariantImage> variantImageList) {
+		this.variantImageList = variantImageList;
+	}
+	public Long getVariantKilometersDriven() {
+		return variantKilometersDriven;
+	}
+	public void setVariantKilometersDriven(Long variantKilometersDriven) {
+		this.variantKilometersDriven = variantKilometersDriven;
+	}
 	
 	public Integer getVariantId() {
 		return variantId;
@@ -107,21 +121,15 @@ public class Variant {
 	}
 	@Override
 	public String toString() {
-		return "Variant [variantId=" + variantId + ", variantName=" + variantName + ", variantDescription=" + variantDescription
-				+ ", variantStatus=" + variantStatus + ", model=" + model + ", color=" + color + ", fuelType="
-				+ fuelType + ", transmissionType=" + transmissionType + ", variantImage=" + variantImage
-				+ ", variantMileage=" + variantMileage + ", variantManufacturingDate=" + variantManufacturingDate
-				+ ", variantKilometersDriven=" + variantKilometersDriven + ", variantPricePerKm=" + variantPricePerKm
-				+ ", varaintNumberPlate=" + varaintNumberPlate + ", getVariantId()=" + getVariantId()
-				+ ", getVariantName()=" + getVariantName() + ", getVariantDescription()=" + getVariantDescription()
-				+ ", getVariantStatus()=" + getVariantStatus() + ", getModel()=" + getModel() + ", getColor()="
-				+ getColor() + ", getFuelType()=" + getFuelType() + ", getTransmissionType()=" + getTransmissionType()
-				+ ", getVariantMileage()=" + getVariantMileage() + ", getVariantManufacturingDate()="
-				+ getVariantManufacturingDate() + ", getVaraintKilometersDriven()=" + getVaraintKilometersDriven()
-				+ ", getVariantPricePerKm()=" + getVariantPricePerKm() + ", getVaraintNumberPlate()="
-				+ getVaraintNumberPlate() + ", getVariantImage()=" + getVariantImage() + ", getClass()=" + getClass()
-				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+		return "Variant [variantId=" + variantId + ", variantName=" + variantName + ", variantDescription="
+				+ variantDescription + ", variantStatus=" + variantStatus + ", model=" + model + ", color=" + color
+				+ ", fuelType=" + fuelType + ", transmissionType=" + transmissionType + ", variantImage=" + variantImage
+				+ ", variantImageList=" + variantImageList + ", variantMileage=" + variantMileage
+				+ ", variantManufacturingDate=" + variantManufacturingDate + ", variantKilometersDriven="
+				+ variantKilometersDriven + ", variantPricePerKm=" + variantPricePerKm + ", varaintNumberPlate="
+				+ varaintNumberPlate + "]";
 	}
+
 
 		
 }

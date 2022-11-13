@@ -2,6 +2,8 @@ package com.cargobackend.dao.impl;
 
 import java.sql.*;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import javax.sql.DataSource;
@@ -656,15 +658,30 @@ public class CargoDAOImpl implements ICargoDAO {
 				TransmissionType transmissionType = null;
 				FuelType fuelType = null;
 				VariantImage variantImage = null;
-				// Boolean b = false;
+				List<VariantImage> variantImageList =null;
+				 Boolean b = false;
 				while (rs.next()) {
-					// b = false;
-					// for (Variant v : variantList) {
-					// if (v.getVariantId() == rs.getInt("c_variant_id")) {
-					// b = true;
-					// break;
-					// }
-					// }
+					 for (Variant v : variantList) {
+						 if (v.getVariantId() == rs.getInt("c_variant_id")) {
+							 b = true;
+							 variantImage = new VariantImage();
+							 variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+							 variantImage.setVariantImageData(rs.getString("c_variant_image"));
+							 variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+							 variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+							 variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+							 variantImageList = v.getVariantImageList();
+							 variantImageList.add(variantImage);
+							 v.setVariantImageList(variantImageList);
+							 break;
+						 }
+					 }
+					 
+					 if(b){
+						 continue;
+					 }
+					 
+				    variantImageList = new ArrayList<>();
 					variant = new Variant();
 					make = new Make();
 					model = new Model();
@@ -723,7 +740,10 @@ public class CargoDAOImpl implements ICargoDAO {
 					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
 					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
 					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+					variantImageList.add(variantImage);
+					
 					variant.setVariantImage(variantImage);
+					variant.setVariantImageList(variantImageList);
 
 					variantList.add(variant);
 
@@ -831,16 +851,31 @@ public class CargoDAOImpl implements ICargoDAO {
 				TransmissionType transmissionType = null;
 				FuelType fuelType = null;
 				VariantImage variantImage = null;
-				// Boolean b = false;
+				List<VariantImage> variantImageList =null;
+				Boolean b = false;
 				while (rs.next()) {
-					// b = false;
-					// for (Variant v : variantList) {
-					// if (v.getVariantId() == rs.getInt("c_variant_id")) {
-					// b = true;
-					// break;
-					// }
-					// }
+					 b = false;
+					 for (Variant v : variantList) {
+						 if (v.getVariantId() == rs.getInt("c_variant_id")) {
+							 b = true;
+							 variantImage = new VariantImage();
+							 variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+							 variantImage.setVariantImageData(rs.getString("c_variant_image"));
+							 variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+							 variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+							 variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+							 variantImageList = v.getVariantImageList();
+							 variantImageList.add(variantImage);
+							 v.setVariantImageList(variantImageList);
+							 break;
+						 }
+					 }
+					 
+					 if(b){
+						 continue;
+					 }
 
+					variantImageList = new ArrayList<>();
 					variant = new Variant();
 					make = new Make();
 					model = new Model();
@@ -900,8 +935,12 @@ public class CargoDAOImpl implements ICargoDAO {
 					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
 					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
 					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+				
+					variantImageList.add(variantImage);
+					
 					variant.setVariantImage(variantImage);
-
+					variant.setVariantImageList(variantImageList);
+					
 					variantList.add(variant);
 
 				}
@@ -2725,6 +2764,161 @@ public class CargoDAOImpl implements ICargoDAO {
 	@Override
 	public VariantResponse createVariant(CreateVariantRequest createVariantRequest) {
 		System.out.println("\n createVariant createVariantRequest *******************************************"+createVariantRequest);
-		return null;
+		VariantResponse variantResponse= new VariantResponse();
+		variantResponse.setFailedResponse();
+		   
+		Connection connection = null;
+		CallableStatement cStmt = null;
+		ResultSet rs = null;
+		String procedureName = "proc_create_variant_v1dot0";
+		final String procedureCall = "{call " + procedureName + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+		try {
+			
+			LocalDate dateObj = LocalDate.now();
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		    String date = dateObj.format(formatter);
+		    
+			System.out.println("\n createVariant date *******************************************"+date); 
+			
+			
+			connection = jdbcTemplate.getDataSource().getConnection();
+			cStmt = connection.prepareCall(procedureCall);
+			/* input parameters */
+			int i = 1;
+
+			if (createVariantRequest.getVariantName() !=null) {
+				cStmt.setString(i++, createVariantRequest.getVariantName());
+			} else {
+				return variantResponse;
+			}
+			
+			if (createVariantRequest.getVariantDescription() !=null) {
+				cStmt.setString(i++, createVariantRequest.getVariantDescription());
+			} else {
+				cStmt.setNull(i++, Types.NULL);
+			}
+			
+			cStmt.setString(i++, "1");
+			
+
+			System.out.println("\n createVariant Active *******************************************"+cStmt); 
+			
+			if (createVariantRequest.getModelId() !=null) {
+				cStmt.setString(i++, createVariantRequest.getModelId().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			if (createVariantRequest.getColorId() !=null) {
+				cStmt.setString(i++, createVariantRequest.getColorId().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			System.out.println("\n createVariant getColorId *******************************************"+cStmt); 
+
+			if (createVariantRequest.getFuelTypeId() !=null) {
+				cStmt.setString(i++, createVariantRequest.getFuelTypeId().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			if (createVariantRequest.getTransmissionTypeId() !=null) {
+				cStmt.setString(i++, createVariantRequest.getTransmissionTypeId().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			System.out.println("\n createVariant getTransmissionTypeId *******************************************"+cStmt); 
+			
+			if (createVariantRequest.getVariantMileage() !=null) {
+				cStmt.setString(i++, createVariantRequest.getVariantMileage().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			System.out.println("\n createVariant getVariantMileage *******************************************"+cStmt); 
+			
+			
+			cStmt.setString(i++, date);
+			
+			System.out.println("\n createVariant date *******************************************"+cStmt); 
+			
+			
+			if (createVariantRequest.getPricePerKilometer() !=null) {
+				cStmt.setString(i++, createVariantRequest.getPricePerKilometer().toString());
+			} else {
+				return variantResponse;
+			}
+		
+			if (createVariantRequest.getKilometersDriven() !=null) {
+				cStmt.setString(i++, createVariantRequest.getKilometersDriven().toString());
+			} else {
+				return variantResponse;
+			}
+			
+			if (createVariantRequest.getNumberPlate() !=null) {
+				cStmt.setString(i++, createVariantRequest.getNumberPlate().toString());
+			} else {
+				return variantResponse;
+			}
+
+			
+			if (createVariantRequest.getLocationId() !=null) {
+				cStmt.setString(i++, createVariantRequest.getLocationId().toString());
+			} else {
+				return variantResponse;
+			}
+
+			List<String> imageUrlList = new ArrayList<>();
+			List<String> imageTypeList = new ArrayList<>();
+			
+			System.out.println("In createVariant  imageUrlList" + imageUrlList.toString());
+			System.out.println("In createVariant  imageTypeList" + imageTypeList.toString());
+
+			if(createVariantRequest.getImageList() != null && !createVariantRequest.getImageList().isEmpty()) {
+				for(VariantImageInfo imageObj:createVariantRequest.getImageList()) {
+					imageUrlList.add(imageObj.getImageUri());
+					imageTypeList.add(imageObj.getImageType());
+				}
+				System.out.println("In createVariant  imageUrlList" + imageUrlList.toString());
+				System.out.println("In createVariant  imageTypeList" + imageTypeList.toString());
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromList(imageUrlList, CommonConstants.DELIMITER));
+				cStmt.setString(i++, CommonUtils.getDelimitedStringFromList(imageTypeList, CommonConstants.DELIMITER));
+			}else {
+				return variantResponse;
+			}
+			
+			System.out.println("In createVariant  imageUrlList" + imageUrlList.toString());
+			System.out.println("In createVariant  imageTypeList" + imageTypeList.toString());
+			/* register output parameters */
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.INTEGER);
+			cStmt.registerOutParameter(i++, Types.VARCHAR);
+			System.out.println("In createVariant Calling DB procedure cStmt Before{}" + cStmt);
+			rs = cStmt.executeQuery();
+			System.out.println("In createVariant Calling DB procedure cStmt After {}" + cStmt);
+
+			if (cStmt.getInt(i - 2) == CommonConstants.HttpStatusCode.OK.getValue()) {
+				variantResponse.setSuccessResponse();
+				Integer vId = cStmt.getInt(i - 3);
+				System.out.println("In createVariant vId" + vId);
+				
+				// System.out.println("In getVariant response:" + response);
+			} else {
+				System.out.println("In createVariant Error in proc :{}" + cStmt.getInt(i - 2));
+				System.out.println("In createVariant Error in proc :{}" + cStmt.getInt(i - 1));
+				variantResponse.setErrorId(cStmt.getInt(i - 2));
+				variantResponse.setErrorDescription(
+						CommonConstants.HttpStatusCode.getByValue(cStmt.getInt(i - 2)).getDescription().toString());
+			}
+		} catch (Exception e) {
+			System.out.println("In createVariant e :" + e);
+		} finally {
+			CommonUtils.closeConnection(cStmt, rs, connection, procedureName);
+		}
+		
+		System.out.println("In createVariant variantResponse :" + variantResponse);
+		return variantResponse;
 	}
 }

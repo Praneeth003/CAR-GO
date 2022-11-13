@@ -30,7 +30,18 @@ public class InvoiceRequest {
 		String name;
 		String quantity;
 		String unit_cost;
+		String description;
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
 		@Override
+
 		public String toString() {
 			return "Items [name=" + name + ", quantity=" + quantity + ", unit_cost=" + unit_cost + "]";
 		}
@@ -54,14 +65,54 @@ public class InvoiceRequest {
 		}
 		
 	}
+
+	public static class Field {
+		public String tax;
+		public Boolean discounts;
+		public Boolean shipping;
+
+		public Field(String tax, Boolean discounts, Boolean shipping) {
+			this.tax = tax;
+			this.discounts = discounts;
+			this.shipping = shipping;
+		}
+	}
+
 	
 	String from;
 	String to;
 	String date;
 	String amount_paid;
+	String tax;
+	Double discounts;
 	List<CustomField> custom_fields;
 	List<Item> items;
-	
+	Field fields;
+
+	public Double getDiscounts() {
+		return discounts;
+	}
+
+	public void setDiscounts(Double discounts) {
+		this.discounts = discounts;
+	}
+
+	public Field getField() {
+		return fields;
+	}
+
+	public void setField(Field field) {
+		this.fields = field;
+	}
+
+	public String getTax() {
+		return tax;
+	}
+
+	public void setTax(String tax) {
+		this.tax = tax;
+	}
+
 	public List<Item> getItems() {
 		return items;
 	}
