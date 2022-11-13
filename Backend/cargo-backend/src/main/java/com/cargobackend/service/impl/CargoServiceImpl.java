@@ -294,8 +294,25 @@ public class CargoServiceImpl implements ICargoService {
 		return a == null ? "" : a;
 	}
 
+	public static String formatDateToString(Date date, String format,
+											String timeZone) {
+		// null check
+		if (date == null) return null;
+		// create SimpleDateFormat object with input format
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		// default system timezone if passed null or empty
+		if (timeZone == null || "".equalsIgnoreCase(timeZone.trim())) {
+			timeZone = Calendar.getInstance().getTimeZone().getID();
+		}
+		// set timezone to SimpleDateFormat
+		sdf.setTimeZone(TimeZone.getTimeZone(timeZone));
+		// return Date in required format with timezone as String
+		return sdf.format(date);
+	}
+
 	public File generateBookingInvoice(BookingInfo bookingInfo) {
 
+		System.out.print("\n generateBookingInvoice \n"+bookingInfo);
 		Gson gson = new Gson();
 		UserDetails user = bookingInfo.getUser();
 		String userInfo = user.getUserName() + "\n" + nullToString(user.getUserMobileNumber()) + "\n"
@@ -304,7 +321,7 @@ public class CargoServiceImpl implements ICargoService {
 		InvoiceRequest invoice = new InvoiceRequest();
 		invoice.setFrom("Cargo, Inc");
 		invoice.setTo(userInfo);
-		invoice.setDate(new Date().toGMTString());
+		invoice.setDate(formatDateToString(new Date(), "dd MMM yyyy hh:mm:ss a", "EST") + " EST");
 		List<CustomField> customFields = new ArrayList<>();
 
 		CustomField bookingReferenceId = new CustomField();
@@ -338,14 +355,22 @@ public class CargoServiceImpl implements ICargoService {
 				.map(cart -> (cart.getPrice() != null ? cart.getPrice() : 0.0)).mapToDouble(Double::doubleValue).sum();
 		Double promoCodePrice = bookingInfo.getPromoCodeList().stream()
 				.map(promoCode -> (getPromoPrice(promoCode, allCarsPrice))).mapToDouble(Double::doubleValue).sum();
-
+		System.out.print(promoCodePrice);
 		invoice.setCustom_fields(customFields);
-		Double totalAmountPaid = getTotalCost(bookingInfo) + (10 / 100) * getTotalCost(bookingInfo) - promoCodePrice;
+		Double total = allCarsPrice - promoCodePrice;
+		Double tax = (0.1 * total);
+		Double totalAmountPaid = total + tax;
 		invoice.setAmount_paid(totalAmountPaid.toString());
 		invoice.setTax(String.valueOf(10));
 		invoice.setDiscounts(promoCodePrice);
 
-		InvoiceRequest.Field f = new InvoiceRequest.Field("%", false, false);
+		System.out.println("total :: " + total);
+		System.out.println("totalAmountPaid :: " + totalAmountPaid);
+		System.out.println("allCarsPrice :: " + allCarsPrice);
+		System.out.println("promoCodePrice :: " + promoCodePrice);
+		System.out.println("tax :: " + tax);
+
+		InvoiceRequest.Field f = new InvoiceRequest.Field("%", true, false);
 
 		invoice.setField(f);
 
@@ -635,6 +660,21 @@ public class CargoServiceImpl implements ICargoService {
 
 	@Override
 	public BaseResponse finishBooking(FinishBookingRequest finishBookingRequest) {
+		BookingInfo bookingInfo = cargoDAO.getBooking(finishBookingRequest.getBookingId()).getBookingInfo();
+		UpdateBookingRequest updateBookingRequest = new UpdateBookingRequest();
+		updateBookingRequest.setBookingInfoId(bookingInfo.getBookingInfoId());
+		updateBookingRequest.setFromDate(bookingInfo.getCartList().get(0).getFromDate());
+		updateBookingRequest.setToDate(finishBookingRequest.getClosingDate());
+		CreateBookingResponse bookingResponse = getUpdatedBookingInfo(updateBookingRequest);
+		List<Integer> cartList = new ArrayList<>();
+		List<Double> priceList = new ArrayList<>();
+		for (CartEntry cartEntry : bookingResponse.getBookingInfo().getCartList()) {
+			cartList.add(cartEntry.getCartId());
+			priceList.add(cartEntry.getPrice());
+		}
+		System.out.println("updateBookingRequest :: " + updateBookingRequest);
+		BaseResponse updateResponse = cargoDAO.updateCartDateInfo(cartList, priceList,
+				updateBookingRequest.getFromDate(), updateBookingRequest.getToDate());
 		return cargoDAO.finishBooking(finishBookingRequest);
 	}
 

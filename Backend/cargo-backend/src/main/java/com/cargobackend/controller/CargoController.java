@@ -234,7 +234,7 @@ public class CargoController {
     @PostMapping(value = { "/finish_booking" })
     @ResponseBody
     public BaseResponse getBooking(@RequestBody FinishBookingRequest finishBookingRequest) {
-        System.out.println("\n CargoController  finishBookingRequest ");
+        System.out.println("\n CargoController  finishBookingRequest " + finishBookingRequest);
         return cargoService.finishBooking(finishBookingRequest);
     }
 

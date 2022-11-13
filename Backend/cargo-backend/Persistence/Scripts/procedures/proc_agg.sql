@@ -1,42 +1,31 @@
-USE cargo;
-SELECT DATABASE();
-
-DELIMITER #
-
-DROP PROCEDURE IF EXISTS proc_get_add_on_v1dot0 #
-
-CREATE PROCEDURE proc_get_add_on_v1dot0(
-	IN in_add_on_delimitted_string               TEXT,
-	OUT out_status 								 INT,
-	OUT	out_err_msg								 VARCHAR(250)
-)
-BEGIN
-
-    DECLARE v_query LONGTEXT default "";
-
-	DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN
-            SET out_err_msg = CONCAT('proc_get_add_on_v1dot0',out_err_msg);
-            SET out_status = 500;
-	END;
-
-    SET out_status = 200;
-    SET out_err_msg = '';
-
-	
-	SET v_query ="SELECT * FROM tbl_add_on";
-
-	IF(in_add_on_delimitted_string <> "ALL") THEN
-          SET in_add_on_delimitted_string = REPLACE(in_add_on_delimitted_string,',','\',\'');	
-          SET v_query =CONCAT(v_query, "where c_add_on_id in ('",in_add_on_delimitted_string,"')");
-    END IF;	
-	
-	SET @t2  = v_query;
-	
-	PREPARE stmt3 FROM @t2;
-	EXECUTE stmt3;	
-	DEALLOCATE PREPARE stmt3;
-
-     
-
-END #
-delimiter ;
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_body_type_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_fuel_type_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_model_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_variant_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_variant_v1dot1.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_authenticate_user_details_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_car_make_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_location_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_transmission_type_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_logout_user_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_user_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_color_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_make_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_user_details_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_variant_by_id_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_add_on_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_user_profile_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_payment_info_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_user_profile_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_cart_entry_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_booking_info_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_update_booking_info_v1dot.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_booking_info_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_payment_info_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_promo_code_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_delete_variant_v1dot.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_finish_booking_v1dot.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_variant_s_v1dot0.sql
+source   /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_create_variant_v1dot0.sql
+source /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_get_booking_history_v1dot0.sql
+source /Users/rahulkorthiwada/Documents/practice/car-rental-system/Backend/cargo-backend/Persistence/Scripts/procedures/proc_update_cart_date_info_v1dot.sql

@@ -113,7 +113,7 @@ export class FinishBookingComponent implements OnInit {
 		    "variantKilometersDriven" : miles
       })
     }
-    let result = await this.waterDataService.post({bookingId:this.bookingId,variantInfoList:variantInfo},"finish_booking").toPromise();
+    let result = await this.waterDataService.post({bookingId:this.bookingId,variantInfoList:variantInfo,closingDate:this.finishDate.getTime()},"finish_booking").toPromise();
     console.log("\n finish_booking ",result);
     this.mapLoaderActive = false;
     if(result != null && result != undefined){
