@@ -11,7 +11,8 @@ import { SharedService } from 'src/app/shared/shared.service';
 })
 export class CreateVariantComponent implements OnInit {
 
-  createVariantNewParams = {imageList:[]}
+  createVariantNewParams = {imageList:[]};
+  uploadImages = false;
 
 //   createVariantNewParams = {
 //     "variantName": "Sonet",
@@ -26,7 +27,7 @@ export class CreateVariantComponent implements OnInit {
 //     "kilometersDriven": "2567",
 //     "numberPlate": "AP01JS1765",
 //     "imageList":[]
-// }
+// };
 // uploadImages = true;
   modelList = []
   bodyTypeList = []
@@ -40,7 +41,8 @@ export class CreateVariantComponent implements OnInit {
   validation: boolean[] = new Array(6).fill(true);
   mapLoaderActive =false;
   currentImage;
-  uploadImages=false
+  currentTag;
+
 
   constructor(private route: ActivatedRoute, private router: Router, private waterDataService : SharedService, private constantsModule:ConstantsModule, private toastrService: ToastrService) { }
 
@@ -195,12 +197,16 @@ export class CreateVariantComponent implements OnInit {
   
 
   appendImages(){
-    this.imageInfo['imageUri'] = this.currentImage
-    let image = {
-      imageUri :"Hello",
-      imageType : "EXTERIOR"
+    console.log("\n currentTag ",this.currentTag);
+    if(!this.currentTag){
+      this.toastrService.error("Please Select Image Type to continue.");
     }
-    this.createVariantNewParams.imageList.push(this.currentImage);
+    this.imageInfo['imageUri'] = this.currentImage;
+    let image = {
+      imageUri :this.currentImage,
+      imageType : this.currentTag
+    }
+    this.createVariantNewParams.imageList.push(image);
     console.log(this.createVariantNewParams)
   }
 
@@ -217,7 +223,7 @@ export class CreateVariantComponent implements OnInit {
     if(result != null && result != undefined){
       if(result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS){
         this.toastrService.success("Variant Created Successfully");
-        this.router.navigate(["/admin"]);
+        // this.router.navigate(["/admin"]);
         return;
       }
     }

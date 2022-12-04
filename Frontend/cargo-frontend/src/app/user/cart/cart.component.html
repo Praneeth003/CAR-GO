@@ -13,7 +13,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let variantId of  cartArr">  
-      <th scope="row">{{ cartData[variantId]['variant']['variantName'] }}</th>
+      <th scope="row">{{ cartData[variantId]['variant']['model']['modelName'] }} ({{ cartData[variantId]['variant']['variantName'] }})</th>
       <td>{{ cartData[variantId]['variant']['fuelType']['fuelTypeName'] }}</td>
       <td>{{ cartData[variantId]['variant']['transmissionType']['transmissionTypeName'] }}</td>
       <td>$ {{ cartData[variantId]['priceResponse']['price'] }}</td>

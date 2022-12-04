@@ -262,7 +262,7 @@ export class HomePageComponent implements OnInit {
 
   expandCar(item){
     this.setSelectedVariant(item);
-    this.router.navigate(["/user/car/" + item.variantId]); 
+    this.router.navigate(["/user/car/" + item.variantId+"/add"]); 
   }
 
 

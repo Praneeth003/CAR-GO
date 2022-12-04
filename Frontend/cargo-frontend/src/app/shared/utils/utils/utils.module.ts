@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { namespaceHTML } from '@angular/core/src/render3';
 import { ConstantsModule } from '../../constants.module';
 import { isNull, isNullOrUndefined } from 'util';
+import { LocalStorageService } from 'angular-web-storage';
 
 @NgModule({
  declarations: [],
@@ -28,7 +29,7 @@ export class UtilsModule {
     locationType:this.constants.LOCATION_CONSTANT.STATE
   }
 
-  constructor(private constants: ConstantsModule, private router: Router){}
+  constructor(private constants: ConstantsModule, private router: Router,private localStorage: LocalStorageService){}
 
 
   // To be used for Preparation of Common PostParams for both MIS and GIS
@@ -770,6 +771,25 @@ export class UtilsModule {
   //  }
 
     return date;
+  }
+
+  clearLocalSessionStorage(){
+    let userData = null;
+    let data = this.localStorage.get('userDetails');
+    console.log("\n clearLocalSessionStorage userData ", data);
+    if (data != null && data != undefined && data['data'] != undefined) {
+      userData = data['data'];
+    }
+    this.localStorage.clear();
+    if(userData != null){
+      this.setUserDetails(userData);
+    }
+  }
+
+  setUserDetails(userDetails) {
+    this.localStorage.set('userDetails', {
+      data:userDetails
+    });
   }
 
   getRandomColor(opacity: number): string{

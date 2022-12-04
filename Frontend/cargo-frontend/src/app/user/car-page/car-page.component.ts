@@ -45,6 +45,7 @@ export class CarPageComponent implements OnInit {
 
   ngOnInit() {
     this.showUpdate = false;
+    this.variantImageList = [];
     this.id = this.route.snapshot.paramMap.get('carId');
     if (this.id == null && this.id == undefined || this.id == "") {
       this.navigateRelHome();
@@ -94,13 +95,15 @@ export class CarPageComponent implements OnInit {
     this.mapLoaderActive = true;
     this.disp = false;
     this.errorDisp = false;
-    let endpoint = "variant_by_id/" + this.id
+    let endpoint = "variant_by_id/" + this.id;
+    this.variantImageList = [];
     let result = await this.httpService.get(endpoint).toPromise();
     if (result != null && result != undefined) {
       let sList = result['variantList'];
       if (sList && sList.length > 0) {
         this.carData = sList[0];
-        this.variantImageList.push(this.carData['variantImage']);
+        // this.variantImageList.push(this.carData['variantImage']);
+        this.variantImageList = this.carData['variantImageList'];
         this.variantImageList.push(this.variantInteriorImage);
         this.disp = true;
         console.log("\n this.carData  ", this.carData, " this.variantImageList ", this.variantImageList);
@@ -159,7 +162,7 @@ export class CarPageComponent implements OnInit {
 
   bookNow() {
     this.setSelectedCart();
-    let bool = this.checkAddToCart();
+    this.checkAddToCart();
   }
 
   checkAndAddToCartSession() {
@@ -307,6 +310,7 @@ export class CarPageComponent implements OnInit {
       if (result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS && result['cartEntry'] != undefined && result['cartEntry']['cartId'] != undefined) {
         cartResponse = result['cartEntry'];
         this.setCartResponse(cartResponse);
+        this.setCartResponse1(reqData['variantId'],cartResponse);
         console.log("\n addToCart this.cartResponse \n", cartResponse);
         this.router.navigate(["/user/payment"]);
         this.toastrService.success("You have successfully added Cart Information", "");
@@ -342,6 +346,20 @@ export class CarPageComponent implements OnInit {
         variant: this.carData,
         addOnList: this.addOnList
       }
+    });
+  }
+
+  setCartResponse1(variantId,cartResponse) {
+    let data = this.localStorage.get('cartResponse');
+    console.log("\n existing cartResponse ", data);
+    let existingCartResponseData = {};
+    if (data != null && data != undefined && data['data'] != undefined) {
+      existingCartResponseData = data['data'];
+    }
+    existingCartResponseData[variantId] = cartResponse;
+    console.log("\n modified existingCartResponseData ", existingCartResponseData);
+    this.localStorage.set('cartResponse', {
+      data: existingCartResponseData
     });
   }
 

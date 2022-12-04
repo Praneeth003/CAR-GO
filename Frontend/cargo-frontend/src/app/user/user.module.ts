@@ -11,9 +11,10 @@ import { SharedModule } from '../shared/shared.module';
 import { UtilsModule } from '../shared/utils/utils/utils.module';
 import { ConstantsModule } from '../shared/constants.module';
 import { CarPageComponent } from './car-page/car-page.component';
+import { GuestUserCancelComponent } from './guest-user-cancel/guest-user-cancel.component';
 
 @NgModule({
-  declarations: [HomePageComponent, JourneyDetailsComponent, CarPageComponent],
+  declarations: [HomePageComponent, JourneyDetailsComponent, CarPageComponent, GuestUserCancelComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

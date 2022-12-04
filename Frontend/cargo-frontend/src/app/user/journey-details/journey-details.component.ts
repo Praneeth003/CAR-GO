@@ -43,7 +43,7 @@ export class JourneyDetailsComponent implements OnInit {
     private utils:UtilsModule,private router: Router,   private localStorage: LocalStorageService ){ }
 
   ngOnInit() {
-    this.localStorage.remove("journeyDetailsFilter");
+    this.utils.clearLocalSessionStorage();
     // let data = this.localStorage.get('journeyDetailsFilter');
     // console.log("\n journeyDetailsFilter data ",data);
     // if(data != null && data != undefined && data['data'] != undefined){

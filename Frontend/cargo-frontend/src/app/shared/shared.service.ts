@@ -42,6 +42,14 @@ export class SharedService {
        catchError(this.errorHandler.handleError('All get data : ', []))
        );
    }
+
+   delete(endPoint):Observable<any>{
+    return this.http.delete<any>(this.urlCargo + endPoint).pipe(
+       catchError(this.errorHandler.handleError('All delete data : ', []))
+       );
+   }
+  
+  headerRefresh = new BehaviorSubject(true);
   
   downloadPDF(endPoint) {
 

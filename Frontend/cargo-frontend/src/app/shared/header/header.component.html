@@ -1,5 +1,5 @@
 <div class="desktop_header">
-  <h1 id="logo"><a (click) = "journeyDetails()"class="router-link-exact-active router-link-active">Car-Go</a></h1>
+  <h1 id="logo"><a (click) = "navigateHome()"class="router-link-exact-active router-link-active">Car-Go</a></h1>
 
     <!-- <nav > 
       <h6 class="m-0">
@@ -10,8 +10,9 @@
     <p style=" margin-left: 1%; margin-top: 1%;  cursor: pointer;" [hidden] = "!isAdmin" (click) = "deleteVariant()"> Delete Car  </p>
     <p style=" margin-left: 1%; margin-top: 1%;  cursor: pointer;" [hidden] = "!isAdmin" (click) = "finishBooking()"> Finish Booking  </p>
 
-    <p style="margin-left: 1%;  margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || displayCancelUser" (click) = "bookingHistory()"> Booking History  </p>
-    <p style="margin-left: 1%;  margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || !displayCancelUser" (click) = "cancelBooking()"> Cancel Booking  </p>
-    <p style="margin-left: 1%; margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin" (click) = "journeyDetails()"> Journey Details </p>
-    <p style="margin-left: 2%; margin-top: 1%; cursor: pointer;"(click) = "login()"> {{loginMessage}} </p>
+    <p style="margin-left: 1%;  margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || displayCancelUser || isBookingHistoryPage" (click) = "bookingHistory()"> Booking History  </p>
+    <p style="margin-left: 1%;  margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || !displayCancelUser || isCancelBooking" (click) = "cancelBooking()"> Cancel Booking  </p>
+    <p style="margin-left: 1%; margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || isLoginPage || isJourneyDetailsPage" (click) = "journeyDetails()"> Journey Details </p>
+    <p style="margin-left: 1%; margin-top: 1%;  cursor: pointer;" [hidden] = "isAdmin || isLoginPage || isJourneyDetailsPage || isCartDetailsPage" (click) = "cartDetailsPage()"> My Cart </p>
+    <p style="margin-left: 2%; margin-top: 1%; cursor: pointer;"[hidden] = "isLoginPage" (click) = "login()"> {{loginMessage}} </p>
 </div>

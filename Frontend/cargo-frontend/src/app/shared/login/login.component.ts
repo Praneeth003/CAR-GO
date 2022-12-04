@@ -40,11 +40,22 @@ export class LoginComponent implements OnInit {
           this.setUserDetails(resp['userDetails']);
 
           this.waterDataService.userName.next( {userName:resp.userDetails.userName,authId:resp.userDetails.authId} )
-          let variantAddOnData = this.localStorage.get('selectedAddon');
-          console.log("\n journeyDetailsFilter data ",variantAddOnData);
-          
-          if(variantAddOnData != null && variantAddOnData != undefined && variantAddOnData['data'] != undefined){
-            this.router.navigate(["/user/payment"]); 
+
+          if(resp.userDetails.userType == "ADMIN"){
+            this.router.navigate(["/admin/finish-booking"]);
+            this.toastrService.success("You're successfully logged in as Admin", "");
+            this.waterDataService.headerRefresh.next(true)
+            return;
+          }
+
+          let selectedCartData = this.localStorage.get('selectedCart');
+          console.log("\n selectedCartData ",selectedCartData);
+          if(selectedCartData != undefined){
+            selectedCartData = selectedCartData['data'];
+          }
+
+          if(selectedCartData && selectedCartData['variant'] && selectedCartData['variant']['variantId']){
+            this.router.navigate(["/user/car/" + selectedCartData['variant']['variantId']]); 
           }else{
             let journeyDetailsFilter = this.localStorage.get('journeyDetailsFilter');
             console.log("\n journeyDetailsFilter data ",journeyDetailsFilter);
@@ -54,11 +65,12 @@ export class LoginComponent implements OnInit {
               this.router.navigate(["/user/journey-details"]); 
             }
           }
+          this.waterDataService.headerRefresh.next(true)
           this.toastrService.success("You're successfully logged in", "");
         }
       else{
         this.localStorage.remove('userDetails');
-        this.localStorage.remove('selectedAddon');
+        this.localStorage.remove('selectedCart');
         this.signUpFailed = true;
         this.errorMessage = resp.errorDescription;
         this.toastrService.error(resp.errorDescription, "");

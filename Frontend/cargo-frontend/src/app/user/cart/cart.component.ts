@@ -79,7 +79,7 @@ export class CartComponent implements OnInit {
         this.navigateRelHome();
       }
     }
-    this.cartArr = cartList
+    this.cartArr = cartList;
     this.totalPrice =sumPrice;
     console.log("\n  this.cartData ", this.cartData);
     console.log("\n   this.totalPrice ",  this.totalPrice);
@@ -104,7 +104,72 @@ export class CartComponent implements OnInit {
   }
 
   bookNow(){
-    console.log("\n bookNow ");
+    console.log("\n bookNow this.cartData",this.cartData);
+    this.addToCartAPI();
   }
 
+
+  async addToCartAPI() {
+    let endPoint = 'add_to_cart';
+    let cartResponse = null,variantId=null,cartEntry=null;
+    this.mapLoaderActive = true;
+    for(let vId in this.cartData){
+      cartResponse = null,variantId=null,cartEntry=null;
+      variantId = vId;
+      cartEntry= this.cartData[vId];
+      let reqData = cartEntry['postData'];
+      console.log("\n addToCartAPI reqData ", reqData);
+      let result = await this.waterDataService.post(reqData, endPoint).toPromise();
+      console.log("\n addToCartAPI result ", result);
+      this.cartData[variantId]['isCartAdded'] = false;
+      this.mapLoaderActive = false;
+      if (result != null && result != undefined) {
+        if (result['status'] == this.constantsModule.HTTP_STATUS.SUCCESS && result['cartEntry'] != undefined && result['cartEntry']['cartId'] != undefined) {
+          cartResponse = result['cartEntry'];
+          this.setCartResponse(variantId,cartResponse);
+          console.log("\n addToCart this.cartResponse \n", cartResponse);
+        } else {
+          this.toastrService.error("Alas there seems an issue try again later" + result.errorDescription, "");
+          return;
+        }
+      }else{
+        return;
+      }
+      this.mapLoaderActive = false;
+    }
+    this.toastrService.success("You have successfully added Cart Information", "");
+    this.router.navigate(["/user/payment"]);
+  }
+
+  setCartResponse(variantId,cartResponse) {
+    let data = this.localStorage.get('cartResponse');
+    console.log("\n existing cartResponse ", data);
+    let existingCartResponseData = {};
+    if (data != null && data != undefined && data['data'] != undefined) {
+      existingCartResponseData = data['data'];
+    }
+    existingCartResponseData[variantId] = cartResponse;
+    console.log("\n modified existingCartResponseData ", existingCartResponseData);
+    this.localStorage.set('cartResponse', {
+      data: existingCartResponseData
+    });
+  }
+
+  updateCartSessionResponse(){
+    let data = this.localStorage.get('cartData');
+    console.log("\n existing cartData ", data);
+    let exsitingCartData = {};
+    if (data != null && data != undefined && data['data'] != undefined) {
+      exsitingCartData = data['data'];
+    }
+    // exsitingCartData[reqData['variantId']] = {
+    //   variant: this.carData,
+    //   addOnList: this.addOnList,
+    //   postData: reqData
+    // };
+    console.log("\n modified cartData ", exsitingCartData);
+    this.localStorage.set('cartData', {
+      data: exsitingCartData
+    });
+  }
 }

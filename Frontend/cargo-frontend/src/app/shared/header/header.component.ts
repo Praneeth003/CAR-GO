@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SharedService } from '../shared.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { LocalStorageService } from 'angular-web-storage';
 
@@ -15,6 +15,13 @@ export class HeaderComponent implements OnInit {
   uN : any  = {};
   displayCancelUser = true
   isAdmin = false
+  sub1;
+  sub2;
+  isLoginPage = false;
+  isJourneyDetailsPage = false
+  isCancelBooking = false
+  isBookingHistoryPage = false
+  isCartDetailsPage = false
 
   constructor(private shdService : SharedService, private http : HttpClient, private router: Router,
     private toastrService: ToastrService, private localStorage: LocalStorageService   ) { }
@@ -30,10 +37,30 @@ export class HeaderComponent implements OnInit {
     //       this.loginMessage = "Logout"
     //     }
     // })
-    this.shdService.headerRefresh.subscribe(val => {
+    this.isLoginPage = (this.router.url == "/login" || this.router.url == "/")
+    this.isJourneyDetailsPage = (this.router.url == "/user/journey-details")
+    this.isCancelBooking = (this.router.url == "/user/guest-user-cancel")
+    this.isBookingHistoryPage = (this.router.url == "/user/bookingHistory")
+    this.isCartDetailsPage = (this.router.url == "/user/cart")
+    this.getAndSetUserDetails();
+    this.sub1 = this.shdService.headerRefresh.subscribe(val => {
       this.getAndSetUserDetails();
     })
-    
+    this.sub2 = this.router.events.subscribe((val) => {
+      console.log(val)
+      if(val instanceof NavigationEnd) {
+        this.isLoginPage = (val.url == "/login"|| this.router.url == "/")
+        this.isJourneyDetailsPage = (val.url == "/user/journey-details")
+        this.isCancelBooking = (val.url == "/user/guest-user-cancel")
+        this.isBookingHistoryPage = (val.url == "/user/bookingHistory")
+        this.isCartDetailsPage = (val.url == "/user/cart")
+      }
+    })
+  }
+
+  ngOnDestroy(){
+    this.sub1.unsubscribe();
+    this.sub2.unsubscribe();
   }
 
   getAndSetUserDetails(){
@@ -89,7 +116,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  journeyDetails(){
+  navigateHome(){
     let journeyDetailsFilter = this.localStorage.get('journeyDetailsFilter');
     console.log("\n journeyDetailsFilter data ",journeyDetailsFilter);
     if(journeyDetailsFilter != null && journeyDetailsFilter != undefined && journeyDetailsFilter['data'] != undefined){
@@ -97,6 +124,11 @@ export class HeaderComponent implements OnInit {
     }else{
       this.router.navigate(["/user/journey-details"]); 
     }
+  }
+
+
+  journeyDetails(){
+    this.router.navigate(["/user/journey-details"]); 
   }
 
   cancelBooking(){
@@ -117,6 +149,10 @@ export class HeaderComponent implements OnInit {
 
   finishBooking(){
     this.router.navigate(["/admin/finish-booking"]); 
+  }
+
+  cartDetailsPage(){
+    this.router.navigate(["/user/cart"]); 
   }
 
 }

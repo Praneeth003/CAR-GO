@@ -55,24 +55,28 @@ export class SignupComponent implements OnInit {
 
         this.waterDataService.userName.next( {userName:resp.userDetails.userName,authId:resp.userDetails.authId} );
 
-        let variantAddOnData = this.localStorage.get('selectedAddon');
-        console.log("\n journeyDetailsFilter data ",variantAddOnData);
-        if(variantAddOnData != null && variantAddOnData != undefined && variantAddOnData['data'] != undefined){
-          this.router.navigate(["/user/payment"]); 
+        let selectedCartData = this.localStorage.get('selectedCart');
+        console.log("\n selectedCartData ",selectedCartData);
+        if(selectedCartData != undefined){
+          selectedCartData = selectedCartData['data'];
+        }
+
+        if(selectedCartData && selectedCartData['variant'] && selectedCartData['variant']['variantId']){
+          this.router.navigate(["/user/car/" + selectedCartData['variant']['variantId']]); 
         }else{
           let journeyDetailsFilter = this.localStorage.get('journeyDetailsFilter');
           console.log("\n journeyDetailsFilter data ",journeyDetailsFilter);
           if(journeyDetailsFilter != null && journeyDetailsFilter != undefined && journeyDetailsFilter['data'] != undefined){
             this.router.navigate(["/user/home"]); 
           }else{
-            this.router.navigate(["/user/journey-details"]); 
+            this.router.navigate(["/login"]); 
           }
         }
 
       }
       else{
         this.localStorage.remove('userDetails');
-        this.localStorage.remove('selectedAddon');
+        this.localStorage.remove('selectedCart');
         this.signUpFailed = true
         this.errorMessage = resp.errorDescription
       }

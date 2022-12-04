@@ -8,9 +8,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 import { UtilsModule } from '../shared/utils/utils/utils.module';
 import { ConstantsModule } from '../shared/constants.module';
+import { FinishBookingComponent } from './finish-booking/finish-booking.component';
+import { DeleteVariantComponent } from './delete-variant/delete-variant.component';
 
 @NgModule({
-  declarations: [CreateVariantComponent],
+  declarations: [CreateVariantComponent, FinishBookingComponent, DeleteVariantComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,

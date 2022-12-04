@@ -1,7 +1,22 @@
 <div class="container-fluid">
   <div class="row my-3">
     <div class="col-sm-12 col-lg-5">
-      <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+      <div *ngIf="disp">
+        <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+          <ngb-carousel  #carousel [interval]="5000">
+            <ng-container *ngFor="let img of variantImageList">
+              <ng-template ngbSlide>
+                <img [src] = "img['variantImageData']" width="100%" height="600" alt="Random first slide">
+                <div class="carousel-caption">
+                    <!-- <h3>First slide label</h3> -->
+                    <p>{{img['variantImageView']}}.</p>
+                </div>
+              </ng-template>
+            </ng-container>
+          </ngb-carousel>
+        </div>        
+      </div>
+      <!-- <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
         <div *ngIf="disp">
           <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
@@ -16,7 +31,6 @@
                 class="d-block " alt="...">
               <div class="carousel-caption d-none d-md-block">
                 <h5>Exterior</h5>
-                <!-- <p>Some representative placeholder content for the first slide.</p> -->
               </div>
             </div>
             <div class="carousel-item" data-bs-interval="2000">
@@ -25,10 +39,8 @@
                 class="d-block " alt="...">
               <div class="carousel-caption d-none d-md-block">
                 <h5>Interior</h5>
-                <!-- <p>Some representative placeholder content for the second slide.</p> -->
               </div>
             </div>
-
           </div>
         </div>
 

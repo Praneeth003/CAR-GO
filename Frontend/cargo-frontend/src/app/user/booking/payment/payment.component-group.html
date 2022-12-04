@@ -63,7 +63,7 @@
                           <h2 class="accordion-header" [id]="vId">
                             <button (click)="setActiveClassForCartProfile(vId)" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                              [attr.data-target]="vId" aria-expanded="true" >
-                              {{cartResponse[vId]['variant']['variantId']+" - "+cartResponse[vId]['variant']['variantName']}}
+                              {{ cartResponse[vId]['variant']['model']['modelName'] + " ( " + cartResponse[vId]['variant']['variantId']+" - "+cartResponse[vId]['variant']['variantName'] + " )"}}
                             </button>
                           </h2>
                           <div [id]="vId"  [hidden]="!cartResponse[vId]['isVisible']" class="accordion-collapse collapsed" 
@@ -72,6 +72,7 @@
                               <div class="row">
                                 <div class="col-lg-12">
                                   <p> 
+                                    <b>Model Name : </b> {{ cartResponse[vId]['variant']['model']['modelName']}} <br/>
                                     <b>Variant Name : </b> {{ cartResponse[vId]['variant']['variantName']}} <br/>
                                     <b>Variant Price : </b> {{ calculateVariantPrice(cartResponse[vId])}} <br/>
                                     <b>Variant AddOn Price : </b> {{ calculateAddOnPrice(cartResponse[vId]) }}
