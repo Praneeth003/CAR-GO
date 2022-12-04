@@ -47,16 +47,16 @@ public class CartEntry {
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	public String getFromDate() {
+	public Timestamp getFromDate() {
 		return fromDate;
 	}
-	public void setFromDate(String fromDate) {
+	public void setFromDate(Timestamp fromDate) {
 		this.fromDate = fromDate;
 	}
-	public String getToDate() {
+	public Timestamp getToDate() {
 		return toDate;
 	}
-	public void setToDate(String toDate) {
+	public void setToDate(Timestamp toDate) {
 		this.toDate = toDate;
 	}
 	public Location getPickupLocation() {
@@ -117,9 +117,4 @@ public class CartEntry {
 				", addOnList=" + addOnList +
 				'}';
 	}
-	
-	
-	
-	
-
 }

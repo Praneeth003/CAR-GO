@@ -661,7 +661,9 @@ public class CargoDAOImpl implements ICargoDAO {
 				List<VariantImage> variantImageList =null;
 				 Boolean b = false;
 				while (rs.next()) {
-					 for (Variant v : variantList) {
+//					System.out.println("\n In getVariant " + rs.getInt("c_variant_id")+" name "+rs.getString("c_variant_name"));
+					b = false;
+					for (Variant v : variantList) {
 						 if (v.getVariantId() == rs.getInt("c_variant_id")) {
 							 b = true;
 							 variantImage = new VariantImage();
@@ -677,6 +679,7 @@ public class CargoDAOImpl implements ICargoDAO {
 						 }
 					 }
 					 
+//					 System.out.println("\n In getVariant " + rs.getInt("c_variant_id")+" name "+rs.getString("c_variant_name")+" \n b "+b);
 					 if(b){
 						 continue;
 					 }
@@ -2671,15 +2674,29 @@ public class CargoDAOImpl implements ICargoDAO {
 				TransmissionType transmissionType = null;
 				FuelType fuelType = null;
 				VariantImage variantImage = null;
-				// Boolean b = false;
+				Boolean b = false;
+				List<VariantImage> variantImageList =null;
 				while (rs.next()) {
-					// b = false;
-					// for (Variant v : variantList) {
-					// if (v.getVariantId() == rs.getInt("c_variant_id")) {
-					// b = true;
-					// break;
-					// }
-					// }
+					 b = false;
+					 for (Variant v : variantList) {
+						 if (v.getVariantId() == rs.getInt("c_variant_id")) {
+							 b = true;
+							 variantImage = new VariantImage();
+							 variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+							 variantImage.setVariantImageData(rs.getString("c_variant_image"));
+							 variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+							 variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+							 variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+							 variantImageList = v.getVariantImageList();
+							 variantImageList.add(variantImage);
+							 v.setVariantImageList(variantImageList);
+							 break;
+						 }
+					 }
+					 
+					 if(b){
+						 continue;
+					 }
 					variant = new Variant();
 					make = new Make();
 					model = new Model();
@@ -2687,6 +2704,7 @@ public class CargoDAOImpl implements ICargoDAO {
 					fuelType = new FuelType();
 					color = new Color();
 					variantImage = new VariantImage();
+					variantImageList = new ArrayList();
 					transmissionType = new TransmissionType();
 					variant.setVariantId(rs.getInt("c_variant_id"));
 					variant.setVariantName(rs.getString("c_variant_name"));
@@ -2738,7 +2756,17 @@ public class CargoDAOImpl implements ICargoDAO {
 					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
 					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
 					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+					
+					variantImage.setVariantImageId(rs.getInt("c_variant_image_id"));
+					variantImage.setVariantImageData(rs.getString("c_variant_image"));
+					variantImage.setVariantImageView(rs.getString("c_variant_image_view"));
+					variantImage.setVariantImageDescription(rs.getString("c_variant_image_description"));
+					variantImage.setVariantImageStatus(rs.getBoolean("c_variant_image_status"));
+				
+					variantImageList.add(variantImage);
+					
 					variant.setVariantImage(variantImage);
+					variant.setVariantImageList(variantImageList);
 
 					variantList.add(variant);
 

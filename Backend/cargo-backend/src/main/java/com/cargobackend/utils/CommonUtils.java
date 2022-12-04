@@ -71,4 +71,42 @@ public class CommonUtils {
 		System.out.println("\n getDelimitedStringFromIntegerList builder "+builder.toString());
 		return builder.toString();
 	}
+
+	public static String getDelimitedStringFromDoubleList(List<Double> values, String delimiter) {
+		if (values == null || values.size() == 0) {
+			return "";
+		}
+
+		StringBuilder builder = new StringBuilder();
+		boolean firstTime = true;
+		for (Double value : values) {
+			if (firstTime) {
+				firstTime = false;
+			} else {
+				builder.append(delimiter);
+			}
+			builder.append(value.toString());
+		}
+		System.out.println("\n getDelimitedStringFromIntegerList builder "+builder.toString());
+		return builder.toString();
+	}
+
+	public static String getDelimitedStringFromLongList(List<Long> values, String delimiter) {
+		if (values == null || values.size() == 0) {
+			return "";
+		}
+
+		StringBuilder builder = new StringBuilder();
+		boolean firstTime = true;
+		for (Long value : values) {
+			if (firstTime) {
+				firstTime = false;
+			} else {
+				builder.append(delimiter);
+			}
+			builder.append(value.toString());
+		}
+		System.out.println("\n getDelimitedStringFromIntegerList builder "+builder.toString());
+		return builder.toString();
+	}
 }
