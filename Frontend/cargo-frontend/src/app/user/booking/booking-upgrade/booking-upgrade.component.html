@@ -51,7 +51,7 @@
   <h2 class="accordion-header" id="upgradeBookingDetails">
     <button (click)="setActiveClass('upgradeBookingDetails')" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
      attr.data-target="upgradeBookingDetails" aria-expanded="true" >
-      Upgrade Journey Dates
+      Extend Journey Dates
     </button>
   </h2>
   <div id="upgradeBookingDetails"  [hidden]="!toggleClass.upgradeBookingDetails" class="accordion-collapse collapsed" 
@@ -64,7 +64,7 @@
               
             <div class="mb-4">
                 <div class="form-group mb-4">
-                  <label>Update Start</label>
+                  <label>Update Start Date</label>
                   <datepicker name="from" placeHolder="Select from date"
                     [(ngModel)]="selectedFilterParams.sDate['value']" [(from)]="selectedFilterParams.sDate['value']"
                     [(to)]="selectedFilterParams.eDate['value']" 
@@ -72,7 +72,7 @@
                     [(maxDate)]="maxDate"></datepicker>
                 </div>
                 <div class="form-group mb-4">
-                  <label>Update Stop</label>
+                  <label>Update End Date</label>
                   <datepicker name="to" placeHolder="Select to date" [(ngModel)]="selectedFilterParams.eDate['value']"
                     [(disabled)]="!selectedFilterParams.sDate['value']" [(validation)]="validation"
                     [(from)]="selectedFilterParams.sDate['value']" [(to)]="selectedFilterParams.eDate['value']"
@@ -81,7 +81,7 @@
                 </div>
 
                 <div class="mb-3">
-                  <button (click)="upgradeBooking()" class="btn btn-primary btn-block">Upgrade</button>
+                  <button (click)="upgradeBooking()" class="btn btn-primary btn-block">Extend</button>
                 </div>
 
             </div>
@@ -97,7 +97,7 @@
   <h2 class="accordion-header" id="finishUpgrade">
     <button (click)="setActiveClass('finishUpgrade')" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
      attr.data-target="finishUpgrade" aria-expanded="true" >
-     Finish Upgrade
+     Finish Extend
     </button>
   </h2>
   <div id="finishUpgrade"  [hidden]="!toggleClass.finishUpgrade" class="accordion-collapse collapsed" 
@@ -189,7 +189,7 @@
 
             </div>
             <div class="d-flex justify-content-end mt-3">
-              <button (click)="payNow()" class="btn btn-primary btn-block">Finish Upgrade</button>
+              <button (click)="payNow()" class="btn btn-primary btn-block">Finish Extend</button>
             </div>
         </div>
       </div>

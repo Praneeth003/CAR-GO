@@ -29,7 +29,7 @@
           <td> ${{ booking['totalPrice']}}</td>
           <td> {{ booking['status']}}</td>
           <td>
-            <button (click)="upgradeBooking(booking)" [disabled] ="!isUpdateEnabled(booking)" class="btn btn-success me-2"> Upgrade</button>
+            <button (click)="upgradeBooking(booking)" [disabled] ="!isUpdateEnabled(booking)" class="btn btn-success me-2"> Extend</button>
             <button (click)="downloadInvoice(booking)" class="btn btn-success me-2">Download</button>
             <button (click)="cancelBooking(booking)" [disabled] ="!isCancelEnabled(booking)" class="btn btn-primary me-2"> Cancel</button>
           </td>
