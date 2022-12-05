@@ -473,3 +473,8 @@ PRIMARY KEY (c_booking_promo_code_info_id),
 FOREIGN KEY (c_promo_code_id) REFERENCES tbl_promo_code(c_promo_code_id),
 FOREIGN KEY (c_booking_info_id) REFERENCES tbl_booking_info(c_booking_info_id)
 );
+
+update tbl_location set c_location_status =1 ;
+
+insert into tbl_user(c_user_name,c_user_email,c_user_mobile_number,c_user_type,c_user_password)
+values("Dinesh","dinesh@gmail.com","9090909090","ADMIN","123456");

@@ -25,6 +25,7 @@ CREATE PROCEDURE proc_create_variant_v1dot0(
 /**************************************************************************************************************************************************************
  PURPOSE :
   This procedure is for creating a new partner gates and interceptors
+
  OUTPUT PARAMATERS :
   out_status   - returns the authentication status, if 1 its success, else failure
   out_err_msg   - has error description in case of failures
@@ -32,6 +33,7 @@ CREATE PROCEDURE proc_create_variant_v1dot0(
   V1.0(v1dot0)
  CHANGE LOG :
   Initial version
+
 **************************************************************************************************************************************************************/
 BEGIN
 

@@ -94,7 +94,7 @@ BEGIN
     END IF;
 
 
-    IF(in_from_location_id <> NULL) THEN
+    IF(in_from_location_id is not null) THEN
           SET v_sub_query9 =CONCAT("i.c_is_available =1 and j.c_location_id in ('",in_from_location_id,"')");
     ELSE 
          SET v_sub_query9 =CONCAT("j.c_location_id =  j.c_location_id");

@@ -134,7 +134,7 @@ BEGIN
     inner join tbl_variant_location_history i on i.c_variant_id = a.c_variant_id
     inner join tbl_location j on j.c_location_id = i.c_location_id
     where ",v_sub_query1 ," AND ",v_sub_query2," AND ",v_sub_query3," AND ",v_sub_query4," AND ",
-    v_sub_query5 ," AND ",v_sub_query6," AND ",v_sub_query7," AND ",v_sub_query8," AND ", v_sub_query9," AND ",v_sub_query10);	
+    v_sub_query5 ," AND ",v_sub_query6," AND ",v_sub_query7," AND ",v_sub_query8," AND ", v_sub_query9," AND ",v_sub_query10, " AND a.c_variant_status = '1'");	
 	
     -- select v_query;
     

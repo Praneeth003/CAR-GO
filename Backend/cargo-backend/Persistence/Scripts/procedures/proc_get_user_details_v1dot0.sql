@@ -12,7 +12,7 @@ CREATE PROCEDURE proc_get_user_details_v1dot0(
 )
 BEGIN
         DECLARE v_user_id INT DEFAULT NULL;
-        DECLARE v_user_name,v_user_email VARCHAR(30) DEFAULT NULL;
+        DECLARE v_user_name,v_user_email,v_user_type VARCHAR(30) DEFAULT NULL;
         DECLARE v_user_mobile_number VARCHAR(15) DEFAULT NULL;
         DECLARE v_login_status tinyint(1) DEFAULT '0';
 
@@ -30,8 +30,8 @@ BEGIN
         BEGIN
                 if(in_auth_id is null) then
 
-                        select user.c_user_id,c_user_name,c_user_email,c_user_mobile_number
-                        into  v_user_id,v_user_name,v_user_email,v_user_mobile_number
+                        select user.c_user_id,c_user_name,c_user_email,c_user_mobile_number,c_user_type
+                        into  v_user_id,v_user_name,v_user_email,v_user_mobile_number,v_user_type
                         from tbl_user user 
                         where user.c_user_name = IF(in_user_name is not null,in_user_name,c_user_name) and
                         user.c_user_id = IF(in_user_id is not null,in_user_id, user.c_user_id) ;
@@ -44,8 +44,8 @@ BEGIN
                         end if;
 
                 else 
-                        select user.c_user_id,c_user_name,c_user_email,c_user_mobile_number,auth.c_login_status
-                        into  v_user_id,v_user_name,v_user_email,v_user_mobile_number,v_login_status
+                        select user.c_user_id,c_user_name,c_user_email,c_user_mobile_number,auth.c_login_status,c_user_type
+                        into  v_user_id,v_user_name,v_user_email,v_user_mobile_number,v_login_status,v_user_type
                         from tbl_user user inner join tbl_auth auth on auth.c_user_id = user.c_user_id
                         where auth.c_auth_id = IF(in_auth_id is not null,in_auth_id,auth.c_auth_id);
 
@@ -63,7 +63,7 @@ BEGIN
 
                 end if;
 
-                select v_user_id as c_user_id,v_user_name as c_user_name,v_user_email as c_user_email,v_user_mobile_number as c_user_mobile_number;
+                select v_user_type as c_user_type, v_user_id as c_user_id,v_user_name as c_user_name,v_user_email as c_user_email,v_user_mobile_number as c_user_mobile_number;
 
         END;
 

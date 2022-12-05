@@ -27,7 +27,7 @@ BEGIN
 
 	IF(in_add_on_delimitted_string <> "ALL") THEN
           SET in_add_on_delimitted_string = REPLACE(in_add_on_delimitted_string,',','\',\'');	
-          SET v_query =CONCAT(v_query, "where c_add_on_id in ('",in_add_on_delimitted_string,"')");
+          SET v_query =CONCAT(v_query, " where c_add_on_id in ('",in_add_on_delimitted_string,"')");
     END IF;	
 	
 	SET @t2  = v_query;
